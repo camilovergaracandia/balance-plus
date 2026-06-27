@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Balance+ · Prueba de conexión Supabase</title>
+<style>
+  body{font-family:Inter,system-ui,sans-serif;max-width:680px;margin:30px auto;padding:0 16px;color:#1a1f2e}
+  h1{font-size:20px} h2{font-size:15px;margin-top:26px;border-top:1px solid #dde3e8;padding-top:16px}
+  input{padding:8px;border:1px solid #dde3e8;border-radius:6px;width:230px;margin:3px}
+  button{padding:8px 14px;border:0;border-radius:6px;background:#1B2D5E;color:#fff;cursor:pointer;margin:3px}
+  button.alt{background:#8AB090}
+  pre{background:#f7f9fb;border:1px solid #dde3e8;border-radius:8px;padding:12px;white-space:pre-wrap;word-break:break-word;font-size:12px}
+  .muted{color:#5a6475;font-size:13px}
+</style>
+</head>
+<body>
+  <h1>Balance+ · Prueba de conexión</h1>
+  <p class="muted">Página temporal para verificar auth + RLS + grants antes de migrar el portal. Bórrala antes de producción.</p>
+
+  <h2>1. Cuenta</h2>
+  <input id="email" placeholder="correo@ejemplo.cl" value="">
+  <input id="pw" type="password" placeholder="contraseña (mín. 8)">
+  <br>
+  <button onclick="doSignUp()">Registrarme</button>
+  <button class="alt" onclick="doSignIn()">Iniciar sesión</button>
+  <button onclick="doWho()">¿Quién soy?</button>
+  <button onclick="doOut()">Salir</button>
+
+  <h2>2. Ficha de paciente (tabla patients)</h2>
+  <input id="rut" placeholder="RUT ej. 12.345.678-9">
+  <input id="peso" placeholder="peso actual kg" value="95">
+  <br>
+  <button onclick="doCreatePatient()">Crear / actualizar ficha</button>
+  <button class="alt" onclick="doLoadPatient()">Cargar mi ficha</button>
+
+  <h2>3. Registro de peso (tabla weight_logs)</h2>
+  <input id="wlog" placeholder="peso kg" value="94.2">
+  <button onclick="doAddWeight()">Agregar registro</button>
+  <button class="alt" onclick="doLoadWeights()">Ver historial</button>
+
+  <h2>Resultado</h2>
+  <pre id="out">—</pre>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="bp-supabase.js?v=9"></script>
+<script>
+  const out = (x) => document.getElementById('out').textContent =
+    (typeof x === 'string') ? x : JSON.stringify(x, null, 2);
+  const val = (id) => document.getElementById(id).value.trim();
+
+  async function doSignUp(){
+    const r = await BP.signUp({ email: val('email'), password: val('pw'), nombre:'Prueba', apellido:'Test' });
+    out(r.error ? ('ERROR: '+r.error.message) : 'Registro OK. Revisa el correo si "Confirm email" está activo, o confirma el usuario desde Authentication → Users.');
+  }
+  async function doSignIn(){
+    const r = await BP.signIn({ email: val('email'), password: val('pw') });
+    out(r.error ? ('ERROR: '+r.error.message) : 'Sesión iniciada ✔');
+  }
+  async function doWho(){ out(await BP.getUser() || 'Sin sesión'); }
+  async function doOut(){ await BP.signOut(); out('Sesión cerrada'); }
+
+  async function doCreatePatient(){
+    const user = await BP.getUser();
+    if(!user) return out('Primero inicia sesión.');
+    if(!BP.rutValido(val('rut'))) return out('RUT inválido (no pasa el dígito verificador módulo 11).');
+    const r = await BP.upsertPatient(user.id, {
+      rut: BP.formatRut(val('rut')),
+      peso_actual: Number(val('peso')) || null,
+      peso_inicial: Number(val('peso')) || null
+    });
+    out(r.error ? ('ERROR: '+(r.error.message||JSON.stringify(r.error))) : r.data);
+  }
+  async function doLoadPatient(){ out(await BP.loadPatient() || 'Aún no tienes ficha.'); }
+
+  async function doAddWeight(){
+    const p = await BP.loadPatient();
+    if(!p) return out('Crea primero tu ficha de paciente.');
+    const r = await BP.addWeightLog(p.id, Number(val('wlog')) || null);
+    out(r.error ? ('ERROR: '+(r.error.message||JSON.stringify(r.error))) : r.data);
+  }
+  async function doLoadWeights(){
+    const p = await BP.loadPatient();
+    if(!p) return out('Crea primero tu ficha de paciente.');
+    out(await BP.loadWeightLogs(p.id));
+  }
+</script>
+</body>
+</html>

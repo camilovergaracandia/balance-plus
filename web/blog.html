@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balance+ | Blog</title>
+  <link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    .hidden { display: none !important; }
+
+    :root {
+      --navy:       #1B2D5E;
+      --navy-dark:  #142248;
+      --navy-mid:   #2a4080;
+      --sage:       #8AB090;
+      --sage-dark:  #6A9070;
+      --sage-light: #c8deca;
+      --sage-faint: #f0f6f1;
+      --text:       #1a1f2e;
+      --muted:      #5a6475;
+      --border:     #dde3e8;
+      --white:      #ffffff;
+      --bg:         #f7f9fb;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────────── */
+    .page {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      height: 68px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-divider {
+      width: 1px;
+      height: 26px;
+      background: var(--border);
+    }
+
+    .logo-section-label {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.5px;
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--sage-dark);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: var(--sage); }
+
+    /* ─── MAIN ───────────────────────────────────────────── */
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 62fr 38fr;
+      overflow: hidden;
+    }
+
+    /* ─── LEFT: POST DESTACADO ───────────────────────────── */
+    .col-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 36px 48px;
+      background: var(--white);
+      overflow-y: auto;
+    }
+
+    .featured-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      width: fit-content;
+      background: var(--sage-faint);
+      color: var(--sage-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 6px 13px;
+      border-radius: 20px;
+      border: 1px solid var(--sage-light);
+      margin-bottom: 18px;
+    }
+
+    .featured-cover {
+      width: 100%;
+      aspect-ratio: 36 / 7;
+      border-radius: 16px;
+      background: var(--navy);
+      display: flex;
+      align-items: flex-end;
+      padding: 18px 20px;
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-cover .cover-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block; z-index: 0;
+    }
+
+    .featured-cover::before {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(135deg, rgba(27,45,94,0.80) 0%, rgba(42,64,128,0.55) 55%, rgba(106,144,112,0.55) 130%);
+    }
+
+    .featured-cover::after {
+      content: '';
+      position: absolute;
+      top: -40px; right: -30px;
+      width: 180px; height: 180px;
+      background: url('Isotipo 1 blanco.png') center/contain no-repeat;
+      opacity: 0.14; z-index: 1;
+    }
+
+    .featured-cover-tag {
+      position: relative;
+      z-index: 2;
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 6px 12px;
+      border-radius: 18px;
+      backdrop-filter: blur(4px);
+    }
+
+    .featured-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12.5px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .featured-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); }
+
+    .views { display: inline-flex; align-items: center; gap: 4px; }
+    .views svg { opacity: 0.85; }
+
+    .top-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #eaf0fb; color: var(--navy);
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+      padding: 3px 9px; border-radius: 20px;
+    }
+    .top-badge svg { opacity: 0.9; }
+
+    .featured-title {
+      font-size: clamp(26px, 3vw, 36px);
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--navy);
+      letter-spacing: -0.8px;
+      margin-bottom: 14px;
+    }
+
+    .featured-excerpt {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    .featured-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--sage-dark);
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      width: fit-content;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 16px rgba(106,144,112,0.3);
+    }
+
+    .featured-cta:hover { background: var(--sage); transform: translateY(-1px); }
+
+    /* ─── RIGHT: POSTS ANTERIORES POR MES ────────────────── */
+    .col-right {
+      display: flex;
+      flex-direction: column;
+      padding: 36px 44px;
+      background: var(--bg);
+      overflow-y: auto;
+    }
+
+    .archive-head {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 34px;
+    }
+
+    .archive-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .month-group { margin-bottom: 22px; }
+
+    .month-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--sage-dark);
+      margin-bottom: 12px;
+    }
+
+    .month-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .post-card {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+
+    .post-card:hover {
+      border-color: var(--sage-light);
+      box-shadow: 0 4px 14px rgba(27,45,94,0.07);
+      transform: translateY(-1px);
+    }
+
+    .post-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      background: var(--navy);
+    }
+
+    .post-thumb .thumb-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block; z-index: 0;
+    }
+
+    .post-thumb::before {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(135deg, rgba(27,45,94,0.78) 0%, rgba(42,64,128,0.45) 60%, rgba(106,144,112,0.45) 130%);
+    }
+
+    .post-card-body { flex: 1; min-width: 0; }
+
+    .post-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .post-card-cat {
+      color: var(--sage-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .post-card-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.35;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      height: 60px;
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 48px;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .footer-social {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .footer-social:hover { background: var(--navy-mid); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      html, body { overflow: auto; height: auto; }
+
+      nav { padding: 0 20px; }
+
+      main {
+        grid-template-columns: 1fr;
+        overflow: auto;
+        height: auto;
+      }
+
+      .col-left { padding: 32px 22px; }
+      .col-right { padding: 28px 22px 40px; background: var(--white); }
+
+      footer {
+        height: auto;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 12px;
+        padding: 18px 20px;
+        text-align: center;
+      }
+
+      footer a { justify-self: center !important; }
+    }
+  </style>
+<script src="bp-cookies.js"></script>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo-section">
+      <a class="logo-wrap" href="index.html">
+        <img src="Logo Simple.png" alt="Balance+" style="height:52px;display:block">
+      </a>
+      <div class="logo-divider"></div>
+      <span class="logo-section-label">Blog</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:32px">
+      <a href="blog.html" style="font-size:14px;font-weight:700;color:var(--navy);text-decoration:none;transition:opacity 0.15s">Blog</a>
+      <a href="proveedores.html" style="font-size:14px;font-weight:500;color:var(--navy);text-decoration:none;opacity:0.75;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">Portal Proveedores</a>
+      <div style="width:1px;height:20px;background:var(--border)"></div>
+      <a href="portal.html" style="font-size:14px;font-weight:600;color:var(--navy);text-decoration:none;padding:10px 16px;border-radius:8px;border:1.5px solid var(--border);transition:background 0.15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">
+        Iniciar sesión
+      </a>
+      <a class="nav-cta" href="intake.html">
+        Comenzar evaluación
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- LEFT: POST DESTACADO (más reciente) -->
+    <section class="col-left">
+      <span class="featured-eyebrow">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--sage-dark);display:inline-block"></span>
+        Artículo destacado
+      </span>
+
+      <div class="featured-cover" id="featured-cover">
+        <img class="cover-img" id="featured-img" alt="">
+        <span class="featured-cover-tag" id="featured-tag">—</span>
+      </div>
+
+      <div class="featured-meta" id="featured-meta"></div>
+
+      <h1 class="featured-title" id="featured-title"></h1>
+
+      <p class="featured-excerpt" id="featured-excerpt"></p>
+
+      <a href="#" class="featured-cta" id="featured-cta">
+        Leer artículo
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <div id="featured-empty" class="hidden" style="color:var(--muted);font-size:15px;line-height:1.6;margin-top:8px">
+        Aún no hay un artículo destacado publicado.
+      </div>
+    </section>
+
+    <!-- RIGHT: POSTS ANTERIORES (por mes) -->
+    <section class="col-right">
+      <div class="archive-head">Publicaciones anteriores</div>
+      <div id="archive-list"></div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div style="display:flex;align-items:center;gap:8px">
+      <a class="footer-social" href="#">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+          <path fill="white" d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+        </svg>
+      </a>
+      <a class="footer-social" href="#">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <rect x="2" y="2" width="20" height="20" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/>
+        </svg>
+      </a>
+      <a class="footer-social" href="#">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="white">
+          <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/>
+          <rect x="2" y="9" width="4" height="12"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+      </a>
+      <a class="footer-social" href="#">
+        <svg width="13" height="10" viewBox="0 0 24 17" fill="none">
+          <path fill="white" d="M23.5 2.6A3 3 0 0021.4.5C19.5 0 12 0 12 0S4.5 0 2.6.5A3 3 0 00.5 2.6C0 4.5 0 8.5 0 8.5s0 4 .5 5.9a3 3 0 002.1 2.1C4.5 17 12 17 12 17s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 12.5 24 8.5 24 8.5s0-4-.5-5.9z"/>
+          <polygon points="9.6,12.1 15.8,8.5 9.6,4.9" fill="var(--navy)"/>
+        </svg>
+      </a>
+      <span style="width:1px;height:18px;background:var(--border);margin:0 4px;opacity:0.5"></span>
+      <a href="#" title="Próximamente en App Store" style="display:block;line-height:0;opacity:0.5;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.5'">
+        <img src="App_Store.png" alt="App Store" style="height:25px;width:auto;display:block">
+      </a>
+      <a href="#" title="Próximamente en Google Play" style="display:block;line-height:0;opacity:0.5;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.5'">
+        <img src="Logo Google Play.png" alt="Google Play" style="height:25px;width:auto;display:block">
+      </a>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:0">
+      <a href="02_Politica_de_Privacidad_BalancePlus.pdf" target="_blank" rel="noopener">Política de Privacidad</a>
+      <span style="margin:0 10px;opacity:0.35">&middot;</span>
+      <a href="01_Terminos_y_Condiciones_BalancePlus.pdf" target="_blank" rel="noopener">Términos y Condiciones</a>
+      <span style="margin:0 10px;opacity:0.35">&middot;</span>
+      <a href="legal.html" style="font-weight:600;color:var(--navy)">Información Legal</a>
+    </div>
+
+    <a href="contacto.html" style="font-weight:600;color:var(--navy);text-decoration:none;display:flex;align-items:center;gap:5px;justify-self:end">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+      Contacto y Ayuda
+    </a>
+  </footer>
+
+</div>
+
+<script src="blog-data.js"></script>
+<script>
+  const MES_CORTO = { 'Enero':'Ene','Febrero':'Feb','Marzo':'Mar','Abril':'Abr','Mayo':'May','Junio':'Jun','Julio':'Jul','Agosto':'Ago','Septiembre':'Sep','Octubre':'Oct','Noviembre':'Nov','Diciembre':'Dic' };
+
+  function fechaCorta(iso, mes) {
+    if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+      const [a, m, d] = iso.split('-');
+      const nombres = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      return `${d} ${nombres[parseInt(m,10)]} ${a}`;
+    }
+    return mes || '';
+  }
+
+  function esc(s) { return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  const EYE = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  function viewsHtml(n) { return `<span class="views">${EYE}${bpFmtViews(n)}</span>`; }
+  const TOP_BADGE = `<span class="top-badge">${EYE} Más visto</span>`;
+  function topViewedId(list) {
+    let id = null, v = -1;
+    list.forEach(p => { if ((p.views || 0) > v) { v = p.views || 0; id = p.id; } });
+    return v > 0 ? id : null;
+  }
+
+  function renderBlog() {
+    const posts = bpLoadPosts().filter(p => p.status === 'Publicado');
+    const topId = topViewedId(posts);
+
+    // Destacado: el marcado como featured; si no hay, el más reciente por fecha
+    let featured = posts.find(p => p.featured);
+    if (!featured) {
+      featured = posts.slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0];
+    }
+
+    const coverEl   = document.getElementById('featured-cover');
+    const ctaEl     = document.getElementById('featured-cta');
+    const emptyEl   = document.getElementById('featured-empty');
+
+    if (featured) {
+      bpApplyImg(document.getElementById('featured-img'), bpCoverOpts(featured));
+      coverEl.classList.remove('hidden');
+      ctaEl.href = 'articulo.html?id=' + featured.id;
+      ctaEl.classList.remove('hidden');
+      emptyEl.classList.add('hidden');
+      document.getElementById('featured-tag').textContent = featured.category || 'Artículo';
+      document.getElementById('featured-meta').innerHTML =
+        `<span>${esc(featured.month)}</span><span class="dot"></span>` +
+        `<span>${esc(featured.author)}</span><span class="dot"></span>` +
+        `<span>${esc(featured.readTime)} de lectura</span><span class="dot"></span>` +
+        viewsHtml(featured.views) +
+        (featured.id === topId ? '<span class="dot"></span>' + TOP_BADGE : '');
+      document.getElementById('featured-title').textContent = featured.title;
+      document.getElementById('featured-excerpt').textContent = featured.excerpt || '';
+    } else {
+      coverEl.classList.add('hidden');
+      ctaEl.classList.add('hidden');
+      document.getElementById('featured-meta').innerHTML = '';
+      document.getElementById('featured-title').textContent = '';
+      document.getElementById('featured-excerpt').textContent = '';
+      emptyEl.classList.remove('hidden');
+    }
+
+    // Anteriores: publicados, sin el destacado, agrupados por mes
+    const previous = posts.filter(p => p !== featured);
+    const list = document.getElementById('archive-list');
+
+    if (!previous.length) {
+      list.innerHTML = `<p style="color:var(--muted);font-size:13.5px">Aún no hay publicaciones anteriores.</p>`;
+      return;
+    }
+
+    let html = '';
+    BP_MONTH_ORDER.forEach(month => {
+      const group = previous
+        .filter(p => p.month === month)
+        .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      if (!group.length) return;
+      html += `<div class="month-group"><div class="month-label">${esc(month)}</div>`;
+      group.forEach(p => {
+        html += `
+          <a href="articulo.html?id=${p.id}" class="post-card">
+            <div class="post-thumb"><img class="thumb-img" alt="" src="${p.thumb}" style="${bpImgStyle(bpThumbOpts(p))}"></div>
+            <div class="post-card-body">
+              <div class="post-card-meta">
+                <span class="post-card-cat">${esc(p.category || '')}</span>
+                <span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--border)"></span>
+                <span>${esc(fechaCorta(p.date, p.month))}</span>
+                <span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--border)"></span>
+                ${viewsHtml(p.views)}
+                ${p.id === topId ? '<span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--border)"></span>' + TOP_BADGE : ''}
+              </div>
+              <div class="post-card-title">${esc(p.title)}</div>
+            </div>
+          </a>`;
+      });
+      html += `</div>`;
+    });
+    list.innerHTML = html;
+  }
+
+  renderBlog();
+  // Si el admin (otra pestaña) guarda cambios, el blog se actualiza solo
+  window.addEventListener('storage', e => { if (e.key === BP_STORE_KEY) renderBlog(); });
+</script>
+
+</body>
+</html>

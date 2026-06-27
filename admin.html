@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balance+ | Administración</title>
+  <link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #1B2D5E;
+      --navy-dark:  #142248;
+      --navy-mid:   #2a4080;
+      --sage:       #8AB090;
+      --sage-dark:  #6A9070;
+      --sage-light: #c8deca;
+      --sage-faint: #f0f6f1;
+      --text:       #1a1f2e;
+      --muted:      #5a6475;
+      --border:     #dde3e8;
+      --white:      #ffffff;
+      --bg:         #f7f9fb;
+    }
+
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    a { text-decoration: none; color: inherit; }
+    input, select, textarea { font-family: inherit; }
+    .hidden { display: none !important; }
+
+    /* ─── SIDEBAR ────────────────────────────────────────── */
+    .sidebar {
+      width: 256px;
+      flex-shrink: 0;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      padding: 0 16px 22px;
+    }
+
+    .sb-brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      height: 64px;
+      flex-shrink: 0;
+      padding: 0 8px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .sb-brand img { height: 34px; }
+
+    .sb-brand-text { display: flex; flex-direction: column; line-height: 1; }
+    .sb-brand-name { font-size: 16px; font-weight: 800; letter-spacing: -0.4px; }
+    .sb-brand-name span { color: var(--sage); }
+    .sb-brand-tag {
+      font-size: 8.5px; font-weight: 600; letter-spacing: 1.6px;
+      text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 4px;
+    }
+
+    .sb-nav { flex: 1; overflow-y: auto; }
+
+    .sb-group-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: rgba(255,255,255,0.4);
+      padding: 14px 10px 7px;
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 9px 10px;
+      border-radius: 9px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.8);
+      width: 100%;
+      text-align: left;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .sb-item svg { width: 17px; height: 17px; flex-shrink: 0; opacity: 0.9; }
+    .sb-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .sb-item.active { background: var(--sage-dark); color: #fff; font-weight: 600; }
+    .sb-item .badge {
+      margin-left: auto;
+      background: rgba(255,255,255,0.18);
+      font-size: 10px; font-weight: 700;
+      padding: 2px 7px; border-radius: 20px;
+    }
+
+    .sb-foot {
+      border-top: 1px solid rgba(255,255,255,0.12);
+      padding-top: 14px; margin-top: 8px;
+    }
+
+    .sb-user { display: flex; align-items: center; gap: 10px; padding: 4px 8px 12px; }
+    .sb-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--sage-dark); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; flex-shrink: 0;
+    }
+    .sb-user-meta { line-height: 1.3; min-width: 0; }
+    .sb-user-name { font-size: 13px; font-weight: 700; }
+    .sb-user-role { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+    .sb-logout {
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 10px; border-radius: 9px; width: 100%;
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8);
+      transition: background 0.15s;
+    }
+    .sb-logout:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+    /* ─── MAIN ───────────────────────────────────────────── */
+    .admin-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    .topbar {
+      height: 64px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 0 32px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-actions { display: flex; align-items: center; gap: 12px; }
+
+    .top-link {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 13px; font-weight: 600; color: var(--navy);
+      padding: 9px 15px; border-radius: 9px; border: 1.5px solid var(--border);
+      transition: background 0.15s;
+    }
+    .top-link:hover { background: var(--bg); }
+
+    .content { flex: 1; overflow-y: auto; padding: 28px 32px; }
+
+    .panel { animation: fade 0.25s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .panel-head { margin-bottom: 22px; }
+    .panel-h1 { font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; }
+    .panel-desc { display: none; }
+
+    /* Stat cards */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px 20px;
+    }
+    .stat-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .stat-ico {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--sage-faint); color: var(--sage-dark);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .stat-num { font-size: 28px; font-weight: 800; color: var(--navy); letter-spacing: -1px; line-height: 1; }
+    .stat-lbl { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+    .stat-trend { font-size: 11px; font-weight: 700; color: var(--sage-dark); }
+
+    /* Generic card */
+    .card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 22px;
+    }
+    .card + .card { margin-top: 18px; }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 14px; }
+
+    /* Activity list */
+    .activity-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 13.5px;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sage-dark); flex-shrink: 0; }
+    .activity-time { margin-left: auto; font-size: 12px; color: var(--muted); }
+
+    /* Toolbar */
+    .toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .search-box {
+      flex: 1; max-width: 320px;
+      display: flex; align-items: center; gap: 8px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 9px 13px;
+    }
+    .search-box input { border: none; outline: none; flex: 1; font-size: 13.5px; background: transparent; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13.5px; font-weight: 700;
+      padding: 10px 18px; border-radius: 10px; transition: background 0.15s, transform 0.12s;
+    }
+    .btn-primary { background: var(--sage-dark); color: #fff; box-shadow: 0 3px 12px rgba(106,144,112,0.3); }
+    .btn-primary:hover { background: var(--sage); transform: translateY(-1px); }
+    .btn-ghost { background: var(--white); color: var(--navy); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { background: var(--bg); }
+
+    /* Table */
+    .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--muted);
+      padding: 13px 18px; background: var(--bg); border-bottom: 1px solid var(--border);
+    }
+    tbody td { padding: 14px 18px; font-size: 13.5px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fafcfd; }
+    .td-title { font-weight: 700; color: var(--navy); }
+
+    .chip {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .chip-cat { background: var(--sage-faint); color: var(--sage-dark); }
+    .chip-pub { background: #e7f5ea; color: #2f7d43; }
+    .chip-draft { background: #fdf0e0; color: #9a6212; }
+    .chip-top { background: #eaf0fb; color: var(--navy); }
+
+    .row-actions { display: flex; gap: 6px; }
+    .icon-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1.5px solid var(--border); background: var(--white);
+      color: var(--muted); transition: all 0.15s;
+    }
+    .icon-btn:hover { border-color: var(--sage-light); color: var(--navy); background: var(--sage-faint); }
+    .icon-btn.danger:hover { border-color: #f0c4c4; color: #b91c1c; background: #fdeaea; }
+
+    /* Placeholder module panel */
+    .module-empty {
+      background: var(--white); border: 1px dashed var(--border);
+      border-radius: 16px; padding: 50px 30px; text-align: center;
+    }
+    .module-empty .mi {
+      width: 56px; height: 56px; border-radius: 14px; margin: 0 auto 16px;
+      background: var(--sage-faint); color: var(--sage-dark);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .module-empty h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .module-empty p { font-size: 13.5px; color: var(--muted); max-width: 380px; margin: 0 auto; line-height: 1.6; }
+
+    /* ─── MODAL ──────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(20,34,72,0.45);
+      display: none; align-items: center; justify-content: center; z-index: 60; padding: 20px;
+      backdrop-filter: blur(2px);
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--white); border-radius: 18px; width: 100%; max-width: 560px;
+      max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 70px rgba(0,0,0,0.3);
+      animation: pop 0.2s ease;
+    }
+    @keyframes pop { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+    .modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 17px; font-weight: 800; color: var(--navy); }
+    .modal-close { width: 34px; height: 34px; border-radius: 9px; color: var(--muted); display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+    .modal-close:hover { background: var(--bg); }
+    .modal-body { padding: 22px 24px; }
+    .modal-foot {
+      display: flex; gap: 10px; justify-content: flex-end;
+      padding: 16px 24px; border-top: 1px solid var(--border);
+    }
+
+    .field { margin-bottom: 15px; }
+    .field-2 { display: flex; gap: 12px; }
+    .field-2 .field { flex: 1; }
+    .field label {
+      display: block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--muted); margin-bottom: 6px;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%; padding: 10px 13px; font-size: 14px; color: var(--text);
+      background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px;
+      outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--navy); box-shadow: 0 0 0 3px rgba(27,45,94,0.08);
+    }
+    .field textarea { resize: vertical; min-height: 90px; line-height: 1.55; }
+
+    /* ─── Editor enriquecido (mini-Word) ─── */
+    .rte-toolbar {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+      padding: 7px 8px;
+      border: 1.5px solid var(--border); border-bottom: none;
+      border-radius: 10px 10px 0 0; background: var(--bg);
+    }
+    .rte-toolbar button {
+      min-width: 30px; height: 30px; padding: 0 9px;
+      border: 1px solid var(--border); background: var(--white);
+      border-radius: 7px; font-size: 12.5px; font-weight: 700; color: var(--navy);
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .rte-toolbar button:hover { background: var(--sage-faint); border-color: var(--sage-light); }
+    .rte-sep { width: 1px; height: 20px; background: var(--border); margin: 0 3px; }
+    .rte {
+      min-height: 170px; max-height: 320px; overflow-y: auto;
+      padding: 12px 14px; font-size: 14px; line-height: 1.6; color: var(--text);
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 0 0 10px 10px; outline: none;
+    }
+    .rte:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(27,45,94,0.08); }
+    .rte:empty::before { content: attr(data-ph); color: #aab0bb; }
+    .rte h2 { font-size: 17px; font-weight: 800; color: var(--navy); margin: 14px 0 8px; }
+    .rte h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin: 12px 0 7px; }
+    .rte p { margin: 0 0 10px; }
+    .rte strong { font-weight: 700; }
+    .rte ul, .rte ol { margin: 0 0 10px 20px; }
+    .rte a { color: var(--sage-dark); font-weight: 600; }
+
+    .file-input {
+      margin-top: 8px;
+      width: 100%;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 7px 9px;
+      border: 1.5px dashed var(--border);
+      border-radius: 9px;
+      background: var(--bg);
+      cursor: pointer;
+    }
+    .file-input::file-selector-button {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      padding: 5px 11px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    .file-input::file-selector-button:hover { background: var(--sage-faint); }
+
+    .media-preview {
+      margin-top: 10px;
+      width: 100%;
+      height: 120px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background-color: var(--bg);
+      overflow: hidden;
+      position: relative;
+    }
+    .media-preview.square { width: 120px; height: 120px; }
+    .media-preview.cover-shape { width: 100%; height: auto; aspect-ratio: 36 / 7; }
+    .mp-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .media-preview.empty .mp-img { display: none; }
+    .media-preview.empty::after {
+      content: 'Vista previa';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #aab0bb;
+    }
+
+    .media-controls { margin-top: 10px; display: flex; flex-direction: column; gap: 7px; }
+    .mc-row { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+    .mc-row > span { width: 52px; flex-shrink: 0; }
+    .mc-row input[type=range] { flex: 1; accent-color: var(--sage-dark); }
+    .mc-row select { flex: 1; padding: 6px 9px; font-size: 12px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); }
+    .mc-reset { align-self: flex-start; margin-top: 2px; font-size: 11px; font-weight: 700; color: var(--navy); background: var(--white); border: 1.5px solid var(--border); border-radius: 7px; padding: 5px 11px; }
+    .mc-reset:hover { background: var(--sage-faint); }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: var(--navy); color: #fff; font-size: 13px; font-weight: 600;
+      padding: 13px 20px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      opacity: 0; pointer-events: none; transition: all 0.25s; z-index: 80;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 900px) {
+      .sidebar { width: 70px; padding: 18px 10px; }
+      .sb-brand-text, .sb-group-label, .sb-item span:not(.badge), .sb-user-meta, .sb-logout span { display: none; }
+      .sb-item { justify-content: center; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <img src="Isotipo 1 blanco.png" alt="Balance+">
+      <div class="sb-brand-text">
+        <span class="sb-brand-name">Balance<span>+</span></span>
+        <span class="sb-brand-tag">Administración</span>
+      </div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-group-label">Principal</div>
+      <button class="sb-item active" data-panel="dashboard" onclick="go('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        <span>Panel general</span>
+      </button>
+
+      <div class="sb-group-label">Contenido</div>
+      <button class="sb-item" data-panel="blog" onclick="go('blog')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Blog</span>
+        <span class="badge" id="nav-blog-count">5</span>
+      </button>
+      <button class="sb-item" data-panel="paginas" onclick="go('paginas')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span>Páginas y prensa</span>
+      </button>
+
+      <div class="sb-group-label">Operación</div>
+      <button class="sb-item" data-panel="pacientes" onclick="go('pacientes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        <span>Pacientes</span>
+      </button>
+      <button class="sb-item" data-panel="medicos" onclick="go('medicos')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 6a6 6 0 0 0-6 6v2a6 6 0 0 0 12 0v-2a6 6 0 0 0-6-6z"/><circle cx="20" cy="17" r="2"/></svg>
+        <span>Médicos</span>
+      </button>
+      <button class="sb-item" data-panel="farmacias" onclick="go('farmacias')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/><path d="M12 12v4M10 14h4"/></svg>
+        <span>Farmacias</span>
+      </button>
+      <button class="sb-item" data-panel="tipos" onclick="go('tipos')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H3v10h6V11zM21 3h-6v18h6V3zM15 7H9v14h6V7z"/></svg>
+        <span>Tipos de consulta</span>
+      </button>
+      <button class="sb-item" data-panel="reqtipos" onclick="go('reqtipos')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+        <span>Tipos de requerimiento</span>
+      </button>
+      <button class="sb-item" data-panel="solicitudes" onclick="go('solicitudes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Solicitudes</span>
+        <span class="badge" id="nav-sol-count">0</span>
+      </button>
+
+      <div class="sb-group-label">Sistema</div>
+      <button class="sb-item" data-panel="usuarios" onclick="go('usuarios')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11l-3 3-1.5-1.5"/></svg>
+        <span>Usuarios y permisos</span>
+      </button>
+      <button class="sb-item" data-panel="config" onclick="go('config')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.17V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 3.6 14H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 11 3V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 16 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z"/></svg>
+        <span>Configuración</span>
+      </button>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="sb-user">
+        <div class="sb-avatar">BP</div>
+        <div class="sb-user-meta">
+          <div class="sb-user-name">Equipo Balance+</div>
+          <div class="sb-user-role">Staff · Administrador</div>
+        </div>
+      </div>
+      <a href="proveedores.html" class="sb-logout">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span>Cerrar sesión</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ─── -->
+  <div class="admin-main">
+    <div class="topbar">
+      <div class="topbar-actions">
+        <a href="index.html" class="top-link" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Ir al sitio
+        </a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ═══ DASHBOARD ═══ -->
+      <div class="panel" id="panel-dashboard">
+        <div class="panel-head">
+          <div class="panel-h1">Panel general</div>
+          <div class="panel-desc">Resumen de la plataforma Balance+. Datos de demostración.</div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+              <span class="stat-trend">+12%</span>
+            </div>
+            <div class="stat-num">1.284</div>
+            <div class="stat-lbl">Pacientes registrados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+              <span class="stat-trend">3 nuevas</span>
+            </div>
+            <div class="stat-num">37</div>
+            <div class="stat-lbl">Solicitudes de contacto</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+              <span class="stat-trend">Publicado</span>
+            </div>
+            <div class="stat-num" id="stat-posts">5</div>
+            <div class="stat-lbl">Publicaciones del blog</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 6a6 6 0 0 0-6 6v2a6 6 0 0 0 12 0v-2a6 6 0 0 0-6-6z"/></svg></div>
+              <span class="stat-trend">Activos</span>
+            </div>
+            <div class="stat-num">24</div>
+            <div class="stat-lbl">Médicos verificados</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Actividad reciente</div>
+          <div class="activity-item"><span class="activity-dot"></span> Nueva solicitud de contacto recibida <span class="activity-time">hace 12 min</span></div>
+          <div class="activity-item"><span class="activity-dot"></span> Publicación del blog actualizada <span class="activity-time">hace 2 h</span></div>
+          <div class="activity-item"><span class="activity-dot"></span> Nuevo médico verificado en el portal <span class="activity-time">ayer</span></div>
+          <div class="activity-item"><span class="activity-dot"></span> Farmacia añadida a la red <span class="activity-time">hace 2 días</span></div>
+        </div>
+      </div>
+
+      <!-- ═══ BLOG ═══ -->
+      <div class="panel hidden" id="panel-blog">
+        <div class="panel-head">
+          <div class="panel-h1">Administración del Blog</div>
+          <div class="panel-desc">Crea, edita y elimina publicaciones, con seguimiento de métricas. Se ordenan automáticamente por mes en el sitio público.</div>
+        </div>
+
+        <!-- Métricas del blog -->
+        <div class="stat-grid" style="margin-bottom:22px">
+          <div class="stat-card">
+            <div class="stat-card-top"><div class="stat-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+            <div class="stat-num" id="m-views">0</div>
+            <div class="stat-lbl">Vistas totales</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><div class="stat-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+            <div class="stat-num" id="m-pub">0</div>
+            <div class="stat-lbl">Publicados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><div class="stat-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></div></div>
+            <div class="stat-num" id="m-draft">0</div>
+            <div class="stat-lbl">Borradores</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><div class="stat-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 8.5 22 9.3 17 14 18.3 21 12 17.5 5.7 21 7 14 2 9.3 9 8.5 12 2"/></svg></div></div>
+            <div class="stat-num" id="m-top" style="font-size:15px;line-height:1.25">—</div>
+            <div class="stat-lbl">Post más visto</div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="blog-search" placeholder="Buscar publicación…" oninput="renderPosts()">
+          </div>
+          <button class="btn btn-primary" style="margin-left:auto" onclick="openPostModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo post
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Categoría</th>
+                <th>Autor</th>
+                <th>Mes</th>
+                <th>Vistas</th>
+                <th>Estado</th>
+                <th style="text-align:right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="posts-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══ MÓDULOS PLACEHOLDER ═══ -->
+      <div class="panel hidden" id="panel-paginas">
+        <div class="panel-head"><div class="panel-h1">Páginas y prensa</div><div class="panel-desc">Gestiona el contenido de las páginas del sitio y las menciones de prensa.</div></div>
+        <div class="module-empty">
+          <div class="mi"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+          <h3>Módulo de páginas</h3>
+          <p>Desde aquí el staff podrá editar textos de la portada, secciones legales y las tarjetas de prensa. Módulo de demostración.</p>
+        </div>
+      </div>
+
+      <div class="panel hidden" id="panel-pacientes">
+        <div class="panel-head"><div class="panel-h1">Pacientes</div><div class="panel-desc">Listado y seguimiento de pacientes del programa.</div></div>
+        <div class="module-empty">
+          <div class="mi"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <h3>Módulo de pacientes</h3>
+          <p>Gestión de fichas, evaluaciones y seguimiento clínico de los pacientes. Módulo de demostración.</p>
+        </div>
+      </div>
+
+      <div class="panel hidden" id="panel-medicos">
+        <div class="panel-head"><div class="panel-h1">Médicos</div><div class="panel-desc">Verificación y administración de los médicos del portal.</div></div>
+        <div class="module-empty">
+          <div class="mi"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 6a6 6 0 0 0-6 6v2a6 6 0 0 0 12 0v-2a6 6 0 0 0-6-6z"/><circle cx="20" cy="17" r="2"/></svg></div>
+          <h3>Módulo de médicos</h3>
+          <p>Altas, verificación de credenciales y permisos de los profesionales. Módulo de demostración.</p>
+        </div>
+      </div>
+
+      <div class="panel hidden" id="panel-farmacias">
+        <div class="panel-head"><div class="panel-h1">Farmacias</div><div class="panel-desc">Red de farmacias asociadas y despachos.</div></div>
+        <div class="module-empty">
+          <div class="mi"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/><path d="M12 12v4M10 14h4"/></svg></div>
+          <h3>Módulo de farmacias</h3>
+          <p>Administración de la red de farmacias establecidas y la logística de entrega. Módulo de demostración.</p>
+        </div>
+      </div>
+
+      <!-- ═══ TIPOS DE CONSULTA ═══ -->
+      <div class="panel hidden" id="panel-tipos">
+        <div class="panel-head">
+          <div class="panel-h1">Tipos de consulta</div>
+          <div class="panel-desc">Define los motivos de consulta que los pacientes pueden agendar en su portal. Los cambios aplican de inmediato al desplegable de “Agendar cita”.</div>
+        </div>
+
+        <div class="module-note" style="display:flex;gap:10px;align-items:flex-start;background:var(--sage-faint);border-radius:12px;padding:13px 15px;margin-bottom:18px;font-size:13px;color:var(--navy);line-height:1.55">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span><strong>Primera consulta:</strong> tipo disponible para pacientes sin consultas previas (ej. la evaluación inicial). Los tipos que <em>no</em> son de primera consulta quedan bloqueados hasta que el paciente complete su primera consulta. Los tipos <strong>inactivos</strong> no aparecen en el portal.</span>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="tipo-search" placeholder="Buscar tipo de consulta…" oninput="renderTipos()">
+          </div>
+          <button class="btn btn-primary" style="margin-left:auto" onclick="openTipoModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo tipo
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo de consulta</th>
+                <th>Primera consulta</th>
+                <th>Estado</th>
+                <th style="text-align:right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tipos-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══ TIPOS DE REQUERIMIENTO (Contacto y Ayuda) ═══ -->
+      <div class="panel hidden" id="panel-reqtipos">
+        <div class="panel-head">
+          <div class="panel-h1">Tipos de requerimiento</div>
+          <div class="panel-desc">Define los tipos de requerimiento que las personas pueden elegir en el formulario de Contacto y Ayuda.</div>
+        </div>
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="req-search" placeholder="Buscar tipo de requerimiento…" oninput="renderReqTipos()">
+          </div>
+          <button class="btn btn-primary" style="margin-left:auto" onclick="openReqTipoModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo tipo
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo de requerimiento</th>
+                <th>Estado</th>
+                <th style="text-align:right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="req-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel hidden" id="panel-solicitudes">
+        <div class="panel-head"><div class="panel-h1">Solicitudes</div><div class="panel-desc">Requerimientos recibidos desde el formulario de Contacto y Ayuda.</div></div>
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="sol-search" placeholder="Buscar por nombre, RUT, tipo…" oninput="renderSolicitudes()">
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo de consulta</th>
+                <th>Solicitante</th>
+                <th>RUT</th>
+                <th>Contacto</th>
+                <th>Motivo</th>
+                <th style="text-align:right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="sol-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel hidden" id="panel-usuarios">
+        <div class="panel-head"><div class="panel-h1">Usuarios y permisos</div><div class="panel-desc">Cuentas del staff y niveles de acceso.</div></div>
+        <div class="module-empty">
+          <div class="mi"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11l-3 3-1.5-1.5"/></svg></div>
+          <h3>Gestión de usuarios</h3>
+          <p>Administración de cuentas, roles y permisos del equipo Balance+. Módulo de demostración.</p>
+        </div>
+      </div>
+
+      <div class="panel hidden" id="panel-config">
+        <div class="panel-head"><div class="panel-h1">Configuración</div><div class="panel-desc">Ajustes generales de la plataforma.</div></div>
+        <div class="module-empty">
+          <div class="mi"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.17V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 3.6 14H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 11 3V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 16 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z"/></svg></div>
+          <h3>Configuración general</h3>
+          <p>Preferencias del sitio, integraciones y parámetros del programa. Módulo de demostración.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── MODAL POST ─── -->
+  <div class="modal-overlay" id="postModal">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Nuevo post</div>
+        <button class="modal-close" onclick="closePostModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="post-id">
+        <div class="field">
+          <label>Título</label>
+          <input type="text" id="post-title" placeholder="Título de la publicación">
+        </div>
+
+        <div class="field-2">
+          <div class="field">
+            <label>Categoría</label>
+            <select id="post-cat">
+              <option>Obesidad</option>
+              <option>GLP-1</option>
+              <option>Salud Metabólica</option>
+              <option>Nutrición</option>
+              <option>Hábitos Alimentarios</option>
+              <option>Composición Corporal</option>
+              <option>Actividad Física</option>
+              <option>Seguimiento Clínico</option>
+              <option>Seguridad del Paciente</option>
+              <option>Tratamiento de la Obesidad</option>
+              <option>Innovación en Salud</option>
+              <option>Calidad de Vida</option>
+              <option>Salud Emocional</option>
+              <option>Fertilidad Masculina</option>
+              <option>Salud Reproductiva</option>
+              <option>Salud Hormonal</option>
+              <option>Novedades</option>
+              <option>Ciencia</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Autor</label>
+            <input type="text" id="post-author" placeholder="Equipo Médico Balance+">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Palabras clave <span style="text-transform:none;font-weight:500;color:#aab0bb">(separadas por coma · se muestran al final del post)</span></label>
+          <input type="text" id="post-keywords" placeholder="Obesidad, GLP-1, Salud Metabólica">
+        </div>
+
+        <div class="field-2">
+          <div class="field">
+            <label>Mes de publicación</label>
+            <select id="post-month">
+              <option>Junio 2026</option>
+              <option>Mayo 2026</option>
+              <option>Abril 2026</option>
+              <option>Marzo 2026</option>
+              <option>Febrero 2026</option>
+              <option>Enero 2026</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Fecha de publicación</label>
+            <input type="date" id="post-date">
+          </div>
+        </div>
+
+        <div class="field-2">
+          <div class="field">
+            <label>Tiempo de lectura</label>
+            <input type="text" id="post-read" placeholder="5 min">
+          </div>
+          <div class="field">
+            <label>Estado</label>
+            <select id="post-status">
+              <option value="Publicado">Publicado</option>
+              <option value="Borrador">Borrador</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <div class="field">
+            <label>Imagen principal <span style="text-transform:none;font-weight:500;color:#aab0bb">(gráfica/portada · como se ve en la página)</span></label>
+            <select id="post-cover" onchange="onMediaSelect('cover')"></select>
+            <input type="file" id="post-cover-file" class="file-input" accept="image/*" onchange="onMediaFile('cover', this)">
+            <div class="media-preview cover-shape empty" id="post-cover-preview"><img class="mp-img" id="post-cover-img" alt=""></div>
+            <div class="media-controls">
+              <div class="mc-row"><span>Encaje</span>
+                <select id="post-cover-fit" onchange="onMediaAdjust('cover')">
+                  <option value="cover">Cubrir</option>
+                  <option value="contain">Contener</option>
+                </select>
+              </div>
+              <div class="mc-row"><span>Zoom</span><input type="range" id="post-cover-zoom" min="100" max="250" value="100" oninput="onMediaAdjust('cover')"></div>
+              <div class="mc-row"><span>Horiz.</span><input type="range" id="post-cover-posx" min="0" max="100" value="50" oninput="onMediaAdjust('cover')"></div>
+              <div class="mc-row"><span>Vert.</span><input type="range" id="post-cover-posy" min="0" max="100" value="50" oninput="onMediaAdjust('cover')"></div>
+              <button type="button" class="mc-reset" onclick="resetMedia('cover')">Restablecer ajuste</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Miniatura</label>
+            <select id="post-thumb" onchange="onMediaSelect('thumb')"></select>
+            <input type="file" id="post-thumb-file" class="file-input" accept="image/*" onchange="onMediaFile('thumb', this)">
+            <div class="media-preview square empty" id="post-thumb-preview"><img class="mp-img" id="post-thumb-img" alt=""></div>
+            <div class="media-controls">
+              <div class="mc-row"><span>Encaje</span>
+                <select id="post-thumb-fit" onchange="onMediaAdjust('thumb')">
+                  <option value="cover">Cubrir</option>
+                  <option value="contain">Contener</option>
+                </select>
+              </div>
+              <div class="mc-row"><span>Zoom</span><input type="range" id="post-thumb-zoom" min="100" max="250" value="100" oninput="onMediaAdjust('thumb')"></div>
+              <div class="mc-row"><span>Horiz.</span><input type="range" id="post-thumb-posx" min="0" max="100" value="50" oninput="onMediaAdjust('thumb')"></div>
+              <div class="mc-row"><span>Vert.</span><input type="range" id="post-thumb-posy" min="0" max="100" value="50" oninput="onMediaAdjust('thumb')"></div>
+              <button type="button" class="mc-reset" onclick="resetMedia('thumb')">Restablecer ajuste</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-2">
+          <div class="field">
+            <label>Destacado</label>
+            <select id="post-featured">
+              <option value="no">No</option>
+              <option value="si">Sí (post más reciente)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Vistas iniciales</label>
+            <input type="number" id="post-views" min="0" step="1" value="0">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Extracto</label>
+          <textarea id="post-excerpt" placeholder="Resumen breve que se muestra en la tarjeta…" style="min-height:70px"></textarea>
+        </div>
+        <div class="field">
+          <label>Contenido</label>
+          <div class="rte-toolbar">
+            <button type="button" onmousedown="event.preventDefault()" onclick="rteCmd('formatBlock','&lt;h2&gt;')" title="Subtítulo">H2</button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="rteCmd('formatBlock','&lt;h3&gt;')" title="Subtítulo menor">H3</button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="rteCmd('formatBlock','&lt;p&gt;')" title="Párrafo">¶</button>
+            <span class="rte-sep"></span>
+            <button type="button" onmousedown="event.preventDefault()" onclick="rteCmd('bold')" title="Negrita" style="font-weight:800">B</button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="rteCmd('italic')" title="Cursiva" style="font-style:italic">I</button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="rteCmd('underline')" title="Subrayado" style="text-decoration:underline">U</button>
+            <span class="rte-sep"></span>
+            <button type="button" onmousedown="event.preventDefault()" onclick="rteCmd('insertUnorderedList')" title="Lista">•&nbsp;Lista</button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="rteCmd('insertOrderedList')" title="Lista numerada">1.</button>
+            <span class="rte-sep"></span>
+            <button type="button" onmousedown="event.preventDefault()" onclick="rteLink()" title="Insertar enlace">Enlace</button>
+            <button type="button" onmousedown="event.preventDefault()" onclick="rteCmd('removeFormat')" title="Quitar formato">Limpiar</button>
+          </div>
+          <div id="post-body" class="rte" contenteditable="true" data-ph="Cuerpo del artículo… usa la barra para dar formato (negritas, subtítulos, listas)."></div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closePostModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="savePost()">Guardar publicación</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MODAL TIPO DE CONSULTA ─── -->
+  <div class="modal-overlay" id="tipoModal">
+    <div class="modal" style="max-width:480px">
+      <div class="modal-head">
+        <div class="modal-title" id="tipoModalTitle">Nuevo tipo de consulta</div>
+        <button class="modal-close" onclick="closeTipoModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="tipo-id">
+        <div class="field">
+          <label>Nombre del tipo de consulta</label>
+          <input type="text" id="tipo-nombre" placeholder="Ej: Seguimiento y Control">
+        </div>
+        <div class="field-2">
+          <div class="field">
+            <label>¿Disponible como primera consulta?</label>
+            <select id="tipo-primera">
+              <option value="no">No — requiere consulta previa</option>
+              <option value="si">Sí — para pacientes nuevos</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Estado</label>
+            <select id="tipo-activo">
+              <option value="si">Activo</option>
+              <option value="no">Inactivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeTipoModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveTipo()">Guardar tipo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MODAL TIPO DE REQUERIMIENTO ─── -->
+  <div class="modal-overlay" id="reqTipoModal">
+    <div class="modal" style="max-width:460px">
+      <div class="modal-head">
+        <div class="modal-title" id="reqTipoModalTitle">Nuevo tipo de requerimiento</div>
+        <button class="modal-close" onclick="closeReqTipoModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="req-id">
+        <div class="field">
+          <label>Nombre del tipo de requerimiento</label>
+          <input type="text" id="req-nombre" placeholder="Ej: Devolución de Dinero">
+        </div>
+        <div class="field">
+          <label>Estado</label>
+          <select id="req-activo">
+            <option value="si">Activo</option>
+            <option value="no">Inactivo</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeReqTipoModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveReqTipo()">Guardar tipo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script src="blog-data.js"></script>
+<script>
+  /* ─── Datos: misma fuente que el blog público (blog-data.js) ─── */
+  let posts = bpLoadPosts();
+
+  /* Blindaje: garantizar un único destacado (por si hay datos antiguos) */
+  (function ensureSingleFeatured() {
+    let visto = false;
+    posts.forEach(p => { if (p.featured) { if (visto) p.featured = false; else visto = true; } });
+  })();
+
+  function persist() {
+    bpSavePosts(posts);   // mismo almacén que usa blog.html → consistencia total
+    document.getElementById('stat-posts').textContent = posts.length;
+    document.getElementById('nav-blog-count').textContent = posts.length;
+    updateMetrics();
+  }
+
+  function fmtViews(n) { return bpFmtViews(n); }
+
+  function updateMetrics() {
+    const total = posts.reduce((s, p) => s + (p.views || 0), 0);
+    const pub = posts.filter(p => p.status === 'Publicado').length;
+    const draft = posts.filter(p => p.status === 'Borrador').length;
+    const top = posts.slice().sort((a, b) => (b.views || 0) - (a.views || 0))[0];
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('m-views', fmtViews(total));
+    set('m-pub', pub);
+    set('m-draft', draft);
+    set('m-top', top ? top.title : '—');
+  }
+
+  function populateImageSelects() {
+    const opts = BP_IMAGES.map(i => `<option value="${i.file}">${i.label}</option>`).join('');
+    document.getElementById('post-cover').innerHTML = opts;
+    document.getElementById('post-thumb').innerHTML = opts;
+  }
+
+  /* ─── Selector de imagen con carga, ajuste y vista previa ─── */
+  const media = { cover: bpMediaDefaults(), thumb: bpMediaDefaults() };
+
+  function applyPreview(kind) {
+    const box = document.getElementById('post-' + kind + '-preview');
+    const img = document.getElementById('post-' + kind + '-img');
+    if (media[kind].src) {
+      box.classList.remove('empty');
+      bpApplyImg(img, media[kind]);
+    } else {
+      box.classList.add('empty');
+      img.removeAttribute('src');
+    }
+  }
+
+  function syncControls(kind) {
+    document.getElementById('post-' + kind + '-fit').value  = media[kind].fit;
+    document.getElementById('post-' + kind + '-zoom').value = media[kind].zoom;
+    document.getElementById('post-' + kind + '-posx').value = media[kind].posX;
+    document.getElementById('post-' + kind + '-posy').value = media[kind].posY;
+  }
+
+  function onMediaAdjust(kind) {
+    media[kind].fit  = document.getElementById('post-' + kind + '-fit').value;
+    media[kind].zoom = Number(document.getElementById('post-' + kind + '-zoom').value);
+    media[kind].posX = Number(document.getElementById('post-' + kind + '-posx').value);
+    media[kind].posY = Number(document.getElementById('post-' + kind + '-posy').value);
+    applyPreview(kind);
+  }
+
+  function resetMedia(kind) {
+    media[kind].fit = 'cover'; media[kind].zoom = 100; media[kind].posX = 50; media[kind].posY = 50;
+    syncControls(kind);
+    applyPreview(kind);
+  }
+
+  function ensureUploadOption(kind) {
+    const sel = document.getElementById('post-' + kind);
+    let opt = sel.querySelector('option[value="__upload__"]');
+    if (!opt) { opt = document.createElement('option'); opt.value = '__upload__'; sel.appendChild(opt); }
+    opt.textContent = 'Imagen subida ✓';
+    sel.value = '__upload__';
+  }
+
+  function onMediaSelect(kind) {
+    const sel = document.getElementById('post-' + kind);
+    if (sel.value === '__upload__') return;
+    media[kind].src = sel.value;
+    applyPreview(kind);
+  }
+
+  function onMediaFile(kind, input) {
+    const f = input.files && input.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      media[kind].src = e.target.result; // dataURL (queda guardado en el post)
+      ensureUploadOption(kind);
+      applyPreview(kind);
+      showToast('Imagen cargada. Ajústala con los controles.');
+    };
+    reader.readAsDataURL(f);
+  }
+
+  function setMedia(kind, opts) {
+    media[kind] = bpMediaDefaults(opts);
+    const sel = document.getElementById('post-' + kind);
+    const up = sel.querySelector('option[value="__upload__"]');
+    if (up) up.remove();
+    document.getElementById('post-' + kind + '-file').value = '';
+    const known = BP_IMAGES.some(i => i.file === media[kind].src);
+    if (known) sel.value = media[kind].src;
+    else if (media[kind].src) ensureUploadOption(kind);
+    syncControls(kind);
+    applyPreview(kind);
+  }
+
+  /* ─── Navegación entre paneles ─── */
+  function go(panel) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+    document.getElementById('panel-' + panel).classList.remove('hidden');
+    document.querySelectorAll('.sb-item').forEach(b => b.classList.toggle('active', b.dataset.panel === panel));
+    if (panel === 'blog') renderPosts();
+    if (panel === 'tipos') renderTipos();
+    if (panel === 'solicitudes') renderSolicitudes();
+    if (panel === 'reqtipos') renderReqTipos();
+  }
+
+  /* ─── Tipos de requerimiento (Contacto y Ayuda · localStorage bp_request_types) ─── */
+  const REQ_TYPES_KEY = 'bp_request_types';
+  const REQ_TYPES_DEFAULT = [
+    'Consulta General', 'Sugerencia o Felicitaciones', 'Ejercicio Derechos ARCOP',
+    'Reclamo', 'Devolución de Dinero', 'Solicitud de Información', 'Otro Motivo'
+  ].map(n => ({ id: 'rq-' + n.toLowerCase().replace(/[^a-z0-9]+/g,'-'), nombre: n, activo: true }));
+  function loadReqTypes(){
+    try{ const u = JSON.parse(localStorage.getItem(REQ_TYPES_KEY) || 'null'); if(Array.isArray(u) && u.length) return u; }catch(e){}
+    return REQ_TYPES_DEFAULT.map(t => ({ ...t }));
+  }
+  let reqTypes = loadReqTypes();
+  function persistReqTypes(){ try{ localStorage.setItem(REQ_TYPES_KEY, JSON.stringify(reqTypes)); }catch(e){} }
+  function reqTipoId(){ return 'rq-' + Date.now().toString(36); }
+
+  function renderReqTipos(){
+    const q = (document.getElementById('req-search').value || '').toLowerCase();
+    const rows = reqTypes.filter(t => t.nombre.toLowerCase().includes(q)).map(t => `
+      <tr${t.activo ? '' : ' style="opacity:0.6"'}>
+        <td class="td-title">${escapeHtml(t.nombre)}</td>
+        <td>${t.activo ? '<span class="chip chip-pub">Activo</span>' : '<span class="chip chip-draft">Inactivo</span>'}</td>
+        <td>
+          <div class="row-actions" style="justify-content:flex-end">
+            <button class="icon-btn" title="${t.activo ? 'Desactivar' : 'Activar'}" onclick="toggleReqTipo('${t.id}')">
+              ${t.activo
+                ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64A9 9 0 1 1 5.64 6.64"/><line x1="12" y1="2" x2="12" y2="12"/></svg>'
+                : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'}
+            </button>
+            <button class="icon-btn" title="Editar" onclick="editReqTipo('${t.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+            </button>
+            <button class="icon-btn danger" title="Eliminar" onclick="deleteReqTipo('${t.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>`).join('');
+    document.getElementById('req-body').innerHTML = rows || `<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:30px">Sin tipos de requerimiento que coincidan.</td></tr>`;
+  }
+  function openReqTipoModal(){
+    document.getElementById('reqTipoModalTitle').textContent = 'Nuevo tipo de requerimiento';
+    document.getElementById('req-id').value = '';
+    document.getElementById('req-nombre').value = '';
+    document.getElementById('req-activo').value = 'si';
+    document.getElementById('reqTipoModal').classList.add('show');
+  }
+  function editReqTipo(id){
+    const t = reqTypes.find(x => x.id === id); if(!t) return;
+    document.getElementById('reqTipoModalTitle').textContent = 'Editar tipo de requerimiento';
+    document.getElementById('req-id').value = t.id;
+    document.getElementById('req-nombre').value = t.nombre;
+    document.getElementById('req-activo').value = t.activo ? 'si' : 'no';
+    document.getElementById('reqTipoModal').classList.add('show');
+  }
+  function closeReqTipoModal(){ document.getElementById('reqTipoModal').classList.remove('show'); }
+  function saveReqTipo(){
+    const nombre = document.getElementById('req-nombre').value.trim();
+    if(!nombre){ showToast('El nombre del tipo de requerimiento es obligatorio.'); return; }
+    const id = document.getElementById('req-id').value;
+    const data = { nombre, activo: document.getElementById('req-activo').value === 'si' };
+    if(id){ Object.assign(reqTypes.find(x => x.id === id), data); showToast('Tipo de requerimiento actualizado.'); }
+    else { data.id = reqTipoId(); reqTypes.push(data); showToast('Tipo de requerimiento creado.'); }
+    persistReqTypes(); renderReqTipos(); closeReqTipoModal();
+  }
+  function toggleReqTipo(id){
+    const t = reqTypes.find(x => x.id === id); if(!t) return;
+    t.activo = !t.activo; persistReqTypes(); renderReqTipos();
+    showToast(t.activo ? 'Tipo activado.' : 'Tipo desactivado.');
+  }
+  function deleteReqTipo(id){
+    const t = reqTypes.find(x => x.id === id); if(!t) return;
+    if(!confirm('¿Eliminar el tipo de requerimiento “' + t.nombre + '”?')) return;
+    reqTypes = reqTypes.filter(x => x.id !== id);
+    persistReqTypes(); renderReqTipos();
+    showToast('Tipo de requerimiento eliminado.');
+  }
+  document.getElementById('reqTipoModal').addEventListener('click', e => {
+    if (e.target.id === 'reqTipoModal') closeReqTipoModal();
+  });
+
+  /* ─── Solicitudes de contacto (localStorage bp_contact_requests) ─── */
+  function loadSolicitudes(){
+    try{ const u = JSON.parse(localStorage.getItem('bp_contact_requests') || 'null'); if(Array.isArray(u)) return u; }catch(e){}
+    return [];
+  }
+  function fmtSolFecha(iso){
+    try{ const d = new Date(iso); const p = n => String(n).padStart(2,'0'); return `${p(d.getDate())}/${p(d.getMonth()+1)}/${String(d.getFullYear()).slice(-2)} ${p(d.getHours())}:${p(d.getMinutes())}`; }catch(e){ return '—'; }
+  }
+  function updateSolBadge(){
+    const n = loadSolicitudes().length;
+    const b = document.getElementById('nav-sol-count'); if(b) b.textContent = n;
+  }
+  function renderSolicitudes(){
+    const q = (document.getElementById('sol-search').value || '').toLowerCase();
+    const list = loadSolicitudes();
+    const rows = list.filter(s =>
+      (s.nombre+' '+s.apellido+' '+s.rut+' '+s.tipo+' '+s.email).toLowerCase().includes(q)
+    ).map(s => `
+      <tr>
+        <td style="white-space:nowrap">${fmtSolFecha(s.fecha)}</td>
+        <td><span class="chip chip-cat">${escapeHtml(s.tipo||'—')}</span></td>
+        <td class="td-title">${escapeHtml(((s.nombre||'')+' '+(s.apellido||'')).trim() || '—')}</td>
+        <td style="white-space:nowrap">${escapeHtml(s.rut||'—')}</td>
+        <td style="font-size:12px;line-height:1.5">${escapeHtml(s.email||'')}<br>${escapeHtml(s.telefono||'')}</td>
+        <td style="max-width:260px"><div style="font-weight:600">${escapeHtml(s.motivo||'')}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">${escapeHtml(s.detalle||'')}</div></td>
+        <td>
+          <div class="row-actions" style="justify-content:flex-end">
+            <button class="icon-btn danger" title="Eliminar" onclick="deleteSolicitud('${s.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>`).join('');
+    document.getElementById('sol-body').innerHTML = rows || `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">No hay solicitudes registradas todavía.</td></tr>`;
+    updateSolBadge();
+  }
+  function deleteSolicitud(id){
+    let list = loadSolicitudes();
+    const s = list.find(x => x.id === id);
+    if(!s) return;
+    if(!confirm('¿Eliminar la solicitud de “' + ((s.nombre||'')+' '+(s.apellido||'')).trim() + '”?')) return;
+    list = list.filter(x => x.id !== id);
+    try{ localStorage.setItem('bp_contact_requests', JSON.stringify(list)); }catch(e){}
+    renderSolicitudes();
+  }
+
+  /* ─── Tipos de consulta (fuente compartida con el portal: bp_consult_types) ─── */
+  const TIPOS_KEY = 'bp_consult_types';
+  const TIPOS_DEFAULT = [
+    { id: 'ct-eval', nombre: 'Evaluación y Elegibilidad del Paciente', primera: true,  activo: true },
+    { id: 'ct-seg',  nombre: 'Seguimiento y Control',                  primera: false, activo: true },
+    { id: 'ct-gen',  nombre: 'Consulta General',                       primera: false, activo: true }
+  ];
+  function loadTipos() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(TIPOS_KEY) || 'null');
+      if (raw && raw.length) return raw;
+    } catch (e) {}
+    return TIPOS_DEFAULT.map(t => ({ ...t }));
+  }
+  let tipos = loadTipos();
+  function persistTipos() { try { localStorage.setItem(TIPOS_KEY, JSON.stringify(tipos)); } catch (e) {} }
+  function tipoId() { return 'ct-' + Date.now().toString(36); }
+
+  function renderTipos() {
+    const q = (document.getElementById('tipo-search').value || '').toLowerCase();
+    const rows = tipos.filter(t => t.nombre.toLowerCase().includes(q)).map(t => `
+      <tr${t.activo ? '' : ' style="opacity:0.6"'}>
+        <td class="td-title">${escapeHtml(t.nombre)}</td>
+        <td>${t.primera ? '<span class="chip chip-pub">Sí</span>' : '<span class="chip chip-cat">No</span>'}</td>
+        <td>${t.activo ? '<span class="chip chip-pub">Activo</span>' : '<span class="chip chip-draft">Inactivo</span>'}</td>
+        <td>
+          <div class="row-actions" style="justify-content:flex-end">
+            <button class="icon-btn" title="${t.activo ? 'Desactivar' : 'Activar'}" onclick="toggleTipo('${t.id}')">
+              ${t.activo
+                ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64A9 9 0 1 1 5.64 6.64"/><line x1="12" y1="2" x2="12" y2="12"/></svg>'
+                : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'}
+            </button>
+            <button class="icon-btn" title="Editar" onclick="editTipo('${t.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+            </button>
+            <button class="icon-btn danger" title="Eliminar" onclick="deleteTipo('${t.id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>`).join('');
+    document.getElementById('tipos-body').innerHTML = rows || `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:30px">Sin tipos de consulta que coincidan.</td></tr>`;
+  }
+
+  function openTipoModal() {
+    document.getElementById('tipoModalTitle').textContent = 'Nuevo tipo de consulta';
+    document.getElementById('tipo-id').value = '';
+    document.getElementById('tipo-nombre').value = '';
+    document.getElementById('tipo-primera').value = 'no';
+    document.getElementById('tipo-activo').value = 'si';
+    document.getElementById('tipoModal').classList.add('show');
+  }
+  function editTipo(id) {
+    const t = tipos.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('tipoModalTitle').textContent = 'Editar tipo de consulta';
+    document.getElementById('tipo-id').value = t.id;
+    document.getElementById('tipo-nombre').value = t.nombre;
+    document.getElementById('tipo-primera').value = t.primera ? 'si' : 'no';
+    document.getElementById('tipo-activo').value = t.activo ? 'si' : 'no';
+    document.getElementById('tipoModal').classList.add('show');
+  }
+  function closeTipoModal() { document.getElementById('tipoModal').classList.remove('show'); }
+
+  function saveTipo() {
+    const nombre = document.getElementById('tipo-nombre').value.trim();
+    if (!nombre) { showToast('El nombre del tipo de consulta es obligatorio.'); return; }
+    const id = document.getElementById('tipo-id').value;
+    const data = {
+      nombre,
+      primera: document.getElementById('tipo-primera').value === 'si',
+      activo: document.getElementById('tipo-activo').value === 'si'
+    };
+    if (id) {
+      Object.assign(tipos.find(x => x.id === id), data);
+      showToast('Tipo de consulta actualizado.');
+    } else {
+      data.id = tipoId();
+      tipos.push(data);
+      showToast('Tipo de consulta creado.');
+    }
+    persistTipos();
+    renderTipos();
+    closeTipoModal();
+  }
+  function toggleTipo(id) {
+    const t = tipos.find(x => x.id === id);
+    if (!t) return;
+    t.activo = !t.activo;
+    persistTipos();
+    renderTipos();
+    showToast(t.activo ? 'Tipo activado.' : 'Tipo desactivado.');
+  }
+  function deleteTipo(id) {
+    const t = tipos.find(x => x.id === id);
+    if (!t) return;
+    if (!confirm('¿Eliminar el tipo de consulta “' + t.nombre + '”?')) return;
+    tipos = tipos.filter(x => x.id !== id);
+    persistTipos();
+    renderTipos();
+    showToast('Tipo de consulta eliminado.');
+  }
+
+  document.getElementById('tipoModal').addEventListener('click', e => {
+    if (e.target.id === 'tipoModal') closeTipoModal();
+  });
+
+  /* ─── Tabla de posts ─── */
+  function renderPosts() {
+    const q = (document.getElementById('blog-search').value || '').toLowerCase();
+    const sorted = [...posts].sort((a, b) => {
+      if (a.featured !== b.featured) return a.featured ? -1 : 1;
+      return BP_MONTH_ORDER.indexOf(a.month) - BP_MONTH_ORDER.indexOf(b.month);
+    });
+    const topId = posts.reduce((m, p) => (p.views || 0) > m.v ? { id: p.id, v: (p.views || 0) } : m, { id: null, v: -1 }).id;
+    const rows = sorted.filter(p => p.title.toLowerCase().includes(q)).map(p => `
+      <tr>
+        <td class="td-title">${escapeHtml(p.title)} ${p.featured ? '<span class="chip chip-cat" style="margin-left:6px">★ Destacado</span>' : ''} ${(p.id === topId && (p.views || 0) > 0) ? '<span class="chip chip-top" style="margin-left:6px">👁 Más visto</span>' : ''}</td>
+        <td><span class="chip chip-cat">${escapeHtml(p.category || '')}</span></td>
+        <td>${escapeHtml(p.author || '')}</td>
+        <td>${escapeHtml(p.month)}</td>
+        <td style="font-weight:700;color:var(--navy)">${fmtViews(p.views)}</td>
+        <td><span class="chip ${p.status === 'Publicado' ? 'chip-pub' : 'chip-draft'}">${p.status}</span></td>
+        <td>
+          <div class="row-actions" style="justify-content:flex-end">
+            <button class="icon-btn" title="Editar" onclick="editPost(${p.id})">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+            </button>
+            <button class="icon-btn danger" title="Eliminar" onclick="deletePost(${p.id})">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>`).join('');
+    document.getElementById('posts-body').innerHTML = rows || `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">Sin publicaciones que coincidan.</td></tr>`;
+  }
+
+  function escapeHtml(s) { return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  /* ─── Modal crear/editar ─── */
+  function openPostModal() {
+    document.getElementById('modalTitle').textContent = 'Nuevo post';
+    document.getElementById('post-id').value = '';
+    document.getElementById('post-title').value = '';
+    document.getElementById('post-cat').value = 'Obesidad';
+    document.getElementById('post-keywords').value = '';
+    document.getElementById('post-author').value = 'Equipo Médico Balance+';
+    document.getElementById('post-month').value = 'Junio 2026';
+    document.getElementById('post-date').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('post-read').value = '4 min';
+    setMedia('cover', { src: BP_IMAGES[0].file });
+    setMedia('thumb', { src: BP_IMAGES[0].file });
+    document.getElementById('post-status').value = 'Publicado';
+    document.getElementById('post-featured').value = 'no';
+    document.getElementById('post-views').value = 0;
+    document.getElementById('post-excerpt').value = '';
+    document.getElementById('post-body').innerHTML = '';
+    document.getElementById('postModal').classList.add('show');
+  }
+
+  function editPost(id) {
+    const p = posts.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('modalTitle').textContent = 'Editar post';
+    document.getElementById('post-id').value = p.id;
+    document.getElementById('post-title').value = p.title;
+    document.getElementById('post-cat').value = p.category || 'Obesidad';
+    document.getElementById('post-keywords').value = (p.keywords || []).join(', ');
+    document.getElementById('post-author').value = p.author || '';
+    document.getElementById('post-month').value = p.month;
+    document.getElementById('post-date').value = p.date || '';
+    document.getElementById('post-read').value = p.readTime || '';
+    setMedia('cover', p.cover ? bpCoverOpts(p) : { src: BP_IMAGES[0].file });
+    setMedia('thumb', p.thumb ? bpThumbOpts(p) : { src: BP_IMAGES[0].file });
+    document.getElementById('post-status').value = p.status;
+    document.getElementById('post-featured').value = p.featured ? 'si' : 'no';
+    document.getElementById('post-views').value = p.views || 0;
+    document.getElementById('post-excerpt').value = p.excerpt || '';
+    document.getElementById('post-body').innerHTML = p.body || '';
+    document.getElementById('postModal').classList.add('show');
+  }
+
+  function closePostModal() { document.getElementById('postModal').classList.remove('show'); }
+
+  /* ─── Editor enriquecido ─── */
+  function rteCmd(cmd, val) {
+    document.getElementById('post-body').focus();
+    document.execCommand(cmd, false, val || null);
+  }
+  function rteLink() {
+    const url = prompt('Dirección del enlace (https://…):');
+    if (url) rteCmd('createLink', url);
+  }
+  function rteValue() {
+    const el = document.getElementById('post-body');
+    const html = el.innerHTML.trim();
+    return (html === '<br>' || html === '<p><br></p>') ? '' : html;
+  }
+
+  function savePost() {
+    const title = document.getElementById('post-title').value.trim();
+    if (!title) { showToast('El título es obligatorio.'); return; }
+    const id = document.getElementById('post-id').value;
+    const featured = document.getElementById('post-featured').value === 'si';
+    if (featured) posts.forEach(p => p.featured = false); // sólo un destacado
+    const keywords = document.getElementById('post-keywords').value.split(',').map(s => s.trim()).filter(Boolean);
+    const data = {
+      title,
+      category: document.getElementById('post-cat').value,
+      keywords,
+      author: document.getElementById('post-author').value.trim() || 'Equipo Balance+',
+      month: document.getElementById('post-month').value,
+      date: document.getElementById('post-date').value,
+      readTime: document.getElementById('post-read').value.trim() || '—',
+      cover: media.cover.src, coverFit: media.cover.fit, coverPosX: media.cover.posX, coverPosY: media.cover.posY, coverZoom: media.cover.zoom,
+      thumb: media.thumb.src, thumbFit: media.thumb.fit, thumbPosX: media.thumb.posX, thumbPosY: media.thumb.posY, thumbZoom: media.thumb.zoom,
+      status: document.getElementById('post-status').value,
+      featured,
+      views: Math.max(0, parseInt(document.getElementById('post-views').value, 10) || 0),
+      excerpt: document.getElementById('post-excerpt').value.trim(),
+      body: rteValue()
+    };
+    if (id) {
+      const p = posts.find(x => x.id === Number(id));
+      Object.assign(p, data);
+      showToast('Publicación actualizada.');
+    } else {
+      data.id = Date.now();
+      posts.push(data);
+      showToast('Publicación creada.');
+    }
+    persist();
+    renderPosts();
+    closePostModal();
+  }
+
+  function deletePost(id) {
+    const p = posts.find(x => x.id === id);
+    if (!p) return;
+    if (!confirm('¿Eliminar la publicación “' + p.title + '”?')) return;
+    posts = posts.filter(x => x.id !== id);
+    persist();
+    renderPosts();
+    showToast('Publicación eliminada.');
+  }
+
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(window._t);
+    window._t = setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  /* Cerrar modal al hacer clic fuera */
+  document.getElementById('postModal').addEventListener('click', e => {
+    if (e.target.id === 'postModal') closePostModal();
+  });
+
+  /* Init */
+  populateImageSelects();
+  persist();
+  renderPosts();
+  updateSolBadge();
+</script>
+
+</body>
+</html>

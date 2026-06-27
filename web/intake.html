@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance+ | Evaluación del Paciente</title>
+<link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1B2D5E;--navy-dark:#142248;--navy-mid:#2a4080;
+  --sage:#8AB090;--sage-dark:#6A9070;--sage-light:#c8deca;--sage-faint:#f0f6f1;
+  --text:#1a1f2e;--muted:#5a6475;--border:#dde3e8;--bg:#f7f9fb;--white:#fff;
+  --red:#dc2626;--red-light:#fef2f2;--red-border:#fecaca;
+  --amber:#d97706;--amber-light:#fffbeb;
+}
+html,body{font-family:'Inter',system-ui,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+body{display:flex;flex-direction:column;min-height:100vh}
+
+/* NAV */
+nav{height:68px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.logo-wrap{display:flex;align-items:center;gap:9px;text-decoration:none}
+.logo-text{display:flex;flex-direction:column;line-height:1}
+.logo-wordmark{font-size:18px;font-weight:800;color:var(--navy);letter-spacing:-.5px}
+.logo-wordmark span{color:var(--sage-dark)}
+.logo-tagline{font-size:8px;font-weight:500;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.nav-cta{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;font-size:14px;font-weight:600;padding:10px 22px;border-radius:8px;text-decoration:none;transition:background 0.2s}
+.nav-cta:hover{background:#111d3b}
+.secure-badge{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
+
+/* PROGRESS */
+.progress-track{height:3px;background:var(--border)}
+.progress-fill{height:3px;background:var(--sage-dark);transition:width .5s ease;border-radius:0 2px 2px 0}
+
+/* WIZARD */
+.wizard{flex:1;display:flex;flex-direction:column;align-items:center;padding:36px 20px 64px}
+.step{display:none;width:100%;max-width:540px;animation:stepIn .28s ease}
+.step.active{display:block}
+@keyframes stepIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* STEP HEADER */
+.step-pill{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.step-num-pill{background:var(--navy);color:var(--white);font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;letter-spacing:.5px}
+.step-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sage-dark)}
+.step h2{font-size:clamp(20px,4vw,28px);font-weight:800;color:var(--navy);line-height:1.2;margin-bottom:22px;letter-spacing:-.4px}
+.step-sub{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:24px}
+
+/* SECCIÓN INTERNA */
+.inner-section{margin-bottom:28px}
+.inner-section:last-of-type{margin-bottom:0}
+.section-header{font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1.5px;padding:14px 0 12px;border-top:1px solid var(--border)}
+.section-header.first{border-top:none;padding-top:0}
+.section-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px;line-height:1.4}
+
+/* OPTION CARDS */
+.opt-cards{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.opt-card{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border:2px solid var(--border);border-radius:13px;cursor:pointer;transition:border-color .15s,background .15s;font-size:15px;font-weight:500;color:var(--text);text-align:left;width:100%;font-family:inherit}
+.opt-card:hover{border-color:var(--sage-light);background:#fafffe}
+.opt-card.selected{border-color:var(--navy);background:#f0f3fa}
+.opt-card-icon{width:38px;height:38px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;color:var(--muted)}
+.opt-card.selected .opt-card-icon{background:var(--navy);color:var(--white)}
+.opt-card-body{flex:1}
+.opt-card-title{font-size:15px;font-weight:600;color:var(--text)}
+.opt-card-desc{font-size:13px;color:var(--muted);font-weight:400;margin-top:2px;line-height:1.4}
+.radio-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.opt-card.selected .radio-dot{background:var(--navy);border-color:var(--navy)}
+
+/* SEX CARDS */
+.sex-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+
+/* EXCLUSION LIST */
+.excl-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.excl-item{display:flex;align-items:center;gap:12px;padding:9px 15px;background:var(--white);border:1.5px solid var(--border);border-radius:11px;cursor:pointer;transition:all .15s}
+.excl-item:hover{border-color:#fca5a5;background:var(--red-light)}
+.excl-item.sel{border-color:var(--red);background:var(--red-light)}
+.excl-item.none-item{border-style:dashed;background:var(--sage-faint)}
+.excl-item.none-item:hover{border-color:var(--sage);background:var(--sage-faint)}
+.excl-item.none-item.sel{border-color:var(--sage-dark);border-style:solid}
+.excl-cb{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.excl-item.sel .excl-cb{background:var(--red);border-color:var(--red)}
+.excl-item.none-item.sel .excl-cb{background:var(--sage-dark);border-color:var(--sage-dark)}
+.excl-txt{font-size:14px;font-weight:500;line-height:1.25}
+.excl-txt small{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:1px;line-height:1.25}
+
+/* CONDITIONS GRID */
+.cond-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:24px}
+@media(max-width:460px){.cond-grid{grid-template-columns:1fr}}
+.cond-chip{padding:10px 13px;background:var(--white);border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text);transition:all .15s;line-height:1.3}
+.cond-chip:hover{border-color:var(--sage-light);background:var(--sage-faint)}
+.cond-chip.sel{background:#eef1fa;border-color:var(--navy);color:var(--navy)}
+.cond-chip.none-chip{grid-column:1/-1;text-align:center;background:var(--sage-faint);border-style:dashed;font-weight:600;color:var(--sage-dark)}
+.cond-chip.none-chip.sel{background:var(--sage-dark);border-color:var(--sage-dark);color:var(--white);border-style:solid}
+.cond-chip.none-chip.disabled{opacity:0.4;cursor:not-allowed}
+.cond-grid.collapsed .cond-chip.cond-extra{display:none}
+.cond-more{grid-column:1/-1;text-align:center;padding:11px;background:var(--bg);border:1.5px dashed var(--border);border-radius:9px;cursor:pointer;font-size:13px;font-weight:700;color:var(--navy);font-family:inherit;transition:all .15s}
+.cond-more:hover{border-color:var(--sage);background:var(--sage-faint)}
+
+/* MEDICAMENTOS (PASO 3) — autocompletar + chips removibles */
+.med-form-grid{display:grid;grid-template-columns:1fr 0.7fr 1fr auto;gap:10px;align-items:end;margin-bottom:4px}
+@media(max-width:560px){
+  .med-form-grid{grid-template-columns:1fr 1fr}
+  .med-add-btn{grid-column:1/-1}
+}
+.med-form-grid .field{margin-bottom:0}
+/* Nombre del medicamento: recuadro horizontal full-width sobre su propia fila */
+.med-field-name{position:relative;margin-bottom:10px}
+.med-add-btn{padding:12px 16px;background:var(--navy);color:var(--white);border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s;font-family:inherit;min-height:48px}
+.med-add-btn:hover{background:var(--navy-mid)}
+.med-suggest-list{position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--white);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(27,45,94,.14);max-height:220px;overflow-y:auto;z-index:20;display:none}
+.med-suggest-list.vis{display:block}
+.med-suggest-item{padding:10px 14px;font-size:14px;color:var(--text);cursor:pointer;transition:background .1s}
+.med-suggest-item:hover{background:var(--sage-faint)}
+.med-chip-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.med-chip{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 14px;background:var(--sage-faint);border:1.5px solid var(--sage-light);border-radius:30px;font-size:13px;font-weight:600;color:var(--navy)}
+.med-chip-freq{font-weight:400;color:var(--muted)}
+.med-chip-x{width:20px;height:20px;border-radius:50%;border:none;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:14px;line-height:1;padding:0;font-family:inherit}
+.med-chip-x:hover{background:var(--red-light);color:var(--red)}
+
+/* NUMBER INPUTS (replace sliders) */
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.num-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.num-row input{flex:1;padding:12px 14px;background:var(--white);border:1.5px solid var(--border);border-radius:10px;font-size:22px;font-weight:700;color:var(--navy);font-family:inherit;transition:border-color .15s;outline:none;min-height:52px}
+.num-row input:focus{border-color:var(--navy)}
+.num-unit{font-size:14px;font-weight:600;color:var(--muted);white-space:nowrap;min-width:26px}
+.num-block{margin-bottom:20px}
+.num-label{font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;display:block}
+.num-hint{font-size:11px;color:var(--muted);margin-top:3px}
+/* GOAL BADGE */
+.goal-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px}
+.goal-badge.simple{background:#dcfce7;color:#166534}
+.goal-badge.moderado{background:#fef3c7;color:#92400e}
+.goal-badge.extremo{background:#fee2e2;color:#991b1b}
+/* FEATURES LIST */
+.feat-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.feat-item{display:flex;align-items:center;gap:11px;font-size:14px;color:var(--text)}
+.feat-dot{width:7px;height:7px;border-radius:50%;background:var(--sage-dark);flex-shrink:0}
+
+/* IMC DISPLAY (mismo formato que num-row) */
+.num-display{flex:1;padding:12px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;font-size:22px;font-weight:700;color:var(--muted);transition:border-color .15s,background .15s,color .15s;min-height:52px;display:flex;align-items:center}
+.bmi-class-line{display:flex;align-items:center;gap:10px;margin:4px 0 24px}
+.bmi-class-arrow{flex-shrink:0;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:13px solid var(--muted)}
+.bmi-class-badge{flex:1;min-width:0;text-align:center;padding:10px 12px;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.2px}
+
+/* SEXO BIOLÓGICO — variante compacta en línea */
+.opt-card.compact{padding:12px 10px;border-width:1.5px;border-radius:10px;justify-content:center;gap:0;min-height:52px}
+.opt-card.compact .opt-card-icon,.opt-card.compact .radio-dot{display:none}
+.opt-card.compact .opt-card-body{flex:none}
+.opt-card.compact .opt-card-title{font-size:14px;font-weight:600;white-space:nowrap}
+#birthDate{min-height:52px}
+
+/* YES/NO */
+.yn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.yn-btn{padding:12px;background:var(--white);border:2px solid var(--border);border-radius:11px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;color:var(--text);font-family:inherit}
+.yn-btn:hover{border-color:var(--navy)}
+.yn-btn.sel{background:var(--navy);border-color:var(--navy);color:var(--white)}
+
+/* TEXT / SELECT EXPAND */
+.text-expand{display:none;margin-top:10px}
+.text-expand.vis{display:block;animation:stepIn .2s ease}
+
+/* FIELDS */
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;padding:12px 14px;background:var(--white);border:1.5px solid var(--border);border-radius:10px;font-size:15px;color:var(--text);font-family:inherit;transition:border-color .15s;outline:none}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--navy)}
+.field textarea{resize:vertical;min-height:80px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:400px){.field-row{grid-template-columns:1fr}}
+.field-hint{font-size:12px;color:var(--muted);margin-top:4px}
+.field-err{font-size:12px;color:var(--red);margin-top:4px;display:none}
+.field-err.show{display:block}
+/* Check verde de validación correcta junto al label */
+.ok-check{display:none;color:var(--sage-dark);font-weight:800;font-size:13px;margin-left:6px}
+.ok-check.show{display:inline}
+
+/* PASSWORD TOGGLE */
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:44px}
+.pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:0;display:flex;align-items:center}
+
+/* VITALS */
+.vitals-card{position:relative;padding:11px 16px;background:var(--white);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text);transition:all .15s;display:flex;justify-content:center;align-items:center;font-family:inherit;text-align:center;width:100%}
+.vitals-dot{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.vitals-card:hover{border-color:var(--sage-light);background:var(--sage-faint)}
+.vitals-card.sel{border-color:var(--navy);background:#f0f3fa;font-weight:600;color:var(--navy)}
+.vitals-card-desc{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);font-weight:400}
+.vitals-card.sel .vitals-card-desc{color:var(--navy);opacity:.7}
+.vitals-list{display:flex;flex-direction:column;gap:7px;margin-bottom:8px}
+
+/* PROJECTION */
+.proj-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:22px;box-shadow:0 2px 14px rgba(27,45,94,.06)}
+.proj-metrics{display:flex;gap:0;margin-bottom:0}
+.proj-metric{flex:1;text-align:center;padding:0 10px}
+.proj-metric+.proj-metric{border-left:1px solid var(--border)}
+.proj-metric-val{font-size:clamp(20px,4vw,28px);font-weight:800;color:var(--navy);letter-spacing:-1px;line-height:1}
+.proj-metric-val em{color:var(--sage-dark);font-style:normal}
+.proj-metric-label{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.3}
+.pace-note{display:flex;gap:9px;align-items:flex-start;background:var(--sage-faint);border:1px solid #bbf7d0;border-radius:11px;padding:11px 14px;margin:14px 0 4px;font-size:13px;color:#166534;line-height:1.45}
+.pace-note svg{flex-shrink:0;margin-top:1px}
+.proj-bar-wrap{margin-top:4px}
+.proj-bar-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px}
+.proj-bar{height:7px;background:var(--border);border-radius:4px;overflow:hidden}
+.proj-bar-fill{height:100%;background:linear-gradient(90deg,var(--sage-light),var(--sage-dark));border-radius:4px;transition:width 1s .2s ease;width:0}
+
+/* PACE CARDS */
+.pace-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.pace-card{display:flex;align-items:center;gap:13px;padding:13px 16px;background:var(--white);border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:all .15s}
+.pace-card:hover{border-color:var(--sage-light)}
+.pace-card.sel{border-color:var(--navy);background:#f0f3fa}
+.pace-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pace-body{flex:1}
+.pace-title{font-size:15px;font-weight:600;color:var(--text)}
+.pace-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.pace-card.sel .radio-dot{background:var(--navy);border-color:var(--navy)}
+.pace-msg{background:var(--sage-faint);border:1px solid var(--sage-light);border-radius:12px;padding:16px 20px;margin-bottom:20px;font-size:14px;line-height:1.7;color:var(--text);animation:stepIn .25s ease}
+
+/* PREV MEDS */
+.sub-form{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-top:12px;margin-bottom:20px;display:none}
+.sub-form.vis{display:block;animation:stepIn .2s ease}
+.sub-form-title{font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px}
+.dose-list{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.dose-card{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text);transition:all .15s;font-family:inherit;text-align:left;width:100%}
+.dose-card:hover{border-color:var(--sage-light)}
+.dose-card.sel{border-color:var(--navy);background:#f0f3fa;font-weight:600;color:var(--navy)}
+
+/* PHOTO UPLOAD */
+.upload-area{border:2px dashed var(--border);border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:var(--bg);transition:all .15s;margin-bottom:8px}
+.upload-area:hover{border-color:var(--sage);background:var(--sage-faint)}
+.upload-label{font-size:14px;color:var(--muted);margin-top:6px}
+.upload-sub{font-size:12px;color:var(--muted);margin-top:3px}
+#glp1-photo-input{display:none}
+.upload-filename{font-size:13px;color:var(--sage-dark);font-weight:600;margin-top:5px;display:none}
+
+/* RESULT */
+.result-hero{background:linear-gradient(140deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:16px;padding:28px;color:var(--white);margin-bottom:18px;text-align:center}
+.result-prob-label{font-size:11px;opacity:.7;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.result-prob{font-size:60px;font-weight:800;letter-spacing:-2px;line-height:1}
+.result-tagline{font-size:15px;font-weight:600;opacity:.9;margin-top:14px;line-height:1.4}
+.result-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.result-meta-item{background:var(--white);border:1px solid var(--border);border-radius:11px;padding:14px;text-align:center}
+.result-meta-val{font-size:20px;font-weight:800;color:var(--navy)}
+.result-meta-label{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.3}
+
+/* NOTICES */
+.notice{display:flex;gap:11px;padding:13px 15px;border-radius:10px;margin-bottom:18px;font-size:13px;line-height:1.5}
+.notice.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.notice.warn{background:var(--amber-light);border:1px solid #fde68a;color:#92400e}
+.notice.rm-note{background:var(--amber-light);border:1px solid #fde68a;color:#92400e;margin-top:8px;margin-bottom:0;border-radius:8px;font-size:12px}
+.notice svg{flex-shrink:0;margin-top:1px}
+
+/* CONSENT */
+.consent-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:22px;cursor:pointer}
+.consent-cb{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.consent-cb.chk{background:var(--navy);border-color:var(--navy)}
+.consent-txt{font-size:13px;color:var(--muted);line-height:1.5}
+.consent-txt a{color:var(--navy)}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:15px;background:var(--navy);color:var(--white);font-size:16px;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:background .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;text-decoration:none}
+.btn-primary:hover{background:var(--navy-dark);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-sage{background:var(--sage-dark)}
+.btn-sage:hover{background:#5a7d60}
+.btn-back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;font-weight:500;background:none;border:none;cursor:pointer;padding:0;margin-bottom:22px;font-family:inherit;transition:color .15s}
+.btn-back:hover{color:var(--navy)}
+.btn-ghost{background:var(--bg);color:var(--muted);border:1.5px solid var(--border)}
+.btn-ghost:hover{background:var(--white);transform:none}
+
+/* SOCIAL LOGIN */
+.social-btns{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.social-btn{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;padding:13px;border:1.5px solid var(--border);border-radius:11px;background:var(--white);cursor:pointer;font-size:15px;font-weight:600;color:var(--text);font-family:inherit;transition:all .15s}
+.social-btn:hover{border-color:var(--navy);background:var(--bg)}
+.or-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted);font-size:13px}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* SUCCESS */
+.success-wrap{text-align:center;padding:16px 0}
+.success-icon{width:76px;height:76px;border-radius:50%;background:var(--sage-faint);border:3px solid var(--sage-light);margin:0 auto 18px;display:flex;align-items:center;justify-content:center}
+.success-h{font-size:26px;font-weight:800;color:var(--navy);margin-bottom:12px;letter-spacing:-.5px}
+.success-p{font-size:15px;color:var(--muted);line-height:1.7;max-width:440px;margin:0 auto 26px}
+
+/* DISQUALIFICATION */
+.disq-wrap{text-align:center;padding:16px 0}
+.disq-icon{width:70px;height:70px;border-radius:50%;margin:0 auto 18px;display:flex;align-items:center;justify-content:center}
+.disq-icon.red{background:var(--red-light)}
+.disq-icon.amber{background:var(--amber-light)}
+.disq-h{font-size:24px;font-weight:800;color:var(--navy);margin-bottom:12px;letter-spacing:-.5px}
+.disq-p{font-size:15px;color:var(--muted);line-height:1.7;max-width:440px;margin:0 auto 24px}
+
+@media(max-width:600px){
+  .wizard{padding:22px 14px 48px}
+  nav{padding:0 16px}
+  .result-meta{grid-template-columns:1fr 1fr}
+  .proj-metrics{flex-wrap:wrap}
+  .field-row{grid-template-columns:1fr}
+}
+</style>
+<!-- Supabase: conexión autenticada (Fase 2) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="bp-supabase.js?v=9"></script>
+<script src="bp-cookies.js"></script>
+</head>
+<body>
+
+<nav>
+  <a class="logo-wrap" href="index.html">
+    <img src="Logo Simple.png" alt="Balance+" style="height:52px;display:block">
+  </a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="portal.html" style="font-size:14px;font-weight:600;color:var(--navy);text-decoration:none;padding:10px 16px;border-radius:8px;border:1.5px solid var(--border);transition:background 0.15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">
+      Iniciar sesión
+    </a>
+  </div>
+</nav>
+<div class="progress-track"><div class="progress-fill" id="prog" style="width:5%"></div></div>
+
+<div class="wizard">
+
+<!-- ══ PASO 1: MEDIDAS Y PERFIL ══════════════════════════ -->
+<div class="step active" id="s1">
+  <div class="step-pill"><span class="step-num-pill">1 / 6</span><span class="step-label">Perfil</span></div>
+  <h2>Cuéntanos sobre ti</h2>
+
+  <div style="display:flex;gap:14px;align-items:flex-start">
+    <div class="num-block" style="flex:1;margin-bottom:20px">
+      <span class="num-label">Peso actual</span>
+      <div class="num-row">
+        <input type="number" id="rW" min="40" max="200" value="100" oninput="calcBmi()">
+        <span class="num-unit">kg</span>
+      </div>
+    </div>
+    <div class="num-block" style="flex:1;margin-bottom:20px">
+      <span class="num-label">Peso objetivo</span>
+      <div class="num-row">
+        <input type="number" id="rT" min="45" max="200" value="82" oninput="calcBmi()">
+        <span class="num-unit">kg</span>
+      </div>
+      <div class="field-err" id="errTarget">Peso objetivo debe ser menor que el actual.</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:14px;align-items:flex-start">
+    <div class="num-block" style="flex:1;margin-bottom:20px">
+      <span class="num-label">Estatura</span>
+      <div class="num-row">
+        <input type="number" id="rH" min="80" max="230" value="170" oninput="calcBmi()">
+        <span class="num-unit">cm</span>
+      </div>
+    </div>
+    <div class="num-block" style="flex:1;margin-bottom:20px">
+      <span class="num-label">IMC Actual</span>
+      <div class="num-row">
+        <div class="num-display" id="bmiPill"><strong id="bmiVal">—</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bmi-class-line" id="bmiClassLine" style="display:none">
+    <span class="bmi-class-badge" id="bmiClassNow">Sobrepeso</span>
+    <div class="bmi-class-arrow"></div>
+    <span class="bmi-class-badge" id="bmiClassFuture">Peso normal</span>
+  </div>
+
+  <div style="display:flex;gap:14px;align-items:flex-start">
+    <div style="flex:1">
+      <div class="section-header first">Sexo biológico</div>
+      <div class="sex-grid">
+        <button class="opt-card compact" id="cM" onclick="pickSex('M',this)">
+          <div class="opt-card-body"><div class="opt-card-title">Masculino</div></div>
+        </button>
+        <button class="opt-card compact" id="cF" onclick="pickSex('F',this)">
+          <div class="opt-card-body"><div class="opt-card-title">Femenino</div></div>
+        </button>
+      </div>
+    </div>
+    <div style="flex:1">
+      <div class="section-header first">Fecha de nacimiento</div>
+      <div class="field" style="margin-bottom:0">
+        <input type="date" id="birthDate" onchange="onBirth()">
+        <div class="field-err" id="errAge">Debes tener al menos 18 años para participar.</div>
+        <div class="field-err" id="errAgeMax">Ingresa una fecha de nacimiento válida.</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-primary" id="s1Btn" onclick="goFromS1()" disabled style="margin-top:22px">
+    Continuar
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<!-- ══ PASO 2: CONDICIONES EXCLUYENTES ══════════════════ -->
+<div class="step" id="s3">
+  <button class="btn-back" onclick="goTo('s1')">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver
+  </button>
+  <div class="step-pill"><span class="step-num-pill">2 / 6</span><span class="step-label">Historial médico</span></div>
+  <h2>¿Tienes alguna de estas condiciones?</h2>
+  <p class="step-sub"><strong>Tu seguridad es lo primero.</strong> Responde con honestidad — esta información es confidencial y protegida.</p>
+  <div class="excl-list" id="exclList">
+    <div class="excl-item" data-v="renal" onclick="toggleExcl(this)"><div class="excl-cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="excl-txt">Enfermedad Renal Terminal</div></div>
+    <div class="excl-item" data-v="hepatica" onclick="toggleExcl(this)"><div class="excl-cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="excl-txt">Enfermedad Hepática Terminal</div></div>
+    <div class="excl-item" data-v="suicida" onclick="toggleExcl(this)"><div class="excl-cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="excl-txt">Ideación/Intento Suicida</div></div>
+    <div class="excl-item" data-v="cancer" onclick="toggleExcl(this)"><div class="excl-cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="excl-txt">Cáncer</div></div>
+    <div class="excl-item" data-v="gi" onclick="toggleExcl(this)"><div class="excl-cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="excl-txt">Enfermedad Gastrointestinal Grave</div></div>
+    <div class="excl-item" data-v="dependencia" onclick="toggleExcl(this)"><div class="excl-cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="excl-txt">Adicción Alcohol/Opioides u otras sustancias</div></div>
+    <div class="excl-item none-item" data-v="ninguna" onclick="toggleExclNone(this)"><div class="excl-cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="excl-txt" style="font-weight:600;color:var(--sage-dark)">Ninguna de las anteriores</div></div>
+  </div>
+  <button class="btn-primary" id="exclBtn" onclick="goExcl()" disabled>
+    Continuar
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<!-- ══ PASO 4: CONDICIONES MÉDICAS + HISTORIAL ══════════ -->
+<div class="step" id="s4">
+  <button class="btn-back" onclick="goTo('s3')">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver
+  </button>
+  <div class="step-pill"><span class="step-num-pill">3 / 6</span><span class="step-label">Salud y antecedentes médicos</span></div>
+  <h2>Condiciones médicas actuales</h2>
+
+  <div class="inner-section">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Selecciona todas las que apliquen.</p>
+    <div class="cond-grid" id="condGrid">
+      <!-- Comunes / cortas (visibles) -->
+      <div class="cond-chip" data-v="hipertension" onclick="tCond(this)">Hipertensión (presión alta)</div>
+      <div class="cond-chip" data-v="hipotiroidismo" onclick="tCond(this)">Hipotiroidismo no tratado</div>
+      <div class="cond-chip" data-v="dm2" onclick="tCond(this)">Diabetes tipo 2 (sin insulina)</div>
+      <div class="cond-chip" data-v="dm2ins" onclick="tCond(this)">Diabetes tipo 2 (con insulina)</div>
+      <div class="cond-chip" data-v="dm1" onclick="tCond(this)">Diabetes tipo 1</div>
+      <div class="cond-chip" data-v="apnea" onclick="tCond(this)">Apnea del sueño</div>
+      <div class="cond-chip" data-v="colesterol" onclick="tCond(this)">Colesterol o triglicéridos altos</div>
+      <div class="cond-chip" data-v="depresion" onclick="tCond(this)">Depresión</div>
+      <div class="cond-chip" data-v="reflujo" onclick="tCond(this)">Reflujo gastroesofágico</div>
+      <div class="cond-chip" data-v="gota" onclick="tCond(this)">Gota</div>
+      <div class="cond-chip" data-v="pancreatitis" onclick="tCond(this)">Pancreatitis actual o previa</div>
+      <div class="cond-chip" data-v="anticoagulante" onclick="tCond(this)">Uso de anticoagulante</div>
+      <div class="cond-chip" data-v="alergia" onclick="tCond(this)">Alergia a algún medicamento</div>
+      <div class="cond-chip" data-v="constipacion" onclick="tCond(this)">Constipación crónica</div>
+      <!-- Resto y opciones largas (ocultas tras "Ver más", largas al final) -->
+      <div class="cond-chip cond-extra" data-v="convulsiones" onclick="tCond(this)">Convulsiones</div>
+      <div class="cond-chip cond-extra" data-v="glaucoma" onclick="tCond(this)">Glaucoma</div>
+      <div class="cond-chip cond-extra" data-v="vih" onclick="tCond(this)">VIH</div>
+      <div class="cond-chip cond-extra" data-v="osteoartritis" onclick="tCond(this)">Osteoartritis</div>
+      <div class="cond-chip cond-extra" data-v="traumatismo" onclick="tCond(this)">Traumatismo craneal</div>
+      <div class="cond-chip cond-extra" data-v="sodio" onclick="tCond(this)">Sodio bajo (hiponatremia)</div>
+      <div class="cond-chip cond-extra" data-v="testosterona" onclick="tCond(this)">Testosterona clínicamente baja</div>
+      <div class="cond-chip cond-extra" data-v="hospitalizacion" onclick="tCond(this)">Hospitalización en el último año</div>
+      <div class="cond-chip cond-extra" data-v="vesicula" onclick="tCond(this)">Enfermedad de la vesícula biliar</div>
+      <div class="cond-chip cond-extra" data-v="taquicardia" onclick="tCond(this)">Taquicardia (FC elevada en reposo)</div>
+      <div class="cond-chip cond-extra" data-v="nefropatia" onclick="tCond(this)">Nefropatía</div>
+      <div class="cond-chip cond-extra" data-v="higado" onclick="tCond(this)">Enfermedad hepática o hígado graso</div>
+      <div class="cond-chip cond-extra" data-v="icc" onclick="tCond(this)">Insuficiencia cardíaca congestiva</div>
+      <div class="cond-chip cond-extra" data-v="retinopatia" onclick="tCond(this)">Retinopatía diabética o daño ocular</div>
+      <div class="cond-chip cond-extra" data-v="sop" onclick="tCond(this)">Síndrome de ovario poliquístico (SOP)</div>
+      <div class="cond-chip cond-extra" data-v="asma" onclick="tCond(this)">Asma o enfermedad respiratoria reactiva</div>
+      <div class="cond-chip cond-extra" data-v="tumor" onclick="tCond(this)">Tumor o infección en cerebro o médula espinal</div>
+      <div class="cond-chip cond-extra" data-v="qt" onclick="tCond(this)">Prolongación QT u otro trastorno del ritmo cardíaco</div>
+      <div class="cond-chip cond-extra" data-v="tiroides" onclick="tCond(this)">Cáncer de tiroides o carcinoma medular (personal o familiar)</div>
+      <div class="cond-chip cond-extra" data-v="coronaria" onclick="tCond(this)">Enfermedad coronaria o infarto/ACV en los últimos 2 años</div>
+      <div class="cond-chip none-chip" data-v="ninguna" onclick="tCondNone(this)">Ninguna de las anteriores</div>
+    </div>
+  </div>
+
+  <div class="inner-section">
+    <div class="section-q">¿Has tomado analgésicos opiáceos en los últimos 3 meses?</div>
+    <div class="yn-row">
+      <button class="yn-btn" id="opY" onclick="pickYN4('op','yes')">Sí</button>
+      <button class="yn-btn" id="opN" onclick="pickYN4('op','no')">No</button>
+    </div>
+    <div class="text-expand" id="opTxt">
+      <div class="field" style="margin-bottom:0">
+        <select id="opSelect" onchange="addType('op')">
+          <option value="">Agregar</option>
+          <option>Tramadol</option>
+          <option>Codeína</option>
+          <option>Morfina</option>
+          <option>Oxicodona</option>
+          <option>Hidromorfona</option>
+          <option>Buprenorfina</option>
+          <option>Fentanilo</option>
+          <option>Otro opiáceo</option>
+        </select>
+      </div>
+      <div class="med-chip-list" id="opChipList"></div>
+    </div>
+  </div>
+
+  <div class="inner-section">
+    <div class="section-q">¿Te has sometido a cirugía bariátrica o similar?</div>
+    <div class="yn-row">
+      <button class="yn-btn" id="sxY" onclick="pickYN4('sx','yes')">Sí</button>
+      <button class="yn-btn" id="sxN" onclick="pickYN4('sx','no')">No</button>
+    </div>
+    <div class="text-expand" id="sxTxt">
+      <div class="field" style="margin-bottom:0">
+        <select id="sxSelect" onchange="addType('sx')">
+          <option value="">Agregar</option>
+          <option>Manga gástrica (sleeve)</option>
+          <option>Bypass gástrico en Y de Roux</option>
+          <option>Banda gástrica ajustable</option>
+          <option>Balón intragástrico</option>
+          <option>Derivación biliopancreática</option>
+          <option>Otra cirugía bariátrica</option>
+        </select>
+      </div>
+      <div class="med-chip-list" id="sxChipList"></div>
+    </div>
+  </div>
+
+  <div class="inner-section" style="margin-bottom:24px">
+    <div class="section-q">¿Tomas actualmente algún medicamento con receta?</div>
+    <div class="yn-row">
+      <button class="yn-btn" id="mxY" onclick="pickYN4('mx','yes')">Sí</button>
+      <button class="yn-btn" id="mxN" onclick="pickYN4('mx','no')">No</button>
+    </div>
+    <div class="text-expand" id="mxTxt">
+      <!-- Nombre del medicamento: recuadro horizontal full-width -->
+      <div class="field med-field-name">
+        <label>Medicamento</label>
+        <input type="text" id="medNombre" placeholder="Escribe para buscar..." autocomplete="off" oninput="filterVademecum()" onfocus="filterVademecum()" onblur="setTimeout(hideVademecum,150)">
+        <div class="med-suggest-list" id="medSuggest"></div>
+      </div>
+      <!-- Dosis · Cantidad (angosto) · Frecuencia · Agregar -->
+      <div class="med-form-grid">
+        <div class="field">
+          <label>Dosis</label>
+          <input type="text" id="medDosis" placeholder="Ej.: 0,5 mg">
+        </div>
+        <div class="field">
+          <label>Cantidad</label>
+          <input type="number" id="medCantidad" min="1" step="1" placeholder="Ej.: 1">
+        </div>
+        <div class="field">
+          <label>Frecuencia</label>
+          <select id="medFrecuencia">
+            <option value="">Ingresa</option>
+            <option value="Diaria">Diaria</option>
+            <option value="Semanal">Semanal</option>
+            <option value="Mensual">Mensual</option>
+          </select>
+        </div>
+        <button type="button" class="med-add-btn" id="medAddBtn" onclick="addMedication()">+</button>
+      </div>
+      <div class="med-chip-list" id="medChipList"></div>
+    </div>
+  </div>
+
+  <button class="btn-primary" id="s4Btn" onclick="goTo('s5')" disabled>
+    Continuar
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<!-- ══ PASO 5: SIGNOS VITALES ════════════════════════════ -->
+<div class="step" id="s5">
+  <button class="btn-back" onclick="goTo('s4')">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver
+  </button>
+  <div class="step-pill"><span class="step-num-pill">4 / 6</span><span class="step-label">Signos vitales</span></div>
+  <h2>Presión y frecuencia cardíaca</h2>
+
+  <div class="inner-section">
+    <div class="section-header first">Presión arterial</div>
+    <div class="vitals-list" id="bpList">
+      <button class="vitals-card" onclick="pickBP('normal',this)"><span class="vitals-dot" style="background:#22c55e"></span>Menos de 120/80<span class="vitals-card-desc">Presión óptima</span></button>
+      <button class="vitals-card" onclick="pickBP('elevada',this)"><span class="vitals-dot" style="background:#84cc16"></span>120–129 / menos de 80<span class="vitals-card-desc">Levemente elevada</span></button>
+      <button class="vitals-card" onclick="pickBP('hta1',this)"><span class="vitals-dot" style="background:#f59e0b"></span>130–139 / 80–89<span class="vitals-card-desc">Hipertensión estadio 1</span></button>
+      <button class="vitals-card" onclick="pickBP('hta2',this)"><span class="vitals-dot" style="background:#ef4444"></span>Mayor a 140/90<span class="vitals-card-desc">Hipertensión estadio 2</span></button>
+      <button class="vitals-card" onclick="pickBP('noSabe',this)"><span class="vitals-dot" style="background:var(--border)"></span>No lo sé con certeza</button>
+    </div>
+  </div>
+
+  <div class="inner-section" style="margin-bottom:24px">
+    <div class="section-header first">Frecuencia cardíaca en reposo</div>
+    <div class="vitals-list" id="hrList">
+      <button class="vitals-card" onclick="pickHR('baja',this)"><span class="vitals-dot" style="background:#f59e0b"></span>Menos de 60 por minuto<span class="vitals-card-desc">Bradicardia</span></button>
+      <button class="vitals-card" onclick="pickHR('normal',this)"><span class="vitals-dot" style="background:#22c55e"></span>60–100 por minuto<span class="vitals-card-desc">Rango normal</span></button>
+      <button class="vitals-card" onclick="pickHR('alta',this)"><span class="vitals-dot" style="background:#f59e0b"></span>101–110 por minuto<span class="vitals-card-desc">Ligeramente elevada</span></button>
+      <button class="vitals-card" onclick="pickHR('muyAlta',this)"><span class="vitals-dot" style="background:#ef4444"></span>Más de 110 por minuto<span class="vitals-card-desc">Taquicardia</span></button>
+      <button class="vitals-card" onclick="pickHR('noSabe',this)"><span class="vitals-dot" style="background:var(--border)"></span>No lo sé con certeza</button>
+    </div>
+  </div>
+
+  <button class="btn-primary" id="s5Btn" onclick="goTo('s6')" disabled>
+    Continuar
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<!-- ══ PASO 6: PROYECCIÓN PERSONALIZADA ═════════════════ -->
+<div class="step" id="s6">
+  <button class="btn-back" onclick="goTo('s5')">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver
+  </button>
+  <div class="step-pill"><span class="step-num-pill">5 / 6</span><span class="step-label">Proyección</span></div>
+  <h2>Esto es lo que podrías lograr</h2>
+
+  <div class="proj-card">
+    <div class="proj-metrics">
+      <div class="proj-metric">
+        <div class="proj-metric-val"><em id="pjL">—</em>–<em id="pjH">—</em> kg</div>
+        <div class="proj-metric-label">Pérdida estimada<br>en 12 meses</div>
+      </div>
+      <div class="proj-metric">
+        <div class="proj-metric-val" id="pjW">—</div>
+        <div class="proj-metric-label">Semanas para<br>alcanzar tu meta</div>
+      </div>
+      <div class="proj-metric">
+        <div class="proj-metric-val"><em id="pjT">—</em> kg</div>
+        <div class="proj-metric-label">Peso Objetivo</div>
+        <div id="pjGoalBadge" style="margin-top:7px"></div>
+      </div>
+    </div>
+    </div>
+
+  <div class="section-q">¿Qué ritmo prefieres?</div>
+
+  <div class="pace-cards">
+    <div class="pace-card" onclick="pickPace('normal',this)">
+      <div class="pace-icon" style="background:var(--sage-faint)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#6A9070" stroke-width="1.8"/><path d="M6 9l2 2 4-4" stroke="#6A9070" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="pace-body"><div class="pace-title">Me parece bien <span style="display:inline-block;background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:5px;vertical-align:middle">Recomendado</span></div><div class="pace-desc">Ritmo sostenible, menores efectos adversos</div></div>
+      <div class="radio-dot"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div class="pace-card" onclick="pickPace('fast',this)">
+      <div class="pace-icon" style="background:var(--red-light)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M11 5l4 4-4 4" stroke="#dc2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="pace-body"><div class="pace-title">Quiero ir más rápido</div><div class="pace-desc">Mayor adherencia y seguimiento médico requerido</div></div>
+      <div class="radio-dot"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div class="pace-card" onclick="pickPace('slow',this)">
+      <div class="pace-icon" style="background:var(--amber-light)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#d97706" stroke-width="1.8"/><path d="M9 6v3l2 2" stroke="#d97706" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <div class="pace-body"><div class="pace-title">Prefiero ir más despacio</div><div class="pace-desc">Cambios graduales, mayor comodidad</div></div>
+      <div class="radio-dot"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+  </div>
+
+  <div id="paceNote" class="pace-note" style="display:none"></div>
+
+  <button class="btn-primary" id="s6Btn" onclick="goTo('s7')" disabled>
+    Continuar
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<!-- ══ PASO 7: MEDICACIÓN + ÚLTIMAS PREGUNTAS ═══════════ -->
+<div class="step" id="s7">
+  <button class="btn-back" onclick="goTo('s6')">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver
+  </button>
+  <div class="step-pill"><span class="step-num-pill">6 / 6</span><span class="step-label">Últimas preguntas</span></div>
+  <h2>Ya casi terminamos</h2>
+
+  <div class="inner-section">
+    <div class="section-q">¿Has tomado medicamentos para bajar de peso en las últimas 4 semanas?</div>
+    <div class="opt-cards" id="prevMedCards">
+      <button class="opt-card" onclick="pickPrevMeds('glp1',this)">
+        <div class="opt-card-body"><div class="opt-card-title">Sí, he tomado GLP-1</div><div class="opt-card-desc">Semaglutida, tirzepatida u otro agonista GLP-1</div></div>
+        <div class="radio-dot"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </button>
+      <button class="opt-card" onclick="pickPrevMeds('other',this)">
+        <div class="opt-card-body"><div class="opt-card-title">Sí, otro medicamento para bajar de peso</div><div class="opt-card-desc">Orlistat, fentermina, bupropión/naltrexona u otro</div></div>
+        <div class="radio-dot"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </button>
+      <button class="opt-card" onclick="pickPrevMeds('none',this)">
+        <div class="opt-card-body"><div class="opt-card-title">No, ningún medicamento</div></div>
+        <div class="radio-dot"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </button>
+    </div>
+
+    <!-- Sub-formulario GLP-1 -->
+    <div class="sub-form" id="prevMedSubForm">
+      <div class="sub-form-title" id="subFormTitle">Detalles del medicamento</div>
+
+      <!-- GLP-1: selector de nombre -->
+      <div id="glp1NameBlock">
+        <div class="field">
+          <label>Nombre del medicamento GLP-1</label>
+          <select id="glp1Name" onchange="checkS7()">
+            <option value="">Selecciona...</option>
+            <option>Ozempic 0,25 mg</option>
+            <option>Ozempic 0,5 mg</option>
+            <option>Ozempic 1 mg</option>
+            <option>Wegovy 2,4 mg</option>
+            <option>Saxenda 3 mg</option>
+            <option>Victoza 1,2 mg</option>
+            <option>Victoza 1,8 mg</option>
+            <option>Rybelsus (oral)</option>
+            <option>Mounjaro 5 mg</option>
+            <option>Mounjaro 10 mg</option>
+            <option>Mounjaro 15 mg</option>
+            <option>Zepbound</option>
+            <option>Otro GLP-1</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Otro medicamento: texto libre -->
+      <div id="otherMedBlock" style="display:none">
+        <div class="field">
+          <label>Nombre del medicamento</label>
+          <textarea id="otherMedDetail" placeholder="Ej.: Orlistat 120 mg, 3 veces al día..." rows="2" oninput="checkS7()"></textarea>
+        </div>
+      </div>
+
+      <div id="lastDoseBlock">
+        <div class="field" style="margin-bottom:8px"><label>¿Cuándo fue tu última dosis?</label></div>
+        <div class="dose-list" id="doseList">
+          <button class="dose-card" onclick="pickDose('0-5',this)">Hace 0–5 días</button>
+          <button class="dose-card" onclick="pickDose('6-10',this)">Hace 6–10 días</button>
+          <button class="dose-card" onclick="pickDose('11-14',this)">Hace 11–14 días</button>
+          <button class="dose-card" onclick="pickDose('2-4w',this)">Hace 2–4 semanas</button>
+          <button class="dose-card" onclick="pickDose('>4w',this)">Hace más de 4 semanas</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="inner-section">
+    <div class="section-q">¿Has intentado bajar de peso con algún programa formal?</div>
+    <div class="yn-row">
+      <button class="yn-btn" id="pgY" onclick="pickYN7('pg','yes')">Sí</button>
+      <button class="yn-btn" id="pgN" onclick="pickYN7('pg','no')">No</button>
+    </div>
+  </div>
+
+  <div class="inner-section" style="margin-bottom:24px">
+    <div class="section-q">¿Hay algo más que deba saber nuestro equipo médico?</div>
+    <div class="yn-row">
+      <button class="yn-btn" id="ntY" onclick="pickYN7('nt','yes')">Sí</button>
+      <button class="yn-btn" id="ntN" onclick="pickYN7('nt','no')">No</button>
+    </div>
+    <div class="text-expand" id="ntTxt">
+      <div class="field">
+        <textarea id="ntDetail" placeholder="Cualquier información que consideres relevante..." rows="4" oninput="checkS7()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-primary btn-sage" id="s7Btn" onclick="buildResult();goTo('sResult')" disabled>
+    Ver mi evaluación
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<!-- ══ RESULTADO ══════════════════════════════════════════ -->
+<div class="step" id="sResult">
+  <div class="step-pill" style="margin-bottom:16px"><span class="step-label" style="color:var(--sage-dark)">Tu evaluación médica</span></div>
+  <h2 style="margin-bottom:20px">Tu resultado</h2>
+
+  <div class="result-hero">
+    <div class="result-prob-label">Probabilidad de éxito</div>
+    <div class="result-prob" id="rProb">—%</div>
+    <div class="result-tagline" id="rTitle">Eres un buen candidato para este tratamiento médico</div>
+  </div>
+
+  <div class="result-meta">
+    <div class="result-meta-item"><div class="result-meta-val" id="rBmi">—</div><div class="result-meta-label">IMC actual</div></div>
+    <div class="result-meta-item"><div class="result-meta-val" id="rsW">—</div><div class="result-meta-label">Peso actual (kg)</div></div>
+    <div class="result-meta-item">
+      <div class="result-meta-val" id="rsG">—</div>
+      <div class="result-meta-label">Peso objetivo (kg)</div>
+      <div id="goalBadge" style="margin-top:6px"></div>
+    </div>
+  </div>
+
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:20px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--navy);margin-bottom:14px">Incluye el programa</div>
+    <div class="feat-list">
+      <div class="feat-item"><div class="feat-dot"></div>Seguimiento personalizado por un médico</div>
+      <div class="feat-item"><div class="feat-dot"></div>Medicamentos recetados por un médico</div>
+      <div class="feat-item"><div class="feat-dot"></div>Recibe el medicamento en tu hogar</div>
+      <div class="feat-item"><div class="feat-dot"></div>Haz tus reembolsos en Isapre, FONASA y seguros</div>
+    </div>
+  </div>
+
+  <button class="btn-primary btn-sage" onclick="goTo('sReg')">
+    Crear mi cuenta
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<!-- ══ REGISTRO (INSCRIPCIÓN) ════════════════════════════ -->
+<div class="step" id="sReg">
+  <button class="btn-back" onclick="regBack()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver
+  </button>
+  <div class="step-pill" style="margin-bottom:10px"><span class="step-label" style="color:var(--sage-dark)">Registro</span></div>
+  <h2 id="regTitle">Crea tu cuenta</h2>
+
+  <div class="social-btns" id="regSocial">
+    <button class="social-btn" onclick="doSocialReg('google')">
+      <!-- Google logo -->
+      <svg width="20" height="20" viewBox="0 0 20 20"><path d="M19.6 10.23c0-.68-.06-1.36-.17-2H10v3.79h5.4a4.6 4.6 0 01-2 3.03v2.5h3.24c1.9-1.75 2.96-4.33 2.96-7.32z" fill="#4285F4"/><path d="M10 20c2.7 0 4.97-.9 6.62-2.44l-3.23-2.51c-.9.6-2.04.95-3.39.95-2.6 0-4.8-1.76-5.59-4.12H1.07v2.6A9.99 9.99 0 0010 20z" fill="#34A853"/><path d="M4.41 11.88A5.98 5.98 0 014.1 10c0-.65.11-1.28.31-1.88V5.52H1.07A9.99 9.99 0 000 10c0 1.61.38 3.13 1.07 4.48l3.34-2.6z" fill="#FBBC05"/><path d="M10 3.96c1.47 0 2.78.5 3.81 1.5l2.86-2.86C14.97.99 12.7 0 10 0A9.99 9.99 0 001.07 5.52l3.34 2.6C5.2 5.72 7.4 3.96 10 3.96z" fill="#EA4335"/></svg>
+      Continuar con Google
+    </button>
+    <button class="social-btn" onclick="doSocialReg('apple')" style="background:#000;color:#fff;border-color:#000">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="white"><path d="M13.54 3.42c-.9 1.08-.84 2.14-.83 2.17.06.004 1.6.078 2.57-1.28.88-1.25.77-2.28.76-2.31-.05-.003-1.54.056-2.5 1.42zm2.63 3.04c-1.41-.085-2.6.8-3.26.8-.66 0-1.68-.76-2.77-.74-1.42.02-2.74.83-3.47 2.1-1.49 2.57-.38 6.37 1.06 8.46.71 1.02 1.55 2.16 2.66 2.12 1.06-.04 1.47-.69 2.75-.69 1.28 0 1.64.69 2.76.67 1.15-.02 1.87-1.04 2.57-2.06.81-1.17 1.15-2.31 1.16-2.37-.03-.01-2.22-.86-2.24-3.41-.02-2.13 1.74-3.15 1.82-3.21-.99-1.47-2.53-1.63-3.04-1.67z"/></svg>
+      Continuar con Apple
+    </button>
+  </div>
+
+  <div class="or-divider" id="regDivider">o regístrate con tu correo</div>
+
+  <div id="regSocialNote" style="display:none;align-items:center;gap:10px;background:var(--sage-faint);border:1px solid var(--sage-light);border-radius:11px;padding:11px 14px;margin-bottom:18px">
+    <span id="regSocialIcon" style="display:inline-flex;align-items:center"></span>
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    <strong style="color:var(--sage-dark);font-size:14px">Cuenta Enlazada</strong>
+  </div>
+
+  <div class="field-row">
+    <div class="field"><label>Nombre</label><input type="text" id="rName" placeholder="Tu nombre" oninput="vReg()"><div class="field-err" id="errRName">Ingresa tu nombre</div></div>
+    <div class="field"><label>Apellido</label><input type="text" id="rLast" placeholder="Tu apellido" oninput="vReg()"><div class="field-err" id="errRLast">Ingresa tu apellido</div></div>
+  </div>
+  <div class="field">
+    <label>RUT <span class="ok-check" id="okRut">✓</span></label>
+    <input type="text" id="rRut" placeholder="12.345.678-9" autocomplete="off" maxlength="12" oninput="formatRutInput();vReg()">
+    <div class="field-err" id="errRRut">Ingresa un RUT válido</div>
+  </div>
+  <div class="field">
+    <label>Correo electrónico <span class="ok-check" id="okEmail">✓</span></label>
+    <div class="med-field-name" style="margin-bottom:0">
+      <input type="email" id="rEmail" placeholder="tu@correo.cl" autocomplete="off" oninput="suggestEmail();vReg()" onblur="hideEmailSuggest()">
+      <div class="med-suggest-list" id="emailSuggest"></div>
+    </div>
+    <div class="field-err" id="errREmail">Ingresa un correo electrónico válido</div>
+  </div>
+  <div class="field" id="rPwGroup">
+    <label>Contraseña <span class="ok-check" id="okPw">✓</span></label>
+    <div class="pw-wrap">
+      <input type="password" id="rPw" placeholder="Mínimo 8 caracteres, una mayúscula y una minúscula" oninput="vReg()">
+      <button class="pw-toggle" type="button" onclick="togglePw('rPw')" tabindex="-1">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M1 9s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg>
+      </button>
+    </div>
+    <div class="field-err" id="errRPw">Debe tener al menos 8 caracteres, una mayúscula y una minúscula</div>
+  </div>
+  <div class="field" id="rPw2Group">
+    <label>Repetir contraseña <span class="ok-check" id="okPw2">✓</span></label>
+    <div class="pw-wrap">
+      <input type="password" id="rPw2" placeholder="Repite tu contraseña" oninput="vReg()">
+      <button class="pw-toggle" type="button" onclick="togglePw('rPw2')" tabindex="-1">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M1 9s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg>
+      </button>
+    </div>
+    <div class="field-err" id="errRPw2">Las contraseñas no coinciden</div>
+  </div>
+  <div class="field">
+    <label>Celular <span class="ok-check" id="okPhone">✓</span></label>
+    <input type="tel" id="rPhone" value="+569 " placeholder="+569 1234 5678" oninput="formatChilePhone()" onfocus="formatChilePhone()">
+    <div class="field-err" id="errRPhone">Ingresa un celular chileno válido (+569 seguido de 8 dígitos)</div>
+  </div>
+  <div class="field">
+    <label>Región de residencia</label>
+    <select id="rRegion" onchange="onRegionChange();vReg()">
+      <option value="">Selecciona tu región...</option>
+      <option>Región de Arica y Parinacota</option>
+      <option>Región de Tarapacá</option>
+      <option>Región de Antofagasta</option>
+      <option>Región de Atacama</option>
+      <option>Región de Coquimbo</option>
+      <option>Región de Valparaíso</option>
+      <option>Región Metropolitana de Santiago</option>
+      <option>Región del Libertador General Bernardo O'Higgins</option>
+      <option>Región del Maule</option>
+      <option>Región de Ñuble</option>
+      <option>Región del Biobío</option>
+      <option>Región de La Araucanía</option>
+      <option>Región de Los Ríos</option>
+      <option>Región de Los Lagos</option>
+      <option>Región de Aysén del General Carlos Ibáñez del Campo</option>
+      <option>Región de Magallanes y de la Antártica Chilena</option>
+    </select>
+    <div class="field-err" id="errRRegion">Selecciona tu región</div>
+  </div>
+
+  <div class="consent-row" style="margin-bottom:11px" onclick="acceptAllConsents()">
+    <div class="consent-cb" id="cb_all"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="consent-txt"><strong>Aceptar todos</strong> los consentimientos.</div>
+  </div>
+  <div class="consent-row" style="margin-bottom:11px" onclick="toggleConsent('legal')">
+    <div class="consent-cb" id="cb_legal"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="consent-txt">Acepto <a href="01_Terminos_y_Condiciones_BalancePlus.pdf" target="_blank" rel="noopener" onclick="event.stopPropagation()">Términos y Condiciones</a>, <a href="02_Politica_de_Privacidad_BalancePlus.pdf" target="_blank" rel="noopener" onclick="event.stopPropagation()">Política de Privacidad</a> y <a href="05_Politica_de_Cookies_BalancePlus.pdf" target="_blank" rel="noopener" onclick="event.stopPropagation()">Política de Cookies</a>.</div>
+  </div>
+  <div class="consent-row" style="margin-bottom:11px" onclick="toggleConsent('tele')">
+    <div class="consent-cb" id="cb_tele"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="consent-txt">Acepto el <a href="06a_Consentimiento_Telemedicina_BalancePlus.pdf" target="_blank" rel="noopener" onclick="event.stopPropagation()">Consentimiento Informado para Telemedicina</a>.</div>
+  </div>
+  <div class="consent-row" style="margin-bottom:11px" onclick="toggleConsent('datos')">
+    <div class="consent-cb" id="cb_datos"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="consent-txt">Acepto el <a href="06b_Consentimiento_Datos_Salud_BalancePlus.pdf" target="_blank" rel="noopener" onclick="event.stopPropagation()">Consentimiento Informado para Tratamiento de Datos de Salud</a>.</div>
+  </div>
+  <div class="consent-row" style="margin-bottom:11px" onclick="toggleConsent('glp1')">
+    <div class="consent-cb" id="cb_glp1"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="consent-txt">Acepto el <a href="06c_Consentimiento_GLP1_BalancePlus.pdf" target="_blank" rel="noopener" onclick="event.stopPropagation()">Consentimiento Informado para aGLP-1</a>.</div>
+  </div>
+  <div class="consent-txt" style="margin:0 0 22px 32px;font-size:12px">Tus datos serán tratados conforme a la Ley 21.719 de Protección de Datos Personales.</div>
+
+  <button class="btn-primary btn-sage" id="regBtn" onclick="doReg()" disabled>
+    Acceder a mi portal
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<!-- ══ DESCALIFICACIÓN: CONDICIÓN EXCLUYENTE ════════════ -->
+<div class="step" id="dExcl">
+  <div style="max-width:460px;margin:0 auto;text-align:center">
+    <!-- Tarjeta de estado -->
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:16px;padding:34px 28px;box-shadow:0 2px 14px rgba(27,45,94,.06)">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--sage-faint);display:flex;align-items:center;justify-content:center;margin:0 auto 18px">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6A9070" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 2v20"/></svg>
+      </div>
+      <h2 style="font-size:26px;font-weight:800;color:var(--sage-dark);letter-spacing:-.5px;margin-bottom:16px">Estado de Elegibilidad</h2>
+      <p style="font-size:15px;color:var(--text);line-height:1.6;margin-bottom:14px"><strong>Tu seguridad es nuestra prioridad.</strong> Según tu última respuesta, no podemos completar tu evaluación.</p>
+      <p style="font-size:15px;color:var(--text);line-height:1.6">Este tratamiento tiene criterios médicos específicos y tu respuesta es una condición de exclusión para realizar un tratamiento médico en forma segura.</p>
+    </div>
+
+    <!-- Ruta: revisar respuesta -->
+    <p style="font-size:16px;font-weight:700;color:var(--text);margin:28px 0 14px">¿Cometiste un error? Revisa tu respuesta</p>
+    <button class="btn-primary btn-sage" style="max-width:300px;margin:0 auto" onclick="goTo('s3')">Revisar mi respuesta</button>
+
+    <!-- Divisor -->
+    <div style="height:1px;background:var(--border);margin:28px 0"></div>
+
+    <!-- Ruta: salir -->
+    <p style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:14px">Si tu respuesta era correcta, no podemos continuar esta evaluación.</p>
+    <a href="index.html" class="btn-primary btn-ghost" style="max-width:300px;margin:0 auto;text-decoration:none">Salir de la evaluación</a>
+  </div>
+</div>
+
+<!-- ══ DESCALIFICACIÓN: IMC BAJO ════════════════════════ -->
+<div class="step" id="dBmi">
+  <div class="disq-wrap">
+    <div class="disq-icon amber"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M15 9v8M15 21v1" stroke="#d97706" stroke-width="2.5" stroke-linecap="round"/><circle cx="15" cy="15" r="12" stroke="#d97706" stroke-width="2"/></svg></div>
+    <h2 class="disq-h">Tu IMC está por debajo del umbral recomendado</h2>
+    <p class="disq-p">El tratamiento GLP-1 está indicado para personas con IMC mayor o igual a 25. Tu IMC calculado es <strong id="dBmiVal" style="color:var(--navy)">—</strong>. Si crees que hay un error, puedes corregir tus medidas.</p>
+    <button class="btn-primary" style="margin-bottom:10px" onclick="goTo('s1')">Corregir mis medidas</button>
+    <a href="index.html" class="btn-primary btn-ghost" style="text-decoration:none">Volver al inicio</a>
+  </div>
+</div>
+
+<!-- ══ DESCALIFICACIÓN: MENOR DE EDAD ═══════════════════ -->
+<div class="step" id="dAge">
+  <div class="disq-wrap">
+    <div class="disq-icon red"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M15 9v8M15 21v1" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/><circle cx="15" cy="15" r="12" stroke="#dc2626" stroke-width="2"/></svg></div>
+    <h2 class="disq-h">Debes ser mayor de 18 años</h2>
+    <p class="disq-p">El programa Balance+ está disponible únicamente para personas mayores de 18 años. Consulta con tu médico sobre las opciones disponibles para menores de edad.</p>
+    <a href="index.html" class="btn-primary btn-ghost" style="text-decoration:none">Volver al inicio</a>
+  </div>
+</div>
+
+</div><!-- /wizard -->
+
+<script>
+// ─── ESTADO ────────────────────────────────────────────
+const D = {
+  weight:100, height:170, targetWeight:82, bmi:0,
+  sex:null, age:null, birthDate:null, bp:null, hr:null, pace:null,
+  prevMeds:null, op:null, sx:null, mx:null, medications:[],
+  opioidTypes:[], surgeryTypes:[],
+  exclusionFlagged:false,
+  pg:null, nt:null, consent:false, _proj:{}
+};
+
+// ─── VADEMECUM CHILENO (PASO 3 — autocompletar medicamentos) ──
+// Muestra representativa basada en https://www.vademecum.es/chile/cl/alfa,
+// con cobertura alfabética para las 26 letras. No es exhaustiva ni
+// reemplaza la prescripción médica. El nombre incluye forma farmacéutica
+// y dosis (tal como aparece en el registro), por lo que ya no se solicita
+// un campo de dosis separado en el formulario. Prioriza fármacos
+// relevantes para un programa de manejo de peso (GLP-1, metabólico,
+// cardiovascular, tiroideo, psiquiátrico, gastrointestinal).
+const VADEMECUM = [
+  // GLP-1 / pérdida de peso
+  'OZEMPIC SOLUCIÓN INYECTABLE 0,25 mg/0,5 mL',
+  'OZEMPIC SOLUCIÓN INYECTABLE 0,5 mg/0,5 mL',
+  'OZEMPIC SOLUCIÓN INYECTABLE 1 mg/0,75 mL',
+  'WEGOVY SOLUCIÓN INYECTABLE 0,25 mg/0,5 mL',
+  'WEGOVY SOLUCIÓN INYECTABLE 0,5 mg/0,5 mL',
+  'WEGOVY SOLUCIÓN INYECTABLE 1 mg/0,5 mL',
+  'WEGOVY SOLUCIÓN INYECTABLE 1,7 mg/0,75 mL',
+  'WEGOVY SOLUCIÓN INYECTABLE 2,4 mg/0,75 mL',
+  'SAXENDA SOLUCIÓN INYECTABLE 6 mg/mL',
+  'TRULICITY SOLUCIÓN INYECTABLE 1,5 mg/0,5 mL',
+  'MOUNJARO SOLUCIÓN INYECTABLE 5 mg/0,5 mL',
+  'RYBELSUS COMPRIMIDOS 7 mg',
+  'ORLISTAT CÁPSULAS 120 mg',
+  'WELLBUTRIN XL COMPRIMIDOS RECUBIERTOS DE LIBERACIÓN EXTENDIDA 150 mg',
+  'WELLBUTRIN XL COMPRIMIDOS RECUBIERTOS DE LIBERACIÓN EXTENDIDA 300 mg',
+  // Diabetes / metabólico (SGLT2, DPP-4, insulinas)
+  'JARDIANCE COMPRIMIDOS RECUBIERTOS 10 mg',
+  'JARDIANCE COMPRIMIDOS RECUBIERTOS 25 mg',
+  'JARDIANCE DUO COMPRIMIDOS RECUBIERTOS 12,5 mg/850 mg',
+  'JARDIANCE DUO COMPRIMIDOS RECUBIERTOS 12,5 mg/1000 mg',
+  'ENCLYNA COMPRIMIDOS RECUBIERTOS 10 mg',
+  'ENCLYNA COMPRIMIDOS RECUBIERTOS 25 mg',
+  'ENCLYNA DUO COMPRIMIDOS RECUBIERTOS 12,5 mg/850 mg',
+  'ENCLYNA DUO COMPRIMIDOS RECUBIERTOS 12,5 mg/1000 mg',
+  'XIGDUO XR COMPRIMIDOS RECUBIERTOS DE LIBERACIÓN PROLONGADA 5 mg/1000 mg',
+  'XIGDUO XR COMPRIMIDOS RECUBIERTOS DE LIBERACIÓN PROLONGADA 10 mg/1000 mg',
+  'JANUVIA COMPRIMIDOS RECUBIERTOS 100 mg',
+  'JANUMET COMPRIMIDOS RECUBIERTOS 50 mg/850 mg',
+  'JANUMET COMPRIMIDOS RECUBIERTOS 50 mg/1000 mg',
+  'JANUMET XR COMPRIMIDOS RECUBIERTOS 100 mg/1000 mg',
+  'TRAYENTA COMPRIMIDOS RECUBIERTOS 5 mg',
+  'TRAYENTA DUO COMPRIMIDOS RECUBIERTOS 2,5 mg/850 mg',
+  'TRAYENTA DUO COMPRIMIDOS RECUBIERTOS 2,5 mg/1000 mg',
+  'JOVIUS COMPRIMIDOS 50 mg',
+  'JOVIUS MET COMPRIMIDOS RECUBIERTOS 50 mg/1000 mg',
+  'METFORMINA CLORHIDRATO COMPRIMIDOS RECUBIERTOS 850 mg',
+  'GLIBENCLAMIDA COMPRIMIDOS 5 mg',
+  'GLICLAZIDA COMPRIMIDOS DE LIBERACIÓN MODIFICADA 60 mg',
+  'PIOGLITAZONA COMPRIMIDOS 30 mg',
+  'TRESIBA SOLUCIÓN INYECTABLE 100 U/mL',
+  'TRESIBA SOLUCIÓN INYECTABLE 200 U/mL',
+  'FIASP SOLUCIÓN INYECTABLE 100 U/mL',
+  'NOVORAPID SOLUCIÓN INYECTABLE 100 U/mL',
+  'LANTUS SOLUCIÓN INYECTABLE 100 U/mL',
+  'HUMULIN N SUSPENSIÓN INYECTABLE 100 UI/mL',
+  'HUMULIN R SOLUCIÓN INYECTABLE 100 UI/mL',
+  // Tiroides
+  'LEVOTIROXINA SÓDICA COMPRIMIDOS 100 mcg',
+  'METIMAZOL COMPRIMIDOS 5 mg',
+  'PROPILTIOURACILO COMPRIMIDOS 50 mg',
+  // Cardiovascular / antihipertensivos
+  'LOSARTÁN COMPRIMIDOS RECUBIERTOS 50 mg',
+  'VALSARTÁN COMPRIMIDOS RECUBIERTOS 80 mg',
+  'ENALAPRIL COMPRIMIDOS 10 mg',
+  'CAPTOPRIL COMPRIMIDOS 25 mg',
+  'AMLODIPINO COMPRIMIDOS 5 mg',
+  'NIFEDIPINO COMPRIMIDOS DE LIBERACIÓN PROLONGADA 30 mg',
+  'HIDROCLOROTIAZIDA COMPRIMIDOS 25 mg',
+  'FUROSEMIDA COMPRIMIDOS 40 mg',
+  'ESPIRONOLACTONA COMPRIMIDOS 25 mg',
+  'ATENOLOL COMPRIMIDOS 50 mg',
+  'CARVEDILOL COMPRIMIDOS 25 mg',
+  'BISOPROLOL COMPRIMIDOS RECUBIERTOS 5 mg',
+  'METOPROLOL COMPRIMIDOS 100 mg',
+  'TELMISARTÁN COMPRIMIDOS 80 mg',
+  'IRBESARTÁN COMPRIMIDOS RECUBIERTOS 150 mg',
+  'CLORTALIDONA COMPRIMIDOS 50 mg',
+  'DOXAZOSINA COMPRIMIDOS 4 mg',
+  // Anticoagulantes / antiagregantes
+  'ÁCIDO ACETILSALICÍLICO COMPRIMIDOS 100 mg',
+  'WARFARINA SÓDICA COMPRIMIDOS 5 mg',
+  'RIVAROXABÁN COMPRIMIDOS RECUBIERTOS 20 mg',
+  'APIXABÁN COMPRIMIDOS RECUBIERTOS 5 mg',
+  'DABIGATRÁN CÁPSULAS 150 mg',
+  'CLOPIDOGREL COMPRIMIDOS RECUBIERTOS 75 mg',
+  // Estatinas / colesterol
+  'ZARATOR COMPRIMIDOS RECUBIERTOS 20 mg',
+  'FORLIP COMPRIMIDOS RECUBIERTOS 20 mg',
+  'ROSUVASTATINA COMPRIMIDOS RECUBIERTOS 20 mg',
+  'SIMVASTATINA COMPRIMIDOS RECUBIERTOS 20 mg',
+  'EZETIMIBA COMPRIMIDOS 10 mg',
+  'FENOFIBRATO CÁPSULAS 200 mg',
+  'GEMFIBROZILO CÁPSULAS 600 mg',
+  // Psiquiátricos / neurológicos
+  'SERTRALINA COMPRIMIDOS RECUBIERTOS 50 mg',
+  'FLUOXETINA CÁPSULAS 20 mg',
+  'ESCITALOPRAM COMPRIMIDOS RECUBIERTOS 10 mg',
+  'VENLAFAXINA CÁPSULAS DE LIBERACIÓN PROLONGADA 75 mg',
+  'DULOXETINA CÁPSULAS 30 mg',
+  'MIRTAZAPINA COMPRIMIDOS RECUBIERTOS 30 mg',
+  'TRAZODONA COMPRIMIDOS 100 mg',
+  'QUETIAPINA COMPRIMIDOS RECUBIERTOS 100 mg',
+  'OLANZAPINA COMPRIMIDOS RECUBIERTOS 10 mg',
+  'RISPERIDONA COMPRIMIDOS RECUBIERTOS 2 mg',
+  'ÁCIDO VALPROICO COMPRIMIDOS 500 mg',
+  'LAMOTRIGINA COMPRIMIDOS 100 mg',
+  'CLONAZEPAM COMPRIMIDOS 2 mg',
+  'ALPRAZOLAM COMPRIMIDOS 0,5 mg',
+  'LORAZEPAM COMPRIMIDOS 2 mg',
+  'ZOLPIDEM COMPRIMIDOS RECUBIERTOS 10 mg',
+  'PREGABALINA CÁPSULAS 75 mg',
+  'GABAPENTINA CÁPSULAS 300 mg',
+  'TOPIRAMATO COMPRIMIDOS RECUBIERTOS 25 mg',
+  'HALOPERIDOL COMPRIMIDOS 5 mg',
+  'MIDAZOLAM SOLUCIÓN INYECTABLE 5 mg/mL',
+  'MORFINA SOLUCIÓN INYECTABLE 10 mg/mL',
+  // Gastrointestinal
+  'OMEPRAZOL CÁPSULAS 20 mg',
+  'PANTOPRAZOL COMPRIMIDOS RECUBIERTOS 40 mg',
+  'ESOMEPRAZOL COMPRIMIDOS RECUBIERTOS 40 mg',
+  'DOMPERIDONA COMPRIMIDOS 10 mg',
+  'METOCLOPRAMIDA COMPRIMIDOS 10 mg',
+  'ONDANSETRÓN SOLUCIÓN INYECTABLE 4 mg/2 mL',
+  'LACTULOSA JARABE 667 mg/mL',
+  'POLIETILENGLICOL 3350 POLVO PARA SOLUCIÓN ORAL 17 g',
+  'LOPERAMIDA CÁPSULAS 2 mg',
+  'MESALAZINA COMPRIMIDOS DE LIBERACIÓN PROLONGADA 500 mg',
+  'BUSCAPINA COMPRIMIDOS 10 mg',
+  // Analgésicos / antiinflamatorios / uso frecuente
+  'PARACETAMOL COMPRIMIDOS 500 mg',
+  'IBUPROFENO COMPRIMIDOS RECUBIERTOS 400 mg',
+  'NAPROXENO COMPRIMIDOS 500 mg',
+  'DICLOFENACO COMPRIMIDOS 50 mg',
+  'KETOROLACO COMPRIMIDOS 10 mg',
+  'TRAMADOL CÁPSULAS 50 mg',
+  'ALOPURINOL COMPRIMIDOS 300 mg',
+  'COLCHICINA COMPRIMIDOS 0,5 mg',
+  'PREDNISONA COMPRIMIDOS 20 mg',
+  'SALBUTAMOL AEROSOL 100 mcg/dosis',
+  'BUDESONIDA AEROSOL 200 mcg/dosis',
+  'SYMBICORT TURBUHALER 160/4,5 mcg/dosis',
+  'TRELEGY ELLIPTA POLVO PARA INHALACIÓN 100/62,5/25 mcg',
+  'MONTELUKAST COMPRIMIDOS RECUBIERTOS 10 mg',
+  'LORATADINA COMPRIMIDOS 10 mg',
+  'LEVOCETIRIZINA DICLORHIDRATO COMPRIMIDOS RECUBIERTOS 5 mg',
+  'AMOXICILINA CÁPSULAS 500 mg',
+  'AZITROMICINA COMPRIMIDOS RECUBIERTOS 500 mg',
+  'CIPROFLOXACINO COMPRIMIDOS RECUBIERTOS 500 mg',
+  'DOXICICLINA CÁPSULAS 100 mg',
+  'NITROFURANTOÍNA CÁPSULAS 100 mg',
+  'FLUCONAZOL CÁPSULAS 150 mg',
+  'METRONIDAZOL COMPRIMIDOS 500 mg',
+  'HIDROXICLOROQUINA SULFATO COMPRIMIDOS RECUBIERTOS 200 mg',
+  'METOTREXATO COMPRIMIDOS 2,5 mg',
+  // Hormonal / ginecológico
+  'ESTRADIOL COMPRIMIDOS 2 mg',
+  'PROGESTERONA CÁPSULAS 200 mg',
+  'YASMIN COMPRIMIDOS RECUBIERTOS 3 mg/0,03 mg',
+  'TESTOSTERONA GEL 50 mg',
+  'FINASTERIDE COMPRIMIDOS RECUBIERTOS 1 mg',
+  'TAMSULOSINA CÁPSULAS DE LIBERACIÓN PROLONGADA 0,4 mg',
+  'VIAGRA COMPRIMIDOS RECUBIERTOS 50 mg',
+  // Otros / suplementos
+  'ÁCIDO FÓLICO COMPRIMIDOS 1 mg',
+  'VITAMINA D3 GOTAS 10000 UI/mL',
+  'COMPLEJO B COMPRIMIDOS',
+  'SULFATO FERROSO COMPRIMIDOS 200 mg',
+  'CALCIO + VITAMINA D COMPRIMIDOS 600 mg/400 UI',
+  'MAGNESIO COMPRIMIDOS 400 mg',
+  'TIAMINA CLORHIDRATO COMPRIMIDOS 300 mg',
+  'PIRIDOXINA COMPRIMIDOS 50 mg',
+  'URSODESOXICÓLICO ÁCIDO CÁPSULAS 300 mg',
+  'VIBRAMICINA CÁPSULAS 100 mg',
+  'SULFATO DE MAGNESIO SOLUCIÓN INYECTABLE 20%',
+  'OCTREOTIDA SOLUCIÓN INYECTABLE 0,1 mg/mL',
+  'NALOXONA SOLUCIÓN INYECTABLE 0,4 mg/mL'
+];
+
+let s1SexOk = false;
+let s1BirthOk = false;
+const s4v = {op:false, sx:false, mx:false};
+const s5v = {bp:false, hr:false};
+const s7v = {prevMeds:false, pg:false, nt:false};
+let s7Dose = false;
+const regConsents = { legal:false, tele:false, datos:false, glp1:false };
+
+// ─── NAVEGACIÓN Y PROGRESO ─────────────────────────────
+const PASOS = ['s1','s3','s4','s5','s6','s7'];
+
+function goTo(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  const i = PASOS.indexOf(id);
+  let pct;
+  if (i >= 0) pct = ((i + 1) / PASOS.length) * 100;
+  else if (id === 'sResult') pct = 92;
+  else if (id === 'sReg') pct = 97;
+  else pct = 5;
+  document.getElementById('prog').style.width = Math.max(4, Math.round(pct)) + '%';
+}
+
+// ─── PASO 1: MEDIDAS ───────────────────────────────────
+function classify(bmi) {
+  if (bmi < 18.5) return { label: 'Bajo peso',         color: '#1d4ed8', bg: '#dbeafe' };
+  if (bmi < 25)   return { label: 'Peso normal',       color: '#166534', bg: '#dcfce7' };
+  if (bmi < 30)   return { label: 'Sobrepeso',         color: '#854d0e', bg: '#fef3c7' };
+  if (bmi < 35)   return { label: 'Obesidad Grado I',  color: '#c2410c', bg: '#ffedd5' };
+  if (bmi < 40)   return { label: 'Obesidad Grado II', color: '#9a3412', bg: '#fed7aa' };
+  return            { label: 'Obesidad Grado III',     color: '#991b1b', bg: '#fee2e2' };
+}
+
+function updateBmiClass() {
+  const hm = D.height / 100;
+  if (!D.height || !D.bmi) return;
+  const now = classify(D.bmi);
+  const future = classify(D.targetWeight / (hm * hm));
+  const elNow = document.getElementById('bmiClassNow');
+  const elFuture = document.getElementById('bmiClassFuture');
+  elNow.textContent = now.label;
+  elNow.style.color = now.color;
+  elNow.style.background = now.bg;
+  elFuture.textContent = future.label;
+  elFuture.style.color = future.color;
+  elFuture.style.background = future.bg;
+}
+
+function calcBmi() {
+  const w = +document.getElementById('rW').value;
+  const h = +document.getElementById('rH').value / 100;
+  if (!w || !h) {
+    document.getElementById('bmiVal').textContent = '—';
+    document.getElementById('bmiClassLine').style.display = 'none';
+    D.bmi = 0; D.weight = w || 0; D.height = +document.getElementById('rH').value || 0;
+    D.targetWeight = +document.getElementById('rT').value || 0;
+    checkS1();
+    return;
+  }
+  document.getElementById('bmiClassLine').style.display = '';
+  D.bmi = w / (h * h);
+  D.weight = w;
+  D.height = +document.getElementById('rH').value;
+  D.targetWeight = +document.getElementById('rT').value;
+  document.getElementById('bmiVal').textContent = D.bmi.toFixed(1).replace('.', ',');
+  updateBmiClass();
+  const targetInvalid = D.targetWeight > 0 && D.targetWeight >= D.weight;
+  document.getElementById('errTarget').classList.toggle('show', targetInvalid);
+  checkS1();
+}
+
+function pickSex(val, el) {
+  D.sex = val;
+  s1SexOk = true;
+  document.querySelectorAll('.sex-grid .opt-card').forEach(c => {
+    c.classList.remove('selected');
+    const r = c.querySelector('.radio-dot');
+    if (r) { r.style.background = ''; r.style.borderColor = ''; }
+  });
+  el.classList.add('selected');
+  const r = el.querySelector('.radio-dot');
+  if (r) { r.style.background = 'var(--navy)'; r.style.borderColor = 'var(--navy)'; }
+  checkS1();
+}
+
+function checkS1() {
+  const targetOk = D.targetWeight > 0 && D.targetWeight < D.weight;
+  /* No bloqueamos por IMC aquí: si es <25, goFromS1() lleva a la pantalla
+     que lo explica (dBmi) en vez de dejar el botón deshabilitado sin motivo. */
+  document.getElementById('s1Btn').disabled = !(s1SexOk && s1BirthOk && targetOk);
+}
+
+function goFromS1() {
+  D.weight = +document.getElementById('rW').value;
+  D.height = +document.getElementById('rH').value;
+  D.targetWeight = +document.getElementById('rT').value;
+  calcBmi();
+  if (D.bmi < 25) {
+    document.getElementById('dBmiVal').textContent = D.bmi.toFixed(1).replace('.', ',');
+    if(window.BP) BP.logEligibility({bmi:D.bmi, edad:D.age, excluyentes:false}, 'descalificado');
+    goTo('dBmi');
+    return;
+  }
+  if (!D.age || D.age < 18 || D.age > 110) {
+    if(window.BP) BP.logEligibility({bmi:D.bmi, edad:D.age, excluyentes:false}, 'descalificado');
+    goTo('dAge');
+    return;
+  }
+  processStarted = true;   /* calificó: a partir de aquí, irse sin terminar = abandono */
+  goTo('s3');
+}
+
+// ─── PASO 1 (integrado): NACIMIENTO ───────────────────
+(function () {
+  document.getElementById('birthDate').max = new Date().toISOString().split('T')[0];
+})();
+
+let _minorLogged = false;   /* evita contar varias veces al mismo menor de edad */
+let processStarted = false;   /* calificó y entró al cuestionario */
+let processCompleted = false; /* completó el registro (no es abandono) */
+
+/* Conteo anónimo de ABANDONO: si calificó, empezó y se va sin terminar. */
+window.addEventListener('pagehide', function(){
+  if(processStarted && !processCompleted && window.BP){
+    var _excl = document.querySelectorAll('#exclList .excl-item.sel:not(.none-item)').length > 0;
+    BP.logEligibilityBeacon({bmi:D.bmi, edad:D.age, excluyentes:_excl}, 'abandono');
+  }
+});
+function onBirth() {
+  const v = document.getElementById('birthDate').value;
+  if (!v) return;
+  const b = new Date(v), now = new Date();
+  let years = now.getFullYear() - b.getFullYear();
+  let months = now.getMonth() - b.getMonth();
+  let days = now.getDate() - b.getDate();
+  if (days < 0) {
+    months--;
+    days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+  }
+  if (months < 0) { years--; months += 12; }
+  const tooYoung = years < 18;
+  const tooOld = years > 110;
+  /* Conteo anónimo del menor de edad (aquí es donde realmente se bloquea). */
+  if (tooYoung && window.BP && !_minorLogged) {
+    _minorLogged = true;
+    BP.logEligibility({ bmi: D.bmi || null, edad: years, excluyentes: false }, 'descalificado');
+  }
+  document.getElementById('errAge').classList.toggle('show', tooYoung);
+  document.getElementById('errAgeMax').classList.toggle('show', tooOld);
+  const valid = !tooYoung && !tooOld;
+  D.birthDate = v;
+  if (valid) {
+    D.age = years;
+    s1BirthOk = true;
+  } else {
+    D.age = null;
+    s1BirthOk = false;
+  }
+  checkS1();
+}
+
+// ─── PASO 3: EXCLUSIONES ──────────────────────────────
+function toggleExcl(el) {
+  document.querySelector('#exclList .none-item').classList.remove('sel');
+  el.classList.toggle('sel');
+  document.getElementById('exclBtn').disabled =
+    !document.querySelectorAll('#exclList .excl-item.sel').length;
+}
+
+function toggleExclNone(el) {
+  document.querySelectorAll('#exclList .excl-item:not(.none-item)').forEach(e => e.classList.remove('sel'));
+  el.classList.toggle('sel');
+  document.getElementById('exclBtn').disabled = !el.classList.contains('sel');
+}
+
+function goExcl() {
+  const sel = [...document.querySelectorAll('#exclList .excl-item.sel')].map(e => e.dataset.v);
+  if (!sel.includes('ninguna') && sel.length) {
+    D.exclusionFlagged = true;   /* marca interna (no visible): marcó una condición de exclusión, aunque luego corrija */
+    goTo('dExcl');
+  }
+  else goTo('s4');
+}
+
+// ─── PASO 4: CONDICIONES + HISTORIAL ──────────────────
+function updateCondNoneState() {
+  const any = document.querySelectorAll('#condGrid .cond-chip.sel:not(.none-chip)').length > 0;
+  const none = document.querySelector('#condGrid .none-chip');
+  if (none) none.classList.toggle('disabled', any);
+}
+
+function tCond(el) {
+  document.querySelector('#condGrid .none-chip').classList.remove('sel');
+  el.classList.toggle('sel');
+  updateCondNoneState();
+  checkS4();
+}
+
+function tCondNone(el) {
+  /* Si hay condiciones seleccionadas, "Ninguna de las anteriores" queda bloqueada */
+  if (document.querySelectorAll('#condGrid .cond-chip.sel:not(.none-chip)').length > 0) return;
+  el.classList.toggle('sel');
+  checkS4();
+}
+
+/* (Eliminado) Las condiciones se muestran todas; ya no hay "Ver más / Ver menos". */
+
+// ─── PASO 4: MEDICAMENTOS (VADEMECUM) ─────────────────
+function filterVademecum() {
+  const input = document.getElementById('medNombre');
+  const box = document.getElementById('medSuggest');
+  const q = input.value.trim().toLowerCase();
+  if (!q) { box.classList.remove('vis'); box.innerHTML = ''; return; }
+  const matches = VADEMECUM.filter(m => m.toLowerCase().includes(q)).slice(0, 8);
+  if (!matches.length) { box.classList.remove('vis'); box.innerHTML = ''; return; }
+  box.innerHTML = matches.map(m => `<div class="med-suggest-item" onmousedown="selectVademecumItem('${m.replace(/'/g, "\\'")}')">${m}</div>`).join('');
+  box.classList.add('vis');
+}
+
+function selectVademecumItem(name) {
+  document.getElementById('medNombre').value = name;
+  hideVademecum();
+  document.getElementById('medCantidad').focus();
+}
+
+function hideVademecum() {
+  const box = document.getElementById('medSuggest');
+  box.classList.remove('vis');
+  box.innerHTML = '';
+}
+
+function addMedication() {
+  const nombre = document.getElementById('medNombre').value.trim();
+  const dosis = document.getElementById('medDosis').value.trim();
+  const cantidad = document.getElementById('medCantidad').value;
+  const frecuencia = document.getElementById('medFrecuencia').value;
+  if (!nombre || !cantidad || !frecuencia) return;   /* Dosis es opcional */
+  D.medications.push({ nombre, dosis, cantidad: +cantidad, frecuencia });
+  document.getElementById('medNombre').value = '';
+  document.getElementById('medDosis').value = '';
+  document.getElementById('medCantidad').value = '';
+  document.getElementById('medFrecuencia').value = '';
+  hideVademecum();
+  renderMedChips();
+  checkS4();
+}
+
+function removeMedication(idx) {
+  D.medications.splice(idx, 1);
+  renderMedChips();
+  checkS4();
+}
+
+function renderMedChips() {
+  const list = document.getElementById('medChipList');
+  if (!list) return;
+  list.innerHTML = D.medications.map((m, i) =>
+    `<div class="med-chip">${m.nombre}${m.dosis ? ' — ' + m.dosis : ''} — Cantidad: ${m.cantidad} <span class="med-chip-freq">· ${m.frecuencia}</span><button type="button" class="med-chip-x" onclick="removeMedication(${i})" aria-label="Eliminar">✕</button></div>`
+  ).join('');
+}
+
+// ─── PASO 4: TIPOS (opiáceo / cirugía) como pills múltiples ───
+function typeArr(kind) { return kind === 'op' ? D.opioidTypes : D.surgeryTypes; }
+
+function addType(kind) {
+  const sel = document.getElementById(kind === 'op' ? 'opSelect' : 'sxSelect');
+  const v = sel.value;
+  const arr = typeArr(kind);
+  if (v && !arr.includes(v)) arr.push(v);
+  sel.value = '';
+  renderTypeChips(kind);
+  checkS4();
+}
+
+function removeType(kind, idx) {
+  typeArr(kind).splice(idx, 1);
+  renderTypeChips(kind);
+  checkS4();
+}
+
+function renderTypeChips(kind) {
+  const list = document.getElementById(kind === 'op' ? 'opChipList' : 'sxChipList');
+  if (!list) return;
+  list.innerHTML = typeArr(kind).map((t, i) =>
+    `<div class="med-chip">${t}<button type="button" class="med-chip-x" onclick="removeType('${kind}',${i})" aria-label="Eliminar">✕</button></div>`
+  ).join('');
+}
+
+function pickYN4(key, val) {
+  document.getElementById(key + 'Y').classList.toggle('sel', val === 'yes');
+  document.getElementById(key + 'N').classList.toggle('sel', val === 'no');
+  document.getElementById(key + 'Txt').classList.toggle('vis', val === 'yes');
+  D[key] = val === 'yes';
+  s4v[key] = true;
+  // If answered No, clear dependent selections
+  if (val === 'no') {
+    if (key === 'op') { D.opioidTypes = []; renderTypeChips('op'); document.getElementById('opSelect').value = ''; }
+    if (key === 'sx') { D.surgeryTypes = []; renderTypeChips('sx'); document.getElementById('sxSelect').value = ''; }
+    if (key === 'mx') {
+      D.medications = [];
+      renderMedChips();
+      hideVademecum();
+      document.getElementById('medNombre').value = '';
+      document.getElementById('medDosis').value = '';
+      document.getElementById('medCantidad').value = '';
+      document.getElementById('medFrecuencia').value = '';
+    }
+  }
+  checkS4();
+}
+
+function checkS4() {
+  // Conditions: must have answered all 3 historial questions
+  const condAnswered = document.querySelectorAll('#condGrid .cond-chip.sel').length > 0;
+  const opOk = s4v.op && (D.op === false || D.opioidTypes.length > 0);
+  const sxOk = s4v.sx && (D.sx === false || D.surgeryTypes.length > 0);
+  const mxOk = s4v.mx && (D.mx === false || D.medications.length > 0);
+  document.getElementById('s4Btn').disabled = !(condAnswered && opOk && sxOk && mxOk);
+}
+
+// ─── PASO 5: SIGNOS VITALES ───────────────────────────
+function pickBP(val, el) {
+  D.bp = val; s5v.bp = true;
+  document.querySelectorAll('#bpList .vitals-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  if (s5v.bp && s5v.hr) document.getElementById('s5Btn').disabled = false;
+}
+
+function pickHR(val, el) {
+  D.hr = val; s5v.hr = true;
+  document.querySelectorAll('#hrList .vitals-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  buildProj();
+  if (s5v.bp && s5v.hr) document.getElementById('s5Btn').disabled = false;
+}
+
+// ─── PASO 6: PROYECCIÓN ───────────────────────────────
+function goalClass(w, tw) {
+  const lossPct = (w - tw) / w * 100;
+  if (lossPct < 10) return 'simple';
+  if (lossPct <= 20) return 'moderado';
+  return 'extremo';
+}
+
+function buildProj() {
+  const w = D.weight, tw = D.targetWeight;
+  const tolose = Math.max(0, w - tw);
+  const lL = Math.round(w * 0.12), lH = Math.round(w * 0.18);
+  const pct = Math.min(100, Math.round((tolose / w) * 100));
+  const wks = Math.round(tolose / 0.48);
+  D._proj = { lL, lH, tolose, wks, pct };
+  document.getElementById('pjL').textContent = lL;
+  document.getElementById('pjH').textContent = lH;
+  document.getElementById('pjW').textContent = wks > 0 ? wks : '—';
+  document.getElementById('pjT').textContent = tw;
+  // Goal classification badge
+  const gc = goalClass(w, tw);
+  const badgeEl = document.getElementById('pjGoalBadge');
+  if (badgeEl) badgeEl.innerHTML = '<span class="goal-badge ' + gc + '">' + gc.charAt(0).toUpperCase() + gc.slice(1) + '</span>';
+}
+
+function pickPace(val, el) {
+  D.pace = val;
+  document.querySelectorAll('.pace-card').forEach(c => {
+    c.classList.remove('sel');
+    const r = c.querySelector('.radio-dot');
+    if (r) { r.style.background = ''; r.style.borderColor = ''; }
+  });
+  el.classList.add('sel');
+  const r = el.querySelector('.radio-dot');
+  if (r) { r.style.background = 'var(--navy)'; r.style.borderColor = 'var(--navy)'; }
+  // Recalculate weeks based on pace
+  const kgPerWeek = {slow: 0.35, normal: 0.48, fast: 0.65};
+  const rate = kgPerWeek[val] || 0.48;
+  const wks = D._proj.tolose > 0 ? Math.max(1, Math.round(D._proj.tolose / rate)) : '—';
+  document.getElementById('pjW').textContent = wks;
+  /* Mensaje informativo (con check, no alerta) al elegir un ritmo distinto al recomendado */
+  const note = document.getElementById('paceNote');
+  if(note){
+    if(val === 'fast' || val === 'slow'){
+      note.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Revisa el impacto que tiene en las semanas para alcanzar tu meta.</span>';
+      note.style.display = '';
+    } else { note.style.display = 'none'; note.innerHTML = ''; }
+  }
+  document.getElementById('s6Btn').disabled = false;
+}
+
+// ─── PASO 7: MEDICACIÓN + ÚLTIMAS PREGUNTAS ───────────
+function pickPrevMeds(val, el) {
+  D.prevMeds = val;
+  s7v.prevMeds = true;
+  document.querySelectorAll('#prevMedCards .opt-card').forEach(c => {
+    c.classList.remove('selected');
+    const r = c.querySelector('.radio-dot');
+    if (r) { r.style.background = ''; r.style.borderColor = ''; }
+  });
+  el.classList.add('selected');
+  const r = el.querySelector('.radio-dot');
+  if (r) { r.style.background = 'var(--navy)'; r.style.borderColor = 'var(--navy)'; }
+
+  const subForm = document.getElementById('prevMedSubForm');
+  const glp1Block = document.getElementById('glp1NameBlock');
+  const otherBlock = document.getElementById('otherMedBlock');
+
+  if (val === 'none') {
+    subForm.classList.remove('vis');
+    s7Dose = true; // no dose needed
+  } else {
+    subForm.classList.add('vis');
+    s7Dose = false;
+    glp1Block.style.display = val === 'glp1' ? 'block' : 'none';
+    otherBlock.style.display = val === 'other' ? 'block' : 'none';
+  }
+  checkS7();
+}
+
+function pickDose(val, el) {
+  D.lastDose = val;
+  s7Dose = true;
+  document.querySelectorAll('#doseList .dose-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  checkS7();
+}
+
+function pickYN7(key, val) {
+  document.getElementById(key + 'Y').classList.toggle('sel', val === 'yes');
+  document.getElementById(key + 'N').classList.toggle('sel', val === 'no');
+  const txt = document.getElementById(key + 'Txt');           /* 'pg' ya no tiene detalle */
+  if (txt) txt.classList.toggle('vis', val === 'yes');
+  D[key] = val === 'yes';
+  s7v[key] = true;
+  if (val === 'no' && key === 'nt') document.getElementById('ntDetail').value = '';
+  checkS7();
+}
+
+function checkS7() {
+  const medOk = s7v.prevMeds && (D.prevMeds === 'none' ||
+    (D.prevMeds === 'glp1' && document.getElementById('glp1Name').value && s7Dose) ||
+    (D.prevMeds === 'other' && document.getElementById('otherMedDetail').value.trim() && s7Dose));
+  const pgOk = s7v.pg;                                        /* pg ahora es Sí/No sin detalle */
+  const ntOk = s7v.nt && (D.nt === false || document.getElementById('ntDetail').value.trim() !== '');
+  document.getElementById('s7Btn').disabled = !(medOk && pgOk && ntOk);
+}
+
+// ─── RESULTADO ────────────────────────────────────────
+function buildResult() {
+  const { lL, lH, tolose, wks } = D._proj;
+  const bmi = D.bmi;
+  let prob = 78;
+  if (bmi >= 30) prob = 86;
+  if (bmi >= 35) prob = 91;
+  if (D.prevMeds === 'none') prob = Math.min(94, prob + 3);
+  document.getElementById('rProb').textContent = prob + '%';
+  document.getElementById('rBmi').textContent = bmi.toFixed(1).replace('.', ',');
+  document.getElementById('rsW').textContent = D.weight;
+  document.getElementById('rsG').textContent = D.targetWeight;
+  // Goal classification badge
+  const gc = goalClass(D.weight, D.targetWeight);
+  const gcLabels = {simple:'Objetivo simple', moderado:'Objetivo moderado', extremo:'Objetivo extremo'};
+  document.getElementById('goalBadge').innerHTML = '<span class="goal-badge ' + gc + '">' + gcLabels[gc] + '</span>';
+}
+
+// ─── REGISTRO ────────────────────────────────────────
+function onRegionChange() {
+  /* Sin aviso de cobertura regional. */
+}
+
+function togglePw(id) {
+  const input = document.getElementById(id || 'rPw');
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+/* Aceptaciones separadas: todas obligatorias */
+function syncConsentAll(){
+  const cbAll = document.getElementById('cb_all');
+  if(cbAll) cbAll.classList.toggle('chk', Object.keys(regConsents).every(k => regConsents[k]));
+}
+function toggleConsent(key) {
+  regConsents[key] = !regConsents[key];
+  document.getElementById('cb_' + key).classList.toggle('chk', regConsents[key]);
+  syncConsentAll();
+  vReg();
+}
+/* Aceptar / desmarcar todos los consentimientos de una vez */
+function acceptAllConsents() {
+  const keys = Object.keys(regConsents);
+  const target = !keys.every(k => regConsents[k]);   /* si faltaba alguno → acepta todos; si estaban todos → los desmarca */
+  keys.forEach(k => {
+    regConsents[k] = target;
+    const cb = document.getElementById('cb_' + k);
+    if(cb) cb.classList.toggle('chk', target);
+  });
+  syncConsentAll();
+  vReg();
+}
+function allConsentsOk() {
+  return Object.keys(regConsents).every(k => regConsents[k]);
+}
+
+/* Validador de correo (formato HTML5 estándar) */
+const EMAIL_RE = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
+/* ══ RUT (identificador principal y único del paciente) ════════════
+   Validación con módulo 11, formato estándar 12.345.678-9 y unicidad
+   contra el registro de cuentas de la plataforma (localStorage bp_users). */
+function cleanRut(s){ return String(s||'').replace(/[^0-9kK]/g,'').toUpperCase(); }
+function rutDV(body){ let sum=0, mul=2; for(let i=body.length-1;i>=0;i--){ sum += parseInt(body[i],10)*mul; mul = mul===7?2:mul+1; } const r = 11-(sum%11); return r===11?'0':(r===10?'K':String(r)); }
+function rutValido(s){ const c=cleanRut(s); if(c.length<2) return false; const body=c.slice(0,-1), dv=c.slice(-1); if(!/^\d+$/.test(body) || body.length<7) return false; return rutDV(body)===dv; }
+function formatRut(s){ const c=cleanRut(s); if(c.length<2) return c; let body=c.slice(0,-1), dv=c.slice(-1); body=body.replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return body+'-'+dv; }
+function getUsers(){
+  try{ const u=JSON.parse(localStorage.getItem('bp_users')||'null'); if(Array.isArray(u)) return u; }catch(e){}
+  const seed=[
+    {rut:'11.111.111-1', email:'demo@balanceplus.cl',     celular:'+569 1111 1111'},
+    {rut:'22.222.222-2', email:'paciente@balanceplus.cl', celular:'+569 2222 2222'}
+  ];
+  try{ localStorage.setItem('bp_users', JSON.stringify(seed)); }catch(e){}
+  return seed;
+}
+function rutTaken(rut, exceptRut){ const c=cleanRut(rut); const ex=cleanRut(exceptRut||''); return getUsers().some(u=>cleanRut(u.rut)===c && cleanRut(u.rut)!==ex); }
+function emailTaken(email, exceptRut){ const e=String(email||'').toLowerCase().trim(); const ex=cleanRut(exceptRut||''); return getUsers().some(u=>String(u.email||'').toLowerCase().trim()===e && cleanRut(u.rut)!==ex); }
+function phoneTaken(phone, exceptRut){ const p=String(phone||'').replace(/\D/g,''); const ex=cleanRut(exceptRut||''); return p.length>=8 && getUsers().some(u=>String(u.celular||'').replace(/\D/g,'')===p && cleanRut(u.rut)!==ex); }
+function formatRutInput(){ const el=document.getElementById('rRut'); if(!el) return; el.value=formatRut(el.value); }
+
+function vReg() {
+  const name = document.getElementById('rName').value.trim();
+  const last = document.getElementById('rLast').value.trim();
+  const email = document.getElementById('rEmail').value.trim();
+  const pw  = document.getElementById('rPw').value;
+  const pw2 = document.getElementById('rPw2').value;
+  const phone = document.getElementById('rPhone').value;
+  const region = document.getElementById('rRegion').value;
+
+  const rut   = document.getElementById('rRut').value.trim();
+
+  /* RUT: formato + dígito verificador (módulo 11) + unicidad en la plataforma */
+  const rutFmtOk = rutValido(rut);
+  const rutDup   = rutFmtOk && rutTaken(rut);
+  const rutOk    = rutFmtOk && !rutDup;
+
+  const emailFmtOk = EMAIL_RE.test(email);
+  const emailDup   = emailFmtOk && emailTaken(email);
+  const emailOk    = emailFmtOk && !emailDup;
+
+  const pwOk    = regSocialMode || (pw.length >= 8 && /[a-z]/.test(pw) && /[A-Z]/.test(pw));
+  const pw2Ok   = regSocialMode || (pw2.length > 0 && pw2 === pw);
+  const phoneDigits = phone.replace(/\D/g, '');
+  const phoneFmtOk = /^569\d{8}$/.test(phoneDigits);   // +569 + 8 dígitos
+  const phoneDup   = phoneFmtOk && phoneTaken(phone);
+  const phoneOk    = phoneFmtOk && !phoneDup;
+
+  /* Mensajes de error dinámicos (formato vs. duplicado) */
+  const errRut = document.getElementById('errRRut');
+  errRut.textContent = rutDup ? 'Este RUT ya está registrado en la plataforma' : 'Ingresa un RUT válido';
+  errRut.classList.toggle('show', cleanRut(rut).length > 1 && !rutOk);
+
+  const errEmail = document.getElementById('errREmail');
+  errEmail.textContent = emailDup ? 'Este correo ya está registrado en la plataforma' : 'Ingresa un correo electrónico válido';
+  errEmail.classList.toggle('show', email.length > 0 && !emailOk);
+
+  const errPhone = document.getElementById('errRPhone');
+  errPhone.textContent = phoneDup ? 'Este celular ya está registrado en la plataforma' : 'Ingresa un celular chileno válido (+569 seguido de 8 dígitos)';
+  errPhone.classList.toggle('show', phoneDigits.length > 3 && !phoneOk);
+
+  document.getElementById('errRPw').classList.toggle('show',  pw.length  > 0 && !pwOk);
+  document.getElementById('errRPw2').classList.toggle('show', pw2.length > 0 && !pw2Ok);
+
+  /* Check verde cuando el campo cumple la validación */
+  document.getElementById('okRut').classList.toggle('show', rutOk);
+  document.getElementById('okEmail').classList.toggle('show', emailOk);
+  document.getElementById('okPw').classList.toggle('show', pwOk);
+  document.getElementById('okPw2').classList.toggle('show', pw2Ok);
+  document.getElementById('okPhone').classList.toggle('show', phoneOk);
+
+  const ok = name && last && rutOk && emailOk && pwOk && pw2Ok && phoneOk && region && allConsentsOk();
+  document.getElementById('regBtn').disabled = !ok;
+}
+
+/* ── Sugerencia de dominio de correo (gmail, hotmail, etc.) ── */
+const EMAIL_DOMAINS = ['gmail.com','hotmail.com','outlook.com','yahoo.com','yahoo.es','icloud.com','hotmail.es','live.cl','vtr.net','gmail.cl'];
+function suggestEmail() {
+  const el = document.getElementById('rEmail');
+  const box = document.getElementById('emailSuggest');
+  const val = el.value.trim();
+  const at = val.indexOf('@');
+  if (at < 1) { box.classList.remove('vis'); box.innerHTML = ''; return; }
+  const local = val.slice(0, at);
+  const dom = val.slice(at + 1).toLowerCase();
+  const matches = EMAIL_DOMAINS.filter(d => d.startsWith(dom));
+  if (!matches.length || (matches.length === 1 && matches[0] === dom)) { box.classList.remove('vis'); box.innerHTML = ''; return; }
+  box.innerHTML = matches.slice(0, 6).map(d =>
+    `<div class="med-suggest-item" onmousedown="pickEmail('${local.replace(/'/g, "\\'")}@${d}')">${local}@${d}</div>`
+  ).join('');
+  box.classList.add('vis');
+}
+function pickEmail(v) {
+  document.getElementById('rEmail').value = v;
+  const box = document.getElementById('emailSuggest');
+  box.classList.remove('vis'); box.innerHTML = '';
+  vReg();
+}
+function hideEmailSuggest() {
+  const box = document.getElementById('emailSuggest');
+  setTimeout(() => { box.classList.remove('vis'); box.innerHTML = ''; }, 150);
+}
+
+/* ── Teléfono chileno: prefijo fijo +569, sólo se completan 8 dígitos ── */
+function formatChilePhone() {
+  const el = document.getElementById('rPhone');
+  let d = el.value.replace(/\D/g, '');
+  if (d.startsWith('569')) d = d.slice(3);
+  else if (d.startsWith('56')) d = d.slice(2);
+  else if (d.startsWith('9')) d = d.slice(1);
+  d = d.slice(0, 8);
+  let out = '+569';
+  if (d.length > 0) out += ' ' + d.slice(0, 4);
+  if (d.length > 4) out += ' ' + d.slice(4, 8);
+  el.value = out;
+  vReg();
+}
+
+/* ── Reúne todos los datos del intake en un objeto de perfil y lo devuelve ── */
+function buildIntakeProfile(){
+  /* Registration fields */
+  const _capF = s => String(s||'').trim().replace(/(^|\s)([a-záéíóúñü])/g, (m,p,c)=>p+c.toUpperCase());
+  const nombre   = _capF((document.getElementById('rName') || {}).value || '');
+  const apellido = _capF((document.getElementById('rLast') || {}).value || '');
+  const email    = (document.getElementById('rEmail')  || {}).value || '';
+  const celular  = (document.getElementById('rPhone')  || {}).value || '';
+  const region   = (document.getElementById('rRegion') || {}).value || '';
+  const rut      = formatRut((document.getElementById('rRut') || {}).value || '');
+
+  /* Conditions selected — incluye siempre el estado de "Ninguna de las anteriores" */
+  const condChips = document.querySelectorAll('#condGrid .cond-chip.sel:not(.none-chip)');
+  const condList = Array.from(condChips).map(el => el.textContent.trim());
+  const condicionesNinguna = document.querySelector('#condGrid .cond-chip.none-chip.sel') !== null;
+
+  /* Exclusions — incluye siempre el estado de "Ninguna de las anteriores" */
+  const exclSel = document.querySelectorAll('#exclList .excl-item.sel:not(.none-item)');
+  const exclList = Array.from(exclSel).map(el => {
+    const txt = el.querySelector('.excl-txt');
+    return txt && txt.childNodes[0] ? txt.childNodes[0].textContent.trim() : el.textContent.trim();
+  });
+  const exclusionesNinguna = document.querySelector('#exclList .excl-item.none-item.sel') !== null;
+  const excluyentes = exclList.length > 0;
+
+  /* Tipos de opiáceo / cirugía seleccionados (varias pills) */
+  const opioideTipo = (D.op === true && D.opioidTypes.length)  ? D.opioidTypes.join(', ')  : null;
+  const cirugiaTipo = (D.sx === true && D.surgeryTypes.length) ? D.surgeryTypes.join(', ') : null;
+
+  /* Date of registration */
+  const now = new Date();
+  const dd  = String(now.getDate()).padStart(2,'0');
+  const mm  = String(now.getMonth()+1).padStart(2,'0');
+  const yy  = String(now.getFullYear()).slice(-2);
+  const inscripcion = `${dd}/${mm}/${yy}`;
+
+  /* BMI */
+  const h  = D.height / 100;
+  const bmi = h ? +(D.weight / (h * h)).toFixed(1) : 0;
+
+  /* Sex label */
+  const sexoLabel = D.sex === 'F' ? 'Femenino' : D.sex === 'M' ? 'Masculino' : null;
+
+  /* Blood pressure label — claves IGUALES a las que asigna pickBP() (s5).
+     Los textos coinciden exactamente con las opciones del <select id="pfi-pa">
+     de portal.html para que el valor se muestre y preseleccione sin pérdida. */
+  const bpLabels = {
+    normal:  'Menos de 120 mmHg — Normal',
+    elevada: '120–129 mmHg — Elevada',
+    hta1:    '130–139 mmHg — Hipertensión I',
+    hta2:    '140+ mmHg — Hipertensión II',
+    noSabe:  'No lo sé'
+  };
+
+  /* Heart rate label — claves IGUALES a las que asigna pickHR() (s5).
+     Los textos coinciden con las opciones del <select id="pfi-fc"> de
+     portal.html (mismos rangos del intake: 60–100 / 101–110 / >110). */
+  const hrLabels = {
+    baja:    'Menos de 60 lpm — Bradicardia',
+    normal:  '60–100 lpm — Normal',
+    alta:    '101–110 lpm — Ligeramente elevada',
+    muyAlta: 'Más de 110 lpm — Taquicardia',
+    noSabe:  'No lo sé'
+  };
+
+  const profile = {
+    nombre,
+    apellido,
+    rut,
+    email,
+    celular,
+    region,
+    inscripcion,
+    sexo:          sexoLabel,
+    edad:          D.age,
+    fecha_nacimiento: D.birthDate,
+    estatura:      D.height,
+    peso_inicial:  D.weight,
+    peso_actual:   D.weight,
+    peso_objetivo: D.targetWeight,
+    bmi,
+    pa:            bpLabels[String(D.bp)]  || null,
+    fc:            hrLabels[String(D.hr)]  || null,
+    opioides:      D.op === true,
+    opioide_tipo:  opioideTipo,
+    cirugia:       D.sx === true,
+    cirugia_tipo:  cirugiaTipo,
+    rx:            D.mx === true,
+    medicamentos:  D.mx === true ? D.medications.slice() : [],
+    condiciones:   condList,
+    condiciones_ninguna: condicionesNinguna,
+    exclusiones:   exclList,
+    exclusiones_ninguna: exclusionesNinguna,
+    excluyentes,
+    exclusion_marcada: D.exclusionFlagged === true,   /* marca interna no visible: en algún momento marcó una exclusión */
+    glp1:          D.prevMeds || 'none',
+    otros_meds:    false,
+    programas:     false,
+    _updates:      {}
+  };
+
+  return profile;
+}
+
+/* ── Login social: trae nombre, apellido y correo del proveedor y pasa a
+   completar el resto del registro (RUT, celular, región, consentimientos). ── */
+let regSocialMode = false;
+const SOCIAL_ICONS = {
+  google: '<svg width="18" height="18" viewBox="0 0 20 20"><path d="M19.6 10.23c0-.68-.06-1.36-.17-2H10v3.79h5.4a4.6 4.6 0 01-2 3.03v2.5h3.24c1.9-1.75 2.96-4.33 2.96-7.32z" fill="#4285F4"/><path d="M10 20c2.7 0 4.97-.9 6.62-2.44l-3.23-2.51c-.9.6-2.04.95-3.39.95-2.6 0-4.8-1.76-5.59-4.12H1.07v2.6A9.99 9.99 0 0010 20z" fill="#34A853"/><path d="M4.41 11.88A5.98 5.98 0 014.1 10c0-.65.11-1.28.31-1.88V5.52H1.07A9.99 9.99 0 000 10c0 1.61.38 3.13 1.07 4.48l3.34-2.6z" fill="#FBBC05"/><path d="M10 3.96c1.47 0 2.78.5 3.81 1.5l2.86-2.86C14.97.99 12.7 0 10 0A9.99 9.99 0 001.07 5.52l3.34 2.6C5.2 5.72 7.4 3.96 10 3.96z" fill="#EA4335"/></svg>',
+  apple:  '<svg width="18" height="18" viewBox="0 0 20 20" fill="#000"><path d="M13.54 3.42c-.9 1.08-.84 2.14-.83 2.17.06.004 1.6.078 2.57-1.28.88-1.25.77-2.28.76-2.31-.05-.003-1.54.056-2.5 1.42zm2.63 3.04c-1.41-.085-2.6.8-3.26.8-.66 0-1.68-.76-2.77-.74-1.42.02-2.74.83-3.47 2.1-1.49 2.57-.38 6.37 1.06 8.46.71 1.02 1.55 2.16 2.66 2.12 1.06-.04 1.47-.69 2.75-.69 1.28 0 1.64.69 2.76.67 1.15-.02 1.87-1.04 2.57-2.06.81-1.17 1.15-2.31 1.16-2.37-.03-.01-2.22-.86-2.24-3.41-.02-2.13 1.74-3.15 1.82-3.21-.99-1.47-2.53-1.63-3.04-1.67z"/></svg>'
+};
+const SOCIAL_DEMO = {
+  google: { nombre: 'María José', apellido: 'González', email: 'maria.gonzalez@gmail.com',  label: 'Google' },
+  apple:  { nombre: 'María José', apellido: 'González', email: 'maria.gonzalez@icloud.com', label: 'Apple'  }
+};
+function doSocialReg(provider) {
+  const d = SOCIAL_DEMO[provider] || SOCIAL_DEMO.google;
+  regSocialMode = true;
+
+  /* Datos que llegan del proveedor (no editables) */
+  const setRO = (id, val) => { const el = document.getElementById(id); if(el){ el.value = val; el.readOnly = true; el.style.background = 'var(--sage-faint)'; el.style.cursor = 'not-allowed'; } };
+  setRO('rName',  d.nombre);
+  setRO('rLast',  d.apellido);
+  setRO('rEmail', d.email);
+
+  /* Oculta lo que no aplica al login social */
+  ['regSocial','regDivider','rPwGroup','rPw2Group'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
+  const title = document.getElementById('regTitle'); if(title) title.textContent = 'Completa tu registro';
+  const note  = document.getElementById('regSocialNote'); if(note) note.style.display = 'flex';
+  const ic = document.getElementById('regSocialIcon'); if(ic) ic.innerHTML = SOCIAL_ICONS[provider] || SOCIAL_ICONS.google;
+
+  const rut = document.getElementById('rRut'); if(rut) rut.focus();
+  vReg();
+}
+
+/* Sale del modo social: vuelve a la pantalla de registro con las redes sociales */
+function exitSocialMode() {
+  regSocialMode = false;
+  ['rName','rLast','rEmail'].forEach(id => { const el = document.getElementById(id); if(el){ el.value = ''; el.readOnly = false; el.style.background = ''; el.style.cursor = ''; } });
+  ['regSocial','regDivider','rPwGroup','rPw2Group'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = ''; });
+  const note = document.getElementById('regSocialNote'); if(note) note.style.display = 'none';
+  const title = document.getElementById('regTitle'); if(title) title.textContent = 'Crea tu cuenta';
+  vReg();
+}
+
+/* "Volver" en el registro: si vino de una red social, regresa a la pantalla
+   de registro (redes sociales); si no, vuelve al paso anterior. */
+function regBack() {
+  if (regSocialMode) { exitSocialMode(); return; }
+  goTo('sResult');
+}
+
+async function doReg() {
+  const btn = document.getElementById('regBtn');
+  if(!window.BP){ alert('Error de conexión. Recarga la página e intenta de nuevo.'); return; }
+
+  const profile = buildIntakeProfile();
+  const email = ((document.getElementById('rEmail')||{}).value || '').trim();
+  const pw    =  (document.getElementById('rPw')||{}).value || '';
+
+  /* Puente: guardamos la ficha localmente; se creará en la base al haber sesión. */
+  BP.savePendingIntake(profile);
+
+  if(btn) btn.disabled = true;
+
+  /* 1) Crear la cuenta en Supabase Auth */
+  const { error: suErr } = await BP.signUp({ email, password: pw, nombre: profile.nombre, apellido: profile.apellido });
+  if(suErr){
+    if(btn) btn.disabled = false;
+    const m = String(suErr.message||'').toLowerCase();
+    if(m.includes('registered') || m.includes('already')){
+      processCompleted = true;   /* ya tiene cuenta: no es abandono */
+      alert('Este correo ya está registrado. Inicia sesión en el portal.');
+      window.location.href = 'portal.html';
+    } else {
+      alert('No se pudo crear la cuenta: ' + (suErr.message||'inténtalo nuevamente'));
+    }
+    return;
+  }
+
+  processCompleted = true;   /* cuenta creada: a partir de aquí no es abandono */
+
+  /* 2) Intentar iniciar sesión. Si el correo requiere confirmación, no habrá
+        sesión todavía: la ficha se creará al confirmar e iniciar sesión. */
+  const { error: siErr } = await BP.signIn({ email, password: pw });
+  if(siErr){
+    alert('¡Cuenta creada! Te enviamos un correo para confirmarla. Confírmalo e inicia sesión para activar tu portal.');
+    window.location.href = 'portal.html';
+    return;
+  }
+
+  /* 3) Con sesión activa, creamos la ficha de inmediato. */
+  const r = await BP.flushPendingIntake();
+  if(r && r.error) console.error('[BP] doReg flush', r.error);
+  window.location.href = 'portal.html';
+}
+
+/* ── Prellenar peso/estatura/peso objetivo desde la calculadora del Home
+   (index.html) ── Si la persona usó la calculadora de index.html (o
+   simplemente la vio con sus valores por defecto), esos mismos kg/cm/meta
+   deben aparecer aquí como punto de partida del Paso 1. Si nunca pasó por
+   index.html, los valores del HTML (100 kg / 170 cm / 82 kg objetivo) ya
+   coinciden con los por-defecto de la calculadora, así que el dato sigue
+   siendo el mismo en ambos lugares. Como la calculadora no pide peso
+   objetivo, éste viene calculado como peso actual menos la pérdida máxima
+   posible (extremo alto del rango "Podrías perder"). */
+function prefillFromCalc() {
+  try {
+    const raw = localStorage.getItem('bp_calc');
+    if (!raw) return;
+    const calc = JSON.parse(raw);
+    const w = Math.round(parseFloat(calc.weight));
+    const h = Math.round(parseFloat(calc.height));
+    const t = Math.round(parseFloat(calc.targetWeight));
+    const rWEl = document.getElementById('rW');
+    const rHEl = document.getElementById('rH');
+    const rTEl = document.getElementById('rT');
+    if (w && rWEl) {
+      rWEl.value = Math.max(+rWEl.min, Math.min(+rWEl.max, w));
+      D.weight = +rWEl.value;
+    }
+    if (h && rHEl) {
+      rHEl.value = Math.max(+rHEl.min, Math.min(+rHEl.max, h));
+      D.height = +rHEl.value;
+    }
+    if (!isNaN(t) && t && rTEl) {
+      rTEl.value = Math.max(+rTEl.min, Math.min(+rTEl.max, t));
+      D.targetWeight = +rTEl.value;
+    }
+  } catch (e) { /* bp_calc malformado: se ignora y se mantienen los valores por defecto */ }
+}
+
+/* ════════════════════════════════════════════════════════════
+   AUTOSAVE — las respuestas ingresadas se guardan SIEMPRE en
+   localStorage (clave bp_intake) y se restauran al recargar.
+════════════════════════════════════════════════════════════ */
+const INTAKE_KEY = 'bp_intake';
+function _v(id){ const el = document.getElementById(id); return el ? el.value : ''; }
+function _setVal(id, v){ const el = document.getElementById(id); if(el && v !== undefined && v !== null && v !== '') el.value = v; }
+function _findByArg(selector, arg){
+  return [...document.querySelectorAll(selector)].find(el => (el.getAttribute('onclick') || '').includes("'" + arg + "'"));
+}
+
+function persistIntake(){
+  try{
+    const snap = {
+      D,
+      conds:    [...document.querySelectorAll('#condGrid .cond-chip.sel:not(.none-chip)')].map(e => e.dataset.v),
+      condNone: !!document.querySelector('#condGrid .cond-chip.none-chip.sel'),
+      excl:     [...document.querySelectorAll('#exclList .excl-item.sel:not(.none-item)')].map(e => e.dataset.v),
+      exclNone: !!document.querySelector('#exclList .excl-item.none-item.sel'),
+      glp1Name: _v('glp1Name'), otherMedDetail: _v('otherMedDetail'),
+      ntDetail: _v('ntDetail'),
+      reg: { rName:_v('rName'), rLast:_v('rLast'), rRut:_v('rRut'), rEmail:_v('rEmail'), rPw:_v('rPw'), rPw2:_v('rPw2'), rPhone:_v('rPhone'), rRegion:_v('rRegion') },
+      regConsents,
+      step: (document.querySelector('.step.active') || {}).id || 's1'
+    };
+    localStorage.setItem(INTAKE_KEY, JSON.stringify(snap));
+  }catch(e){ /* almacenamiento no disponible: se ignora */ }
+}
+
+function restoreIntake(){
+  let snap;
+  try{ snap = JSON.parse(localStorage.getItem(INTAKE_KEY)); }catch(e){ return; }
+  if(!snap || !snap.D) return;
+  try{
+    Object.assign(D, snap.D);
+
+    /* Paso 1 — medidas / sexo / nacimiento */
+    _setVal('rW', D.weight); _setVal('rH', D.height); _setVal('rT', D.targetWeight);
+    if(D.birthDate) _setVal('birthDate', D.birthDate);
+    calcBmi();
+    if(D.birthDate) onBirth();
+    if(D.sex){ const sEl = document.getElementById(D.sex === 'M' ? 'cM' : 'cF'); if(sEl) pickSex(D.sex, sEl); }
+
+    /* Paso 2 — exclusiones */
+    (snap.excl || []).forEach(v => { const el = document.querySelector('#exclList .excl-item[data-v="' + v + '"]'); if(el) el.classList.add('sel'); });
+    if(snap.exclNone){ const el = document.querySelector('#exclList .none-item'); if(el) el.classList.add('sel'); }
+    if((snap.excl && snap.excl.length) || snap.exclNone) document.getElementById('exclBtn').disabled = false;
+
+    /* Paso 3 — condiciones (todas visibles) */
+    (snap.conds || []).forEach(v => {
+      const el = document.querySelector('#condGrid .cond-chip[data-v="' + v + '"]');
+      if(el){ el.classList.add('sel'); }
+    });
+    if(snap.condNone){ const el = document.querySelector('#condGrid .none-chip'); if(el) el.classList.add('sel'); }
+    updateCondNoneState();
+
+    /* Paso 3 — historial */
+    if(D.op === true) pickYN4('op','yes'); else if(D.op === false) pickYN4('op','no');
+    if(D.sx === true) pickYN4('sx','yes'); else if(D.sx === false) pickYN4('sx','no');
+    if(D.mx === true) pickYN4('mx','yes'); else if(D.mx === false) pickYN4('mx','no');
+    renderTypeChips('op'); renderTypeChips('sx'); renderMedChips();
+
+    /* Paso 4 — signos vitales */
+    if(D.bp){ const el = _findByArg('#bpList .vitals-card', D.bp); if(el) pickBP(D.bp, el); }
+    if(D.hr){ const el = _findByArg('#hrList .vitals-card', D.hr); if(el) pickHR(D.hr, el); }
+
+    /* Paso 5 — ritmo */
+    if(D.pace){ const el = _findByArg('.pace-card', D.pace); if(el) pickPace(D.pace, el); }
+
+    /* Paso 6 — medicación previa / programa / notas */
+    if(D.prevMeds){ const el = _findByArg('#prevMedCards .opt-card', D.prevMeds); if(el) pickPrevMeds(D.prevMeds, el); }
+    _setVal('glp1Name', snap.glp1Name); _setVal('otherMedDetail', snap.otherMedDetail);
+    if(D.lastDose){ const el = _findByArg('#doseList .dose-card', D.lastDose); if(el) pickDose(D.lastDose, el); }
+    if(D.pg === true) pickYN7('pg','yes'); else if(D.pg === false) pickYN7('pg','no');
+    if(D.nt === true) pickYN7('nt','yes'); else if(D.nt === false) pickYN7('nt','no');
+    _setVal('ntDetail', snap.ntDetail);
+
+    /* Inscripción */
+    if(snap.reg){ _setVal('rName', snap.reg.rName); _setVal('rLast', snap.reg.rLast); _setVal('rRut', snap.reg.rRut); _setVal('rEmail', snap.reg.rEmail); _setVal('rPw', snap.reg.rPw); _setVal('rPw2', snap.reg.rPw2); _setVal('rPhone', snap.reg.rPhone); _setVal('rRegion', snap.reg.rRegion); }
+    if(snap.regConsents){ Object.keys(regConsents).forEach(k => { if(snap.regConsents[k] && !regConsents[k]) toggleConsent(k); }); }
+    onRegionChange(); vReg();
+
+    /* Re-validar y volver al paso donde estaba */
+    checkS1(); checkS4(); checkS7();
+    if(snap.step && PASOS.includes(snap.step)) goTo(snap.step);
+  }catch(e){ /* si la restauración falla, se sigue con el formulario en blanco */ }
+}
+
+/* Guardar ante cualquier interacción del usuario dentro del wizard */
+(function(){
+  const w = document.querySelector('.wizard');
+  if(!w) return;
+  w.addEventListener('click',  persistIntake);
+  w.addEventListener('input',  persistIntake);
+  w.addEventListener('change', persistIntake);
+})();
+
+// ─── INICIALIZAR ─────────────────────────────────────
+prefillFromCalc();
+calcBmi();
+restoreIntake();
+</script>
+</body>
+</html>

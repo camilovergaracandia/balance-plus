@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balance+ | Programa Médico</title>
+  <link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #1B2D5E;
+      --navy-dark:  #142248;
+      --navy-mid:   #2a4080;
+      --sage:       #8AB090;
+      --sage-dark:  #6A9070;
+      --sage-light: #c8deca;
+      --sage-faint: #f0f6f1;
+      --text:       #1a1f2e;
+      --muted:      #5a6475;
+      --border:     #dde3e8;
+      --white:      #ffffff;
+      --bg:         #f7f9fb;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────────── */
+    .page {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      height: 68px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .logo-wordmark {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-wordmark span {
+      color: var(--sage-dark);
+    }
+
+    .logo-tagline {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--sage-dark);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: var(--sage); }
+
+    /* ─── MAIN ───────────────────────────────────────────── */
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 62fr 38fr;
+      overflow: hidden;
+    }
+
+    /* ─── LEFT COLUMN ────────────────────────────────────── */
+    .col-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 32px 48px 28px 48px;
+      background: var(--white);
+      overflow: hidden;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--sage-faint);
+      color: var(--sage-dark);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--sage-light);
+      width: fit-content;
+      margin-bottom: 24px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--sage-dark);
+    }
+
+    h1 {
+      font-size: clamp(28px, 3.2vw, 44px);
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--navy);
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--sage-dark);
+    }
+
+    .lead {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 440px;
+      margin-bottom: 20px;
+    }
+
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 24px;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .check-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--sage-dark);
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      width: fit-content;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 16px rgba(106, 144, 112, 0.35);
+    }
+
+    .hero-cta:hover {
+      background: var(--sage);
+      transform: translateY(-1px);
+    }
+
+    .cta-arrow {
+      transition: transform 0.2s;
+    }
+
+    .hero-cta:hover .cta-arrow {
+      transform: translateX(4px);
+    }
+
+    /* ─── HERO FLEX (texto + imagen) ─────────────────────── */
+    .hero-flex {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      width: 100%;
+    }
+
+    .hero-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero-image-col {
+      flex-shrink: 0;
+      width: 345px;
+    }
+
+    .hero-image-col img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 20px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-image-col { width: 270px; }
+    }
+
+    /* ─── STATS ROW ─────────────────────────────────────── */
+    .stats-row {
+      display: flex;
+      gap: 0;
+      margin-bottom: 28px;
+    }
+
+    .stat {
+      flex: 0 0 22%;
+      display: flex;
+      flex-direction: column;
+      padding-right: 24px;
+    }
+
+    .stat + .stat {
+      padding-left: 24px;
+      padding-right: 24px;
+      border-left: 1px solid var(--border);
+    }
+
+    .stat-value {
+      font-size: clamp(30px, 3.5vw, 42px);
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -1.5px;
+      line-height: 1;
+    }
+
+    .stat-value span { color: var(--sage-dark); }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-top: 6px;
+    }
+
+    /* ─── RIGHT COLUMN ───────────────────────────────────── */
+    .col-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 48px 40px 52px;
+      background: var(--bg);
+    }
+
+    .section-label {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0;
+      color: var(--navy);
+      margin-bottom: 18px;
+    }
+
+    /* ─── FORM ───────────────────────────────────────────── */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+    }
+
+    .form-group label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .form-group select,
+    .form-group input,
+    .form-group textarea {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      padding: 10px 13px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-group select {
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6475' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 13px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .form-group select:focus,
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(27,45,94,0.08);
+    }
+
+    .form-group select::placeholder,
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #aab0bb;
+    }
+
+    .form-group textarea {
+      resize: none;
+      height: 82px;
+      line-height: 1.5;
+    }
+
+    .form-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 2px 0;
+    }
+
+    .c-err {
+      display: none;
+      font-size: 11px;
+      font-weight: 600;
+      color: #dc2626;
+      margin-top: 1px;
+    }
+    .c-err.show { display: block; }
+    .ok-tick {
+      display: none;
+      color: var(--sage-dark);
+      font-weight: 800;
+      margin-left: 5px;
+    }
+    .ok-tick.show { display: inline; }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: var(--navy);
+      color: #fff;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 13px 18px;
+      border-radius: 10px;
+      border: none;
+      text-decoration: none;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover { background: var(--navy-dark); }
+
+    .submit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--sage-dark);
+      color: #fff;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 13px 24px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      flex: 1;
+      transition: background 0.2s;
+    }
+
+    .submit-btn:hover { background: var(--sage); }
+
+    /* ─── SUCCESS STATE ──────────────────────────────────── */
+    .success-panel {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 14px;
+      padding: 20px 0;
+    }
+
+    .success-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--sage-faint);
+      border: 1.5px solid var(--sage-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.3px;
+    }
+
+    .success-sub {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 280px;
+    }
+
+    .success-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      text-decoration: none;
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      margin-top: 4px;
+      transition: background 0.15s;
+    }
+
+    .success-back:hover { background: var(--bg); }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      height: 60px;
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 48px;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    .footer-social {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .footer-social:hover { background: var(--navy-mid); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      html, body { overflow: auto; height: auto; }
+
+      nav { padding: 0 20px; }
+
+      main {
+        grid-template-columns: 1fr;
+        overflow: auto;
+        height: auto;
+      }
+
+      .col-left { padding: 40px 24px 32px; }
+
+      .hero-flex {
+        flex-direction: column;
+      }
+
+      .hero-image-col {
+        width: 330px;
+        margin-top: 24px;
+      }
+
+      .col-right {
+        padding: 32px 24px 40px;
+        background: var(--white);
+      }
+
+      .form-row { flex-direction: column; gap: 12px; }
+
+      .stat { flex: 1; }
+    }
+  </style>
+<script src="bp-cookies.js"></script>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <a class="logo-wrap" href="index.html">
+      <img src="Logo Simple.png" alt="Balance+" style="height:52px;display:block">
+    </a>
+    <div style="display:flex;align-items:center;gap:32px">
+      <a href="blog.html" style="font-size:14px;font-weight:500;color:var(--navy);text-decoration:none;opacity:0.75;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">Blog</a>
+      <a href="proveedores.html" style="font-size:14px;font-weight:500;color:var(--navy);text-decoration:none;opacity:0.75;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">Portal Proveedores</a>
+      <div style="width:1px;height:20px;background:var(--border)"></div>
+      <a href="portal.html" style="font-size:14px;font-weight:600;color:var(--navy);text-decoration:none;padding:10px 16px;border-radius:8px;border:1.5px solid var(--border);transition:background 0.15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">
+        Iniciar sesión
+      </a>
+      <a class="nav-cta" href="intake.html">
+        Comenzar evaluación
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- LEFT: Hero -->
+    <section class="col-left">
+      <div class="hero-flex">
+        <div class="hero-text">
+          <div style="display:inline-block;align-self:flex-start;background:var(--bg);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;letter-spacing:0.8px;padding:6px 14px;border-radius:20px;margin-bottom:14px;text-transform:uppercase;white-space:nowrap">Respaldo médico y ciencia GLP-1</div>
+          <h1>
+            Comienza tu tratamiento<br>
+            <em>médico</em> para bajar de peso<br>
+            en forma <em>segura</em>
+          </h1>
+
+          <p class="lead">
+            Balance+ combina medicamentos de última generación con seguimiento médico personalizado para que pierdas peso de forma segura y con resultados sostenibles.
+          </p>
+
+          <ul class="checklist">
+            <li>
+              <svg class="check-icon" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="10" fill="#f0f6f1"/>
+                <path d="M6 10.5l2.5 2.5L14 7.5" stroke="#6A9070" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <strong>Atención médica con diagnóstico, tratamiento y receta.</strong>
+            </li>
+            <li>
+              <svg class="check-icon" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="10" fill="#f0f6f1"/>
+                <path d="M6 10.5l2.5 2.5L14 7.5" stroke="#6A9070" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Recibe el medicamento en tu hogar
+            </li>
+            <li>
+              <svg class="check-icon" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="10" fill="#f0f6f1"/>
+                <path d="M6 10.5l2.5 2.5L14 7.5" stroke="#6A9070" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Haz tus reembolsos en Isapre, FONASA y seguros
+            </li>
+          </ul>
+
+          <a class="hero-cta" href="intake.html">
+            Ver si soy candidato
+            <svg class="cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="hero-image-col">
+          <img src="hero_collage.png" alt="Pacientes Balance+ en su rutina diaria con tratamiento GLP-1">
+        </div>
+      </div>
+
+      <!-- Resultados Clínicos -->
+      <div style="margin-top:44px">
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-value">-<span>18</span>%</div>
+            <div class="stat-label">reducción promedio del<br>peso corporal</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value"><span>6</span>x</div>
+            <div class="stat-label">más efectivo que<br>sólo dieta y ejercicio</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value"><span>93</span>%</div>
+            <div class="stat-label">de pacientes satisfechos con sus resultados</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT: Formulario de Contacto -->
+    <section class="col-right">
+
+      <h2 style="font-size:32px;font-weight:800;color:var(--navy);line-height:1.15;margin-bottom:28px">Contacto y Ayuda</h2>
+
+      <!-- Formulario -->
+      <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)" novalidate>
+
+        <!-- Tipo de requerimiento (administrado en admin) -->
+        <div class="form-group">
+          <label for="tipo">Tipo de Requerimiento</label>
+          <select id="tipo" name="tipo" required onchange="vContact()">
+            <option value="" disabled selected>Selecciona una opción</option>
+          </select>
+        </div>
+
+        <!-- Motivo -->
+        <div class="form-group">
+          <label for="motivo">Motivo</label>
+          <input type="text" id="motivo" name="motivo" placeholder="Describe brevemente el motivo" required oninput="vContact()">
+        </div>
+
+        <!-- Detalle -->
+        <div class="form-group">
+          <label for="detalle">Detalle</label>
+          <textarea id="detalle" name="detalle" placeholder="Cuéntanos con más detalle tu consulta o situación…" required oninput="vContact()"></textarea>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <!-- RUT -->
+        <div class="form-group">
+          <label for="rut">RUT <span class="ok-tick" id="okRut">✓</span></label>
+          <input type="text" id="rut" name="rut" placeholder="12.345.678-9" maxlength="12" autocomplete="off" required oninput="onRutInput();vContact()">
+          <div class="c-err" id="errRut">Ingresa un RUT válido</div>
+        </div>
+
+        <!-- Nombre + Apellido -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required oninput="vContact()">
+          </div>
+          <div class="form-group">
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido" name="apellido" placeholder="Tu apellido" required oninput="vContact()">
+          </div>
+        </div>
+
+        <!-- Teléfono + Email -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="telefono">Teléfono <span class="ok-tick" id="okTel">✓</span></label>
+            <input type="tel" id="telefono" name="telefono" value="+569 " placeholder="+569 1234 5678" required oninput="onPhoneInput();vContact()">
+            <div class="c-err" id="errTel">Ingresa un celular chileno válido (+569 seguido de 8 dígitos)</div>
+          </div>
+          <div class="form-group">
+            <label for="email">Correo electrónico <span class="ok-tick" id="okEmail">✓</span></label>
+            <input type="email" id="email" name="email" placeholder="tu@correo.cl" autocomplete="off" required oninput="vContact()">
+            <div class="c-err" id="errEmail">Ingresa un correo electrónico válido</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <a href="index.html" class="back-btn">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Volver al Inicio
+          </a>
+          <button type="submit" class="submit-btn" id="contactSubmit">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            Enviar solicitud
+          </button>
+        </div>
+
+      </form>
+
+      <!-- Estado de éxito -->
+      <div class="success-panel" id="successPanel">
+        <div class="success-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="success-title">¡Solicitud recibida!</div>
+        <div class="success-sub">Te responderemos al correo indicado dentro de las próximas 24–48 horas hábiles.</div>
+        <a href="index.html" class="success-back">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Volver al Inicio
+        </a>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div style="display:flex;align-items:center;gap:8px">
+      <a class="footer-social" href="#">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+          <path fill="white" d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+        </svg>
+      </a>
+      <a class="footer-social" href="#">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <rect x="2" y="2" width="20" height="20" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/>
+        </svg>
+      </a>
+      <a class="footer-social" href="#">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="white">
+          <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/>
+          <rect x="2" y="9" width="4" height="12"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+      </a>
+      <a class="footer-social" href="#">
+        <svg width="13" height="10" viewBox="0 0 24 17" fill="none">
+          <path fill="white" d="M23.5 2.6A3 3 0 0021.4.5C19.5 0 12 0 12 0S4.5 0 2.6.5A3 3 0 00.5 2.6C0 4.5 0 8.5 0 8.5s0 4 .5 5.9a3 3 0 002.1 2.1C4.5 17 12 17 12 17s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 12.5 24 8.5 24 8.5s0-4-.5-5.9z"/>
+          <polygon points="9.6,12.1 15.8,8.5 9.6,4.9" fill="var(--navy)"/>
+        </svg>
+      </a>
+      <!-- Separador -->
+      <span style="width:1px;height:18px;background:var(--border);margin:0 4px;opacity:0.5"></span>
+      <!-- App Store -->
+      <a href="#" title="Próximamente en App Store" style="display:block;line-height:0;opacity:0.5;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.5'">
+        <img src="App_Store.png" alt="App Store" style="height:25px;width:auto;display:block">
+      </a>
+      <!-- Google Play -->
+      <a href="#" title="Próximamente en Google Play" style="display:block;line-height:0;opacity:0.5;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.5'">
+        <img src="Logo Google Play.png" alt="Google Play" style="height:25px;width:auto;display:block">
+      </a>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:0">
+      <a href="02_Politica_de_Privacidad_BalancePlus.pdf" target="_blank" rel="noopener">Política de Privacidad</a>
+      <span style="margin:0 10px;opacity:0.35">&middot;</span>
+      <a href="01_Terminos_y_Condiciones_BalancePlus.pdf" target="_blank" rel="noopener">Términos y Condiciones</a>
+      <span style="margin:0 10px;opacity:0.35">&middot;</span>
+      <a href="legal.html" style="font-weight:600;color:var(--navy)">Información Legal</a>
+    </div>
+
+    <a href="contacto.html" style="font-weight:600;color:var(--navy);text-decoration:none;display:flex;align-items:center;gap:5px;justify-self:end">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+      Contacto y Ayuda
+    </a>
+  </footer>
+
+</div>
+
+<script>
+  /* ── RUT (módulo 11) + correo + teléfono — mismas validaciones que el resto de formularios ── */
+  function cleanRut(s){ return String(s||'').replace(/[^0-9kK]/g,'').toUpperCase(); }
+  function rutDV(body){ let sum=0, mul=2; for(let i=body.length-1;i>=0;i--){ sum += parseInt(body[i],10)*mul; mul = mul===7?2:mul+1; } const r=11-(sum%11); return r===11?'0':(r===10?'K':String(r)); }
+  function rutValido(s){ const c=cleanRut(s); if(c.length<2) return false; const body=c.slice(0,-1), dv=c.slice(-1); if(!/^\d+$/.test(body) || body.length<7) return false; return rutDV(body)===dv; }
+  function formatRut(s){ const c=cleanRut(s); if(c.length<2) return c; let body=c.slice(0,-1), dv=c.slice(-1); body=body.replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return body+'-'+dv; }
+  const EMAIL_RE = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
+  function onRutInput(){ const el=document.getElementById('rut'); el.value=formatRut(el.value); }
+  function onPhoneInput(){
+    const el=document.getElementById('telefono');
+    let d=el.value.replace(/\D/g,'');
+    if(d.startsWith('569')) d=d.slice(3); else if(d.startsWith('56')) d=d.slice(2); else if(d.startsWith('9')) d=d.slice(1);
+    d=d.slice(0,8);
+    let out='+569'; if(d.length>0) out+=' '+d.slice(0,4); if(d.length>4) out+=' '+d.slice(4,8);
+    el.value=out;
+  }
+
+  /* Tipos de requerimiento administrados en el panel admin (localStorage bp_request_types) */
+  const REQ_TYPES_DEFAULT = [
+    'Consulta General',
+    'Sugerencia o Felicitaciones',
+    'Ejercicio Derechos ARCOP',
+    'Reclamo',
+    'Devolución de Dinero',
+    'Solicitud de Información',
+    'Otro Motivo'
+  ];
+  function loadContactTipos(){
+    let types=[];
+    try{ const u=JSON.parse(localStorage.getItem('bp_request_types')||'null'); if(Array.isArray(u)) types=u.filter(t=>t.activo).map(t=>t.nombre); }catch(e){}
+    if(!types.length) types=REQ_TYPES_DEFAULT.slice();
+    const sel=document.getElementById('tipo');
+    sel.innerHTML='<option value="" disabled selected>Selecciona una opción</option>'+
+      types.map(n=>`<option value="${n}">${n}</option>`).join('');
+  }
+
+  function vContact(){
+    const rut   = document.getElementById('rut').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('telefono').value.trim();
+    const tipo  = document.getElementById('tipo').value;
+    const motivo= document.getElementById('motivo').value.trim();
+    const detalle=document.getElementById('detalle').value.trim();
+    const nombre= document.getElementById('nombre').value.trim();
+    const apellido=document.getElementById('apellido').value.trim();
+
+    const rutOk   = rutValido(rut);
+    const emailOk = EMAIL_RE.test(email);
+    const phoneOk = /^569\d{8}$/.test(phone.replace(/\D/g,''));
+
+    document.getElementById('errRut').classList.toggle('show', cleanRut(rut).length>1 && !rutOk);
+    document.getElementById('okRut').classList.toggle('show', rutOk);
+    document.getElementById('errEmail').classList.toggle('show', email.length>0 && !emailOk);
+    document.getElementById('okEmail').classList.toggle('show', emailOk);
+    document.getElementById('errTel').classList.toggle('show', phone.replace(/\D/g,'').length>3 && !phoneOk);
+    document.getElementById('okTel').classList.toggle('show', phoneOk);
+
+    const ok = tipo && motivo && detalle && nombre && apellido && rutOk && emailOk && phoneOk;
+    document.getElementById('contactSubmit').disabled = !ok;
+    return ok;
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if(!vContact()) return;
+    /* Guardar la solicitud para que aparezca en el panel admin */
+    const req = {
+      id: 'sol-' + Date.now().toString(36),
+      fecha: new Date().toISOString(),
+      tipo:     document.getElementById('tipo').value,
+      motivo:   document.getElementById('motivo').value.trim(),
+      detalle:  document.getElementById('detalle').value.trim(),
+      rut:      formatRut(document.getElementById('rut').value),
+      nombre:   document.getElementById('nombre').value.trim(),
+      apellido: document.getElementById('apellido').value.trim(),
+      telefono: document.getElementById('telefono').value.trim(),
+      email:    document.getElementById('email').value.trim(),
+      estado:   'nueva'
+    };
+    try{
+      const list = JSON.parse(localStorage.getItem('bp_contact_requests') || '[]');
+      list.unshift(req);
+      localStorage.setItem('bp_contact_requests', JSON.stringify(list));
+    }catch(err){}
+
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('successPanel').style.display = 'flex';
+  }
+
+  /* Init */
+  loadContactTipos();
+  vContact();
+</script>
+
+</body>
+</html>

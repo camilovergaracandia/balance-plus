@@ -1,0 +1,12 @@
+# Junk del sistema / temporales
+.DS_Store
+*.tmp
+~$*
+.~lock.*
+*.swp
+
+# Carpeta de copias antigua (bórrala desde Finder)
+dist/
+
+# Nota: los .sql, .docx y .md SÍ se versionan (respaldo en repo privado),
+# pero NO se publican: Cloudflare despliega únicamente la carpeta web/.

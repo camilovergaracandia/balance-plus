@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balance+ | Programa Médico</title>
+  <link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #1B2D5E;
+      --navy-dark:  #142248;
+      --navy-mid:   #2a4080;
+      --sage:       #8AB090;
+      --sage-dark:  #6A9070;
+      --sage-light: #c8deca;
+      --sage-faint: #f0f6f1;
+      --text:       #1a1f2e;
+      --muted:      #5a6475;
+      --border:     #dde3e8;
+      --white:      #ffffff;
+      --bg:         #f7f9fb;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────────── */
+    .page {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      height: 68px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .logo-wordmark {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-wordmark span {
+      color: var(--sage-dark);
+    }
+
+    .logo-tagline {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--sage-dark);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: var(--sage); }
+
+    /* ─── MAIN ───────────────────────────────────────────── */
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 62fr 38fr;
+      overflow: hidden;
+    }
+
+    /* ─── LEFT COLUMN ────────────────────────────────────── */
+    .col-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 32px 48px 28px 48px;
+      background: var(--white);
+      overflow: hidden;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--sage-faint);
+      color: var(--sage-dark);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--sage-light);
+      width: fit-content;
+      margin-bottom: 24px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--sage-dark);
+    }
+
+    h1 {
+      font-size: clamp(28px, 3.2vw, 44px);
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--navy);
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--sage-dark);
+    }
+
+    .lead {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 440px;
+      margin-bottom: 20px;
+    }
+
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 24px;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .check-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--sage-dark);
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      width: fit-content;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 16px rgba(106, 144, 112, 0.35);
+    }
+
+    .hero-cta:hover {
+      background: var(--sage);
+      transform: translateY(-1px);
+    }
+
+    .cta-arrow {
+      transition: transform 0.2s;
+    }
+
+    .hero-cta:hover .cta-arrow {
+      transform: translateX(4px);
+    }
+
+    /* ─── HERO FLEX (texto + imagen) ─────────────────────── */
+    .hero-flex {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      width: 100%;
+    }
+
+    .hero-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero-image-col {
+      flex-shrink: 0;
+      width: 345px;
+    }
+
+    .hero-image-col img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 20px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-image-col { width: 270px; }
+    }
+
+    /* ─── RIGHT COLUMN ───────────────────────────────────── */
+    .col-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 48px 40px 52px;
+      background: var(--bg);
+      gap: 0;
+    }
+
+    .section-label {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0;
+      color: var(--navy);
+      margin-bottom: 18px;
+    }
+
+    /* Stats */
+    .stats-row {
+      display: flex;
+      gap: 0;
+      margin-bottom: 28px;
+    }
+
+    .stat {
+      flex: 0 0 22%;
+      display: flex;
+      flex-direction: column;
+      padding-right: 24px;
+    }
+
+    .stat + .stat {
+      padding-left: 24px;
+      padding-right: 24px;
+      border-left: 1px solid var(--border);
+    }
+
+    .stat-value {
+      font-size: clamp(30px, 3.5vw, 42px);
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -1.5px;
+      line-height: 1;
+    }
+
+    .stat-value span {
+      color: var(--sage-dark);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-top: 6px;
+    }
+
+    /* Divider */
+    .section-divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 28px;
+    }
+
+    /* Calculator */
+    .calc-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 28px;
+      box-shadow: 0 2px 12px rgba(27, 45, 94, 0.06);
+    }
+
+    .calc-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .calc-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .calc-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .calc-row label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      width: 110px;
+      flex-shrink: 0;
+    }
+
+    .slider-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 4px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--navy);
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(27,45,94,0.25);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--navy);
+      cursor: pointer;
+      border: none;
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .calc-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      width: 56px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .calc-result {
+      background: var(--sage-faint);
+      border: 1px solid var(--sage-light);
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .result-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .result-range {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--sage-dark);
+    }
+
+    .result-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      height: 60px;
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 48px;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    .footer-social {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .footer-social:hover { background: var(--navy-mid); }
+
+    /* ─── RESPONSIVE (mobile scrolls freely) ─────────────── */
+    @media (max-width: 768px) {
+      html, body { overflow: auto; height: auto; }
+
+      nav { padding: 0 20px; }
+
+      main {
+        grid-template-columns: 1fr;
+        overflow: auto;
+        height: auto;
+      }
+
+      .col-left {
+        padding: 40px 24px 32px;
+      }
+
+      .hero-flex {
+        flex-direction: column;
+      }
+
+      .hero-image-col {
+        width: 330px;
+        margin-top: 24px;
+      }
+
+      .col-right {
+        padding: 32px 24px 40px;
+        background: var(--white);
+      }
+
+      .stats-row {
+        gap: 0;
+      }
+
+      .stat { flex: 1; }
+
+      .stat-value { font-size: 28px; }
+    }
+
+    /* ─── DOC CARDS (legal.html only) ───────────────────────── */
+    .doc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .doc-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px 14px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+      box-shadow: 0 1px 4px rgba(27,45,94,0.04);
+    }
+
+    .doc-card:hover {
+      border-color: var(--sage-light);
+      box-shadow: 0 3px 12px rgba(27,45,94,0.08);
+      transform: translateY(-1px);
+    }
+
+    .doc-card.disabled {
+      opacity: 0.45;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    .doc-icon {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--sage-faint);
+      border: 1px solid var(--sage-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .doc-title {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .doc-tag {
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: var(--sage-dark);
+      background: var(--sage-faint);
+      border: 1px solid var(--sage-light);
+      border-radius: 20px;
+      padding: 2px 9px;
+    }
+
+    .doc-tag.soon {
+      color: var(--muted);
+      background: var(--bg);
+      border-color: var(--border);
+    }
+
+    .doc-divider {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
+    }
+
+    .doc-divider span {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .doc-divider::before,
+    .doc-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+  </style>
+<script src="bp-cookies.js"></script>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <a class="logo-wrap" href="index.html">
+      <img src="Logo Simple.png" alt="Balance+" style="height:52px;display:block">
+    </a>
+    <div style="display:flex;align-items:center;gap:32px">
+      <a href="blog.html" style="font-size:14px;font-weight:500;color:var(--navy);text-decoration:none;opacity:0.75;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">Blog</a>
+      <a href="proveedores.html" style="font-size:14px;font-weight:500;color:var(--navy);text-decoration:none;opacity:0.75;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">Portal Proveedores</a>
+      <div style="width:1px;height:20px;background:var(--border)"></div>
+      <a href="portal.html" style="font-size:14px;font-weight:600;color:var(--navy);text-decoration:none;padding:10px 16px;border-radius:8px;border:1.5px solid var(--border);transition:background 0.15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">
+        Iniciar sesión
+      </a>
+      <a class="nav-cta" href="intake.html">
+        Comenzar evaluación
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- LEFT: Hero -->
+    <section class="col-left">
+      <div class="hero-flex">
+        <div class="hero-text">
+          <div style="display:inline-block;align-self:flex-start;background:var(--bg);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;letter-spacing:0.8px;padding:6px 14px;border-radius:20px;margin-bottom:14px;text-transform:uppercase;white-space:nowrap">Respaldo médico y ciencia GLP-1</div>
+          <h1>
+            Comienza tu tratamiento<br>
+            <em>médico</em> para bajar de peso<br>
+            en forma <em>segura</em>
+          </h1>
+
+          <p class="lead">
+            Balance+ combina medicamentos de última generación con seguimiento médico personalizado para que pierdas peso de forma segura y con resultados sostenibles.
+          </p>
+
+          <ul class="checklist">
+            <li>
+              <svg class="check-icon" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="10" fill="#f0f6f1"/>
+                <path d="M6 10.5l2.5 2.5L14 7.5" stroke="#6A9070" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <strong>Atención médica con diagnóstico, tratamiento y receta.</strong>
+            </li>
+            <li>
+              <svg class="check-icon" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="10" fill="#f0f6f1"/>
+                <path d="M6 10.5l2.5 2.5L14 7.5" stroke="#6A9070" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Recibe el medicamento en tu hogar
+            </li>
+            <li>
+              <svg class="check-icon" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="10" fill="#f0f6f1"/>
+                <path d="M6 10.5l2.5 2.5L14 7.5" stroke="#6A9070" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Haz tus reembolsos en Isapre, FONASA y seguros
+            </li>
+          </ul>
+
+          <a class="hero-cta" href="intake.html">
+            Ver si soy candidato
+            <svg class="cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="hero-image-col">
+          <img src="hero_collage.png" alt="Pacientes Balance+ en su rutina diaria con tratamiento GLP-1">
+        </div>
+      </div>
+
+      <!-- Resultados Clínicos -->
+      <div style="margin-top:44px">
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-value">-<span>18</span>%</div>
+            <div class="stat-label">reducción promedio del<br>peso corporal</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value"><span>6</span>x</div>
+            <div class="stat-label">más efectivo que<br>sólo dieta y ejercicio</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value"><span>93</span>%</div>
+            <div class="stat-label">de pacientes satisfechos con sus resultados</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT: Documentos Legales -->
+    <section class="col-right">
+
+      <h2 style="font-size:32px;font-weight:800;color:var(--navy);line-height:1.15;margin-bottom:28px">Información Legal</h2>
+
+      <div class="doc-list">
+
+        <!-- 01 T&C -->
+        <a class="doc-card" href="01_Terminos_y_Condiciones_BalancePlus.pdf" target="_blank" rel="noopener">
+          <div class="doc-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <span class="doc-title">Términos y Condiciones de Uso</span>
+          <span class="doc-tag">PDF</span>
+        </a>
+
+        <!-- 02 Privacidad -->
+        <a class="doc-card" href="02_Politica_de_Privacidad_BalancePlus.pdf" target="_blank" rel="noopener">
+          <div class="doc-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <span class="doc-title">Política de Privacidad</span>
+          <span class="doc-tag">PDF</span>
+        </a>
+
+        <!-- 03 Aviso Datos -->
+        <a class="doc-card" href="03_Aviso_Tratamiento_Datos_Ley21719_BalancePlus.pdf" target="_blank" rel="noopener">
+          <div class="doc-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <span class="doc-title">Aviso de Tratamiento de Datos Personales — Ley 21.719</span>
+          <span class="doc-tag">PDF</span>
+        </a>
+
+        <!-- 04 Procedimiento ARCOP -->
+        <a class="doc-card" href="04_Procedimiento_ARCOP_BalancePlus.pdf" target="_blank" rel="noopener">
+          <div class="doc-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <span class="doc-title">Procedimiento de Ejercicio de Derechos ARCOP</span>
+          <span class="doc-tag">PDF</span>
+        </a>
+
+        <!-- 05 Política de Cookies -->
+        <a class="doc-card" href="05_Politica_de_Cookies_BalancePlus.pdf" target="_blank" rel="noopener">
+          <div class="doc-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M20 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M20 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+          </div>
+          <span class="doc-title">Política de Cookies</span>
+          <span class="doc-tag">PDF</span>
+        </a>
+
+        <!-- 06a Consentimiento Informado para Telemedicina -->
+        <a class="doc-card" href="06a_Consentimiento_Telemedicina_BalancePlus.pdf" target="_blank" rel="noopener">
+          <div class="doc-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+          </div>
+          <span class="doc-title">Consentimiento Informado para Telemedicina</span>
+          <span class="doc-tag">PDF</span>
+        </a>
+
+        <!-- 06b Consentimiento Informado para Tratamiento Datos de Salud -->
+        <a class="doc-card" href="06b_Consentimiento_Datos_Salud_BalancePlus.pdf" target="_blank" rel="noopener">
+          <div class="doc-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+          </div>
+          <span class="doc-title">Consentimiento Informado para Tratamiento Datos de Salud</span>
+          <span class="doc-tag">PDF</span>
+        </a>
+
+        <!-- 06c Consentimiento Informado para aGLP-1 -->
+        <a class="doc-card" href="06c_Consentimiento_GLP1_BalancePlus.pdf" target="_blank" rel="noopener">
+          <div class="doc-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sage-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+          </div>
+          <span class="doc-title">Consentimiento Informado para aGLP-1</span>
+          <span class="doc-tag">PDF</span>
+        </a>
+
+      </div>
+
+      <a href="index.html" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:20px;background:var(--navy);color:#fff;font-size:15px;font-weight:700;padding:14px 28px;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(27,45,94,0.28);transition:background 0.2s">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M10 3L5 8l5 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Volver al Inicio
+      </a>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <!-- Redes sociales -->
+    <div style="display:flex;align-items:center;gap:8px">
+      <!-- Facebook -->
+      <a class="footer-social" href="#">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+          <path fill="white" d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+        </svg>
+      </a>
+      <!-- Instagram -->
+      <a class="footer-social" href="#">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <rect x="2" y="2" width="20" height="20" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/>
+        </svg>
+      </a>
+      <!-- LinkedIn -->
+      <a class="footer-social" href="#">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="white">
+          <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/>
+          <rect x="2" y="9" width="4" height="12"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+      </a>
+      <!-- YouTube -->
+      <a class="footer-social" href="#">
+        <svg width="13" height="10" viewBox="0 0 24 17" fill="none">
+          <path fill="white" d="M23.5 2.6A3 3 0 0021.4.5C19.5 0 12 0 12 0S4.5 0 2.6.5A3 3 0 00.5 2.6C0 4.5 0 8.5 0 8.5s0 4 .5 5.9a3 3 0 002.1 2.1C4.5 17 12 17 12 17s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 12.5 24 8.5 24 8.5s0-4-.5-5.9z"/>
+          <polygon points="9.6,12.1 15.8,8.5 9.6,4.9" fill="var(--navy)"/>
+        </svg>
+      </a>
+      <!-- Separador -->
+      <span style="width:1px;height:18px;background:var(--border);margin:0 4px;opacity:0.5"></span>
+      <!-- App Store -->
+      <a href="#" title="Próximamente en App Store" style="display:block;line-height:0;opacity:0.5;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.5'">
+        <img src="App_Store.png" alt="App Store" style="height:25px;width:auto;display:block">
+      </a>
+      <!-- Google Play -->
+      <a href="#" title="Próximamente en Google Play" style="display:block;line-height:0;opacity:0.5;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.5'">
+        <img src="Logo Google Play.png" alt="Google Play" style="height:25px;width:auto;display:block">
+      </a>
+    </div>
+
+    <!-- Links legales (centro) -->
+    <div style="display:flex;align-items:center;gap:0">
+      <a href="02_Politica_de_Privacidad_BalancePlus.pdf" target="_blank" rel="noopener">Política de Privacidad</a>
+      <span style="margin:0 10px;opacity:0.35">&middot;</span>
+      <a href="01_Terminos_y_Condiciones_BalancePlus.pdf" target="_blank" rel="noopener">Términos y Condiciones</a>
+      <span style="margin:0 10px;opacity:0.35">&middot;</span>
+      <a href="legal.html" style="font-weight:600;color:var(--navy)">Información Legal</a>
+    </div>
+
+    <!-- Contacto y Ayuda -->
+    <a href="contacto.html" style="font-weight:600;color:var(--navy);text-decoration:none;display:flex;align-items:center;gap:5px;justify-self:end">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+      Contacto y Ayuda
+    </a>
+  </footer>
+
+</div>
+
+</body>
+</html>
