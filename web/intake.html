@@ -294,7 +294,9 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 @media(max-width:600px){
   .wizard{padding:22px 14px 48px}
   nav{padding:0 16px}
-  .result-meta{grid-template-columns:1fr 1fr}
+  .result-meta{grid-template-columns:repeat(3,1fr);gap:7px}
+  .result-meta-item{padding:12px 6px}
+  .result-meta-val{font-size:18px}
   .proj-metrics{flex-wrap:wrap}
   .field-row{grid-template-columns:1fr}
 }

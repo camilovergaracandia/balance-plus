@@ -577,8 +577,9 @@
       }
       .col-right { overflow: visible; }
 
-      /* Titular del hero más grande en móvil */
+      /* Titular del hero más grande en móvil, sin cortes forzados (fluye al ancho) */
       h1 { font-size: 32px; letter-spacing: -0.5px; }
+      h1 br { display: none; }
 
       .hero-flex {
         flex-direction: column;
