@@ -53,6 +53,17 @@
       border-bottom: 1px solid var(--border);
     }
 
+    .nav-burger {
+      display: none;
+      background: none;
+      border: none;
+      padding: 4px 6px;
+      font-size: 26px;
+      line-height: 1;
+      color: var(--navy);
+      cursor: pointer;
+    }
+
     .logo-wrap {
       display: flex;
       align-items: center;
@@ -549,23 +560,32 @@
 
       nav { padding: 0 20px; }
 
+      /* Desactivar el "shell" de altura fija: documento que fluye y scrollea normal */
+      .page { height: auto; }
+
       main {
         grid-template-columns: 1fr;
-        overflow: auto;
+        overflow: visible;
         height: auto;
+        min-height: 0;
       }
 
       .col-left {
         padding: 40px 24px 32px;
+        overflow: visible;
+        justify-content: flex-start;
       }
+      .col-right { overflow: visible; }
+
+      /* Titular del hero más grande en móvil */
+      h1 { font-size: 32px; letter-spacing: -0.5px; }
 
       .hero-flex {
         flex-direction: column;
       }
 
       .hero-image-col {
-        width: 330px;
-        margin-top: 24px;
+        display: none !important;   /* ocultar imagen del hero en móvil */
       }
 
       .col-right {
@@ -579,9 +599,54 @@
 
       .stat {
         flex: 1;
+        padding-left: 0 !important;
+        padding-right: 8px !important;
+      }
+      .stat + .stat {
+        padding-left: 0 !important;
+        border-left: none !important;
       }
 
       .stat-value { font-size: 28px; }
+      .stat-label br { display: none; }   /* en móvil, sin cortes forzados: que la línea fluya natural */
+
+      /* ── Sin scroll horizontal ── */
+      html, body { overflow-x: hidden; }
+
+      /* ── NAV con menú hamburguesa ── */
+      nav { position: relative; height: auto; padding: 10px 16px; }
+      nav .logo-wrap img { height: 40px !important; }
+      nav .logo-wrap span { font-size: 9px !important; padding: 2px 6px !important; }
+      .nav-burger { display: block; }
+      nav > div {
+        display: none !important; position: absolute; top: 100%; left: 0; right: 0;
+        flex-direction: column !important; align-items: stretch !important; gap: 0 !important;
+        background: var(--white); border-bottom: 1px solid var(--border);
+        padding: 6px 16px 12px; box-shadow: 0 12px 24px rgba(27,45,94,.10); z-index: 200;
+      }
+      nav.open > div { display: flex !important; }
+      nav > div > a { width: 100%; padding: 14px 4px !important; border: none !important; border-bottom: 1px solid var(--border) !important; border-radius: 0 !important; background: none !important; color: var(--navy) !important; font-size: 15px !important; font-weight: 500 !important; }
+      nav > div > a.nav-cta { display: none !important; }   /* ocultar "Comenzar evaluación" en móvil */
+      nav > div > div { display: none; }
+
+      /* ── BARRA DE CONFIANZA: 3 columnas alineadas con los 3 números de arriba ── */
+      .col-right > div:first-child { gap: 0 !important; }
+      .col-right > div:first-child > div { flex: 1 !important; border-left: none !important; padding-left: 0 !important; padding-right: 8px !important; gap: 7px !important; }
+      .col-right > div:first-child img { width: 34px !important; height: 34px !important; }
+      .col-right > div:first-child span { font-size: 11.5px !important; }
+
+      /* ── FOOTER: apilar en columna y centrar ── */
+      footer { height: auto; grid-template-columns: 1fr !important; gap: 14px; row-gap: 14px; padding: 18px 20px; justify-items: center; text-align: center; }
+      footer > div { flex-wrap: wrap; justify-content: center; }
+      footer > a { justify-self: center !important; }
+
+      /* ── TÍTULO CALCULADORA: permitir que baje de línea ── */
+      .calc-title { flex-wrap: wrap; }
+      .calc-title > span { white-space: normal !important; }
+      .calc-title > a { display: none !important; }   /* ocultar "Comenzar ahora" de la balanza en móvil */
+
+      /* ── PRENSA: apilar las dos tarjetas ── */
+      .press-row { flex-direction: column; }
     }
   </style>
 <script src="bp-cookies.js"></script>
@@ -610,6 +675,7 @@
         </svg>
       </a>
     </div>
+    <button class="nav-burger" aria-label="Abrir menú" onclick="this.closest('nav').classList.toggle('open')">☰</button>
   </nav>
 
   <!-- MAIN CONTENT -->
@@ -672,11 +738,11 @@
         <div class="stats-row">
           <div class="stat">
             <div class="stat-value">-<span>18</span>%</div>
-            <div class="stat-label">reducción promedio del<br>peso corporal</div>
+            <div class="stat-label">reducción promedio del <br>peso corporal</div>
           </div>
           <div class="stat">
             <div class="stat-value"><span>6</span>x</div>
-            <div class="stat-label">más efectivo que<br>sólo dieta y ejercicio</div>
+            <div class="stat-label">más efectivo que <br>sólo dieta y ejercicio</div>
           </div>
           <div class="stat">
             <div class="stat-value"><span>93</span>%</div>

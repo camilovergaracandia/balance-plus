@@ -531,16 +531,46 @@
     .footer-social:hover { background: var(--navy-mid); }
 
     /* ─── RESPONSIVE ─────────────────────────────────────── */
-    @media (max-width: 768px) {
-      html, body { overflow: auto; height: auto; }
+    .nav-burger { display: none; background: none; border: none; padding: 4px 6px; font-size: 26px; line-height: 1; color: var(--navy); cursor: pointer; }
 
-      nav { padding: 0 20px; }
+    @media (max-width: 768px) {
+      html, body { overflow-x: hidden; overflow-y: auto; height: auto; }
+
+      /* NAV con menú hamburguesa */
+      nav { position: relative; height: auto; padding: 10px 16px; }
+      nav .logo-wrap img { height: 40px !important; }
+      nav .logo-wrap span { font-size: 9px !important; padding: 2px 6px !important; }
+      .nav-burger { display: block; }
+      nav > div {
+        display: none !important; position: absolute; top: 100%; left: 0; right: 0;
+        flex-direction: column !important; align-items: stretch !important; gap: 0 !important;
+        background: var(--white); border-bottom: 1px solid var(--border);
+        padding: 6px 16px 12px; box-shadow: 0 12px 24px rgba(27,45,94,.10); z-index: 200;
+      }
+      nav.open > div { display: flex !important; }
+      nav > div > a { width: 100%; padding: 14px 4px !important; border: none !important; border-bottom: 1px solid var(--border) !important; border-radius: 0 !important; background: none !important; color: var(--navy) !important; font-size: 15px !important; font-weight: 500 !important; }
+      nav > div > a.nav-cta { display: none !important; }   /* ocultar "Comenzar evaluación" en móvil */
+      nav > div > div { display: none; }
+
+      /* FOOTER: apilar y centrar */
+      footer { height: auto; grid-template-columns: 1fr !important; gap: 14px; row-gap: 14px; padding: 18px 20px; justify-items: center; text-align: center; }
+      footer > div { flex-wrap: wrap; justify-content: center; }
+      footer > a { justify-self: center !important; }
+
+      /* Desactivar el shell de altura fija en móvil */
+      .page { height: auto; }
 
       main {
         grid-template-columns: 1fr;
-        overflow: auto;
+        overflow: visible;
         height: auto;
+        min-height: 0;
       }
+      .col-left, .col-right { overflow: visible; justify-content: flex-start; }
+      .col-left { display: none !important; }   /* en móvil, ocultar el hero: solo el formulario */
+
+      /* Titular del hero más grande en móvil */
+      h1 { font-size: 32px; letter-spacing: -0.5px; }
 
       .col-left { padding: 40px 24px 32px; }
 
@@ -549,8 +579,7 @@
       }
 
       .hero-image-col {
-        width: 330px;
-        margin-top: 24px;
+        display: none !important;   /* ocultar imagen del hero en móvil */
       }
 
       .col-right {
@@ -589,6 +618,7 @@
         </svg>
       </a>
     </div>
+    <button class="nav-burger" aria-label="Abrir menú" onclick="this.closest('nav').classList.toggle('open')">☰</button>
   </nav>
 
   <!-- MAIN CONTENT -->
