@@ -181,6 +181,14 @@
   async function saveFullProfile(p) {
     const { data: u } = await sb.auth.getUser();
     if (!u || !u.user) return { error: 'no-session' };
+    // Si el intake no trae nombre (caso registro con Google), lo tomamos de la cuenta.
+    const md = u.user.user_metadata || {};
+    let _nombre = p.nombre || md.nombre || '';
+    let _apellido = p.apellido || md.apellido || '';
+    if (!_nombre) {
+      const fn = (md.full_name || md.name || '').trim();
+      if (fn) { const parts = fn.split(/\s+/); _nombre = parts.shift() || ''; _apellido = _apellido || parts.join(' '); }
+    }
     const uid = u.user.id;
     const num = v => (v === '' || v == null || isNaN(parseFloat(v))) ? null : parseFloat(v);
     const fields = {
@@ -204,7 +212,7 @@
     // Sembrar el primer registro de peso con el peso del intake.
     const pa = num(p.peso_actual) || num(p.peso_inicial);
     if (pid && pa) { await addWeightLog(pid, pa); }
-    await updateProfileFields({ nombre: p.nombre, apellido: p.apellido, celular: p.celular });
+    await updateProfileFields({ nombre: _nombre, apellido: _apellido, celular: p.celular });
     // Veredicto de elegibilidad calculado en el SERVIDOR y guardado con el envío.
     if (pid) {
       let veredicto = null;

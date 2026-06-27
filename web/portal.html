@@ -628,7 +628,7 @@ select,input{font-family:inherit}
 </style>
 <!-- Supabase: conexión autenticada (Fase 2) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="bp-supabase.js?v=9"></script>
+<script src="bp-supabase.js?v=10"></script>
 <script src="bp-cookies.js"></script>
 </head>
 <body>
@@ -640,7 +640,7 @@ select,input{font-family:inherit}
 ══════════════════════════════════════════ -->
 <div id="page-login" class="auth-page">
   <div class="auth-card">
-    <img src="Logo Simple.png" alt="Balance+" class="auth-logo">
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px"><img src="Logo Simple.png" alt="Balance+" class="auth-logo"><span style="background:#fde68a;color:#92400e;font-size:10px;font-weight:800;letter-spacing:.5px;padding:3px 8px;border-radius:6px;text-transform:uppercase;white-space:nowrap">En construcción</span></div>
 
     <div class="soc-circles">
       <div class="soc-circle" onclick="loginGoogle()" title="Continuar con Google">
@@ -681,7 +681,7 @@ select,input{font-family:inherit}
 ══════════════════════════════════════════ -->
 <div id="page-register" class="auth-page hidden">
   <div class="auth-card">
-    <img src="Logo Simple.png" alt="Balance+" class="auth-logo">
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px"><img src="Logo Simple.png" alt="Balance+" class="auth-logo"><span style="background:#fde68a;color:#92400e;font-size:10px;font-weight:800;letter-spacing:.5px;padding:3px 8px;border-radius:6px;text-transform:uppercase;white-space:nowrap">En construcción</span></div>
     <div class="auth-h">Crea tu cuenta</div>
 
     <div class="soc-circles">
@@ -787,7 +787,7 @@ select,input{font-family:inherit}
   <!-- ── SIDEBAR ─────────────────────────────── -->
   <aside id="sidebar">
     <!-- Logo -->
-    <div class="sb-logo"><img src="Logo Simple.png" alt="Balance+"></div>
+    <div class="sb-logo" style="display:flex;align-items:center;gap:8px"><img src="Logo Simple.png" alt="Balance+"><span style="background:#fde68a;color:#92400e;font-size:9px;font-weight:800;letter-spacing:.4px;padding:2px 6px;border-radius:5px;text-transform:uppercase;white-space:nowrap">En construcción</span></div>
 
     <!-- User card — click avatar area to change photo -->
     <div class="sb-user-card">
@@ -863,7 +863,7 @@ select,input{font-family:inherit}
   <div id="main-wrap">
 
     <div id="topbar-m">
-      <span id="tb-content-m" class="tb-logo-m"><img src="Logo Simple.png" alt="Balance+"></span>
+      <span id="tb-content-m" class="tb-logo-m" style="display:inline-flex;align-items:center;gap:8px"><img src="Logo Simple.png" alt="Balance+"><span style="background:#fde68a;color:#92400e;font-size:9px;font-weight:800;letter-spacing:.4px;padding:2px 6px;border-radius:5px;text-transform:uppercase;white-space:nowrap">En construcción</span></span>
       <div class="tb-av-m" onclick="navTo('perfil')">VM</div>
     </div>
 
@@ -1891,6 +1891,12 @@ async function enterPortal(){
   document.getElementById('page-portal').classList.remove('hidden');
   if(window.BP){ try{ await BP.flushPendingIntake(); }catch(e){ console.error('[BP] flush', e); } }
   await loadProfile();          /* ahora lee la ficha real desde Supabase */
+  /* Si tiene sesión pero NO tiene ficha (ej. entró con Google sin hacer el
+     intake), lo enviamos a completar su evaluación en vez de mostrar vacío. */
+  if(window.BP && !PROFILE.__pid){
+    window.location.href = 'intake.html';
+    return;
+  }
   await refreshWeightFromDB();   /* y el historial de peso real */
   renderProfile();
   restoreAvatar();
@@ -3004,7 +3010,7 @@ function navTo(id){
   const tm=document.getElementById('tb-content-m');
   if(tm){
     if(titles[id]) tm.innerHTML=`<span class="tb-title-m">${titles[id]}</span>`;
-    else tm.innerHTML='<img src="Logo Simple.png" alt="Balance+" style="height:36px;display:block;background:#fff;border-radius:6px;padding:3px 8px">';
+    else tm.innerHTML='<span style="display:inline-flex;align-items:center;gap:8px"><img src="Logo Simple.png" alt="Balance+" style="height:36px;display:block;background:#fff;border-radius:6px;padding:3px 8px"><span style="background:#fde68a;color:#92400e;font-size:9px;font-weight:800;letter-spacing:.4px;padding:2px 6px;border-radius:5px;text-transform:uppercase;white-space:nowrap">En construcción</span></span>';
     tm.className=titles[id]?'tb-title-m':'tb-logo-m';
   }
 
