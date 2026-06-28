@@ -658,8 +658,9 @@
       .calc-title > span { white-space: normal !important; }
       .calc-title > a { display: none !important; }   /* ocultar "Comenzar ahora" de la balanza en móvil */
 
-      /* ── PRENSA: apilar las dos tarjetas ── */
+      /* ── PRENSA: apilar las dos tarjetas; títulos en una sola línea ── */
       .press-row { flex-direction: column; }
+      .press-title br { display: none; }
     }
   </style>
 <script src="bp-cookies.js"></script>
@@ -856,7 +857,7 @@
         <a href="https://www.t13.cl/noticia/nacional/nuevo-ozempic-chileno-avanza-espera-luz-verde-del-isp-para-salir-venta-4-4-2026" target="_blank" rel="noopener noreferrer" class="press-card" style="position:relative">
           <span style="position:absolute;top:0;right:10px;transform:translateY(-50%);background:rgba(26,37,64,0.88);color:#fff;font-size:9px;font-weight:800;padding:4px 9px;border-radius:20px;white-space:nowrap;letter-spacing:0.5px;z-index:1">PRONTO</span>
           <img src="t13-square.png" alt="T13" class="press-logo">
-          <span class="press-title">Selfix, el nuevo<br>&quot;Ozempic chileno&quot;</span>
+          <span class="press-title">Selfix, el nuevo <br>&quot;Ozempic chileno&quot;</span>
         </a>
       </div>
 
