@@ -377,19 +377,63 @@
     .footer-social:hover { background: var(--navy-mid); }
 
     /* ─── RESPONSIVE ─────────────────────────────────────── */
-    @media (max-width: 768px) {
-      html, body { overflow: auto; height: auto; }
+    .nav-burger { display: none; background: none; border: none; padding: 4px 6px; font-size: 26px; line-height: 1; color: var(--navy); cursor: pointer; }
 
-      nav { padding: 0 20px; }
+    /* Pills del destacado (categoría + Destacado) — solo se muestran en móvil */
+    .featured-pills { display: none; align-items: center; }
+    .fpill { font-size: 11px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; padding: 5px 11px; border-radius: 20px; background: var(--bg); border: 1px solid var(--border); color: var(--muted); }
+    .fpill.fpill-dest { background: var(--sage-faint); border-color: var(--sage-light); color: var(--sage-dark); }
 
-      main {
-        grid-template-columns: 1fr;
-        overflow: auto;
-        height: auto;
+    @media (max-width: 1024px) {
+      html, body { overflow-x: hidden; overflow-y: auto; height: auto; }
+
+      /* Documento que fluye: un solo scroll */
+      .page { height: auto; }
+      main { grid-template-columns: 1fr; overflow: visible; height: auto; min-height: 0; }
+      .col-right { overflow: visible; padding: 26px 22px 40px; background: var(--white); }
+
+      /* En los artículos de la lista: ocultar la miniatura */
+      .post-thumb { display: none !important; }
+
+      /* En móvil: destacado compacto arriba + lista de artículos abajo (un solo scroll) */
+      .col-left { padding: 22px 22px 4px; overflow: visible; justify-content: flex-start; }
+      .archive-head { display: none; }   /* sin el título "Publicaciones anteriores" */
+      /* Destacado: sin pill superior ni categoría sobre la imagen */
+      .featured-eyebrow { display: none !important; }
+      .featured-cover-tag { display: none !important; }
+
+      /* Categoría y "Destacado" como pills en los detalles */
+      .featured-pills { display: flex !important; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+
+      /* Meta del destacado: solo vistas y "más visto" (oculta fecha, autor, lectura) */
+      .featured-meta > :nth-child(-n+6) { display: none !important; }
+
+      /* Cuadro de vista previa (portada) más pequeño en móvil */
+      .featured-cover { aspect-ratio: auto; height: 96px; margin-bottom: 14px; }
+
+      /* Tamaño de fuente del extracto en móvil */
+      .featured-excerpt { font-size: 14px; line-height: 1.55; }
+
+      /* Artículos de la lista: ocultar la fecha de publicación y el badge "Más visto" */
+      .post-card-meta > :nth-child(3), .post-card-meta > :nth-child(4) { display: none !important; }
+      .post-card-meta .top-badge, .post-card-meta > :nth-child(6), .post-card-meta > :nth-child(7) { display: none !important; }
+
+      /* NAV con menú hamburguesa */
+      nav { position: relative; height: auto; padding: 10px 16px; }
+      .logo-section { gap: 10px; }
+      .logo-section .logo-wrap img { height: 40px !important; }
+      .logo-section-label { font-size: 16px; }
+      .nav-burger { display: block; }
+      .nav-menu {
+        display: none !important; position: absolute; top: 100%; left: 0; right: 0;
+        flex-direction: column !important; align-items: stretch !important; gap: 0 !important;
+        background: var(--white); border-bottom: 1px solid var(--border);
+        padding: 6px 16px 12px; box-shadow: 0 12px 24px rgba(27,45,94,.10); z-index: 200;
       }
-
-      .col-left { padding: 32px 22px; }
-      .col-right { padding: 28px 22px 40px; background: var(--white); }
+      nav.open .nav-menu { display: flex !important; }
+      .nav-menu > a { width: 100%; padding: 14px 4px !important; border: none !important; border-bottom: 1px solid var(--border) !important; border-radius: 0 !important; background: none !important; color: var(--navy) !important; font-size: 15px !important; font-weight: 500 !important; }
+      .nav-menu > a.nav-cta { display: none !important; }
+      .nav-menu > div { display: none; }
 
       footer {
         height: auto;
@@ -418,7 +462,7 @@
       <div class="logo-divider"></div>
       <span class="logo-section-label">Blog</span>
     </div>
-    <div style="display:flex;align-items:center;gap:32px">
+    <div class="nav-menu" style="display:flex;align-items:center;gap:32px">
       <a href="blog.html" style="font-size:14px;font-weight:700;color:var(--navy);text-decoration:none;transition:opacity 0.15s">Blog</a>
       <a href="proveedores.html" style="font-size:14px;font-weight:500;color:var(--navy);text-decoration:none;opacity:0.75;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">Portal Proveedores</a>
       <div style="width:1px;height:20px;background:var(--border)"></div>
@@ -432,6 +476,7 @@
         </svg>
       </a>
     </div>
+    <button class="nav-burger" aria-label="Abrir menú" onclick="this.closest('nav').classList.toggle('open')">☰</button>
   </nav>
 
   <!-- MAIN CONTENT -->
@@ -448,6 +493,8 @@
         <img class="cover-img" id="featured-img" alt="">
         <span class="featured-cover-tag" id="featured-tag">—</span>
       </div>
+
+      <div class="featured-pills" id="featured-pills"></div>
 
       <div class="featured-meta" id="featured-meta"></div>
 
@@ -575,6 +622,8 @@
       ctaEl.classList.remove('hidden');
       emptyEl.classList.add('hidden');
       document.getElementById('featured-tag').textContent = featured.category || 'Artículo';
+      document.getElementById('featured-pills').innerHTML =
+        `<span class="fpill">${esc(featured.category || 'Artículo')}</span><span class="fpill fpill-dest">Destacado</span>`;
       document.getElementById('featured-meta').innerHTML =
         `<span>${esc(featured.month)}</span><span class="dot"></span>` +
         `<span>${esc(featured.author)}</span><span class="dot"></span>` +
@@ -586,6 +635,7 @@
     } else {
       coverEl.classList.add('hidden');
       ctaEl.classList.add('hidden');
+      document.getElementById('featured-pills').innerHTML = '';
       document.getElementById('featured-meta').innerHTML = '';
       document.getElementById('featured-title').textContent = '';
       document.getElementById('featured-excerpt').textContent = '';

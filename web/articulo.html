@@ -212,13 +212,54 @@
     }
     .footer-social:hover { background: var(--navy-mid); }
 
-    @media (max-width: 768px) {
-      html, body { overflow: auto; height: auto; }
-      nav { padding: 0 20px; }
-      main { grid-template-columns: 1fr; overflow: auto; height: auto; }
-      .col-left, .col-right { overflow: visible; }
-      .article { padding: 24px 22px 40px; }
-      .col-right { padding: 28px 22px 40px; background: var(--white); }
+    .nav-burger { display: none; background: none; border: none; padding: 4px 6px; font-size: 26px; line-height: 1; color: var(--navy); cursor: pointer; }
+
+    @media (max-width: 1024px) {
+      html, body { overflow-x: hidden; overflow-y: auto; height: auto; }
+
+      /* Documento que fluye: un solo scroll */
+      .page { height: auto; }
+      main { grid-template-columns: 1fr; overflow: visible; height: auto; min-height: 0; }
+      .col-left { overflow: visible; }
+      .article-fixed { padding: 20px 22px 6px; }
+      .article-scroll { overflow: visible; flex: none; height: auto; padding: 0 22px 32px; }
+      .col-right { overflow: visible; padding: 24px 22px 40px; background: var(--white); }
+
+      /* Lista de artículos: sin miniatura, sin fecha y sin badge "Más visto" */
+      .post-thumb { display: none !important; }
+      .post-card-meta > :nth-child(3), .post-card-meta > :nth-child(4) { display: none !important; }
+      .post-card-meta .top-badge, .post-card-meta > :nth-child(6), .post-card-meta > :nth-child(7) { display: none !important; }
+
+      /* Portada como en blog: más pequeña y sin la categoría encima */
+      .article-cover { aspect-ratio: auto; height: 96px; margin-bottom: 14px; }
+      .article-cover-tag { display: none !important; }
+
+      /* Meta del artículo: solo categoría, vistas y "más visto" (oculta autor, fecha y lectura) */
+      .article-meta > :nth-child(n+2):nth-child(-n+7) { display: none !important; }
+
+      /* Fuente más chica en todo el cuerpo (el título grande se mantiene) */
+      .article-meta { font-size: 12px; }
+      .article-body p, .article-body li { font-size: 14px !important; line-height: 1.7; }
+      .article-body h2 { font-size: 17px !important; }
+      .article-body h3 { font-size: 15px !important; }
+
+      /* NAV con menú hamburguesa */
+      nav { position: relative; height: auto; padding: 10px 16px; }
+      .logo-section { gap: 10px; }
+      .logo-section .logo-wrap img { height: 40px !important; }
+      .logo-section-label { font-size: 16px; }
+      .nav-burger { display: block; }
+      .nav-menu {
+        display: none !important; position: absolute; top: 100%; left: 0; right: 0;
+        flex-direction: column !important; align-items: stretch !important; gap: 0 !important;
+        background: var(--white); border-bottom: 1px solid var(--border);
+        padding: 6px 16px 12px; box-shadow: 0 12px 24px rgba(27,45,94,.10); z-index: 200;
+      }
+      nav.open .nav-menu { display: flex !important; }
+      .nav-menu > a { width: 100%; padding: 14px 4px !important; border: none !important; border-bottom: 1px solid var(--border) !important; border-radius: 0 !important; background: none !important; color: var(--navy) !important; font-size: 15px !important; font-weight: 500 !important; }
+      .nav-menu > a.nav-cta { display: none !important; }
+      .nav-menu > div { display: none; }
+
       footer { height: auto; grid-template-columns: 1fr; justify-items: center; gap: 12px; padding: 18px 20px; text-align: center; }
       footer a { justify-self: center !important; }
     }
@@ -238,7 +279,7 @@
       <div class="logo-divider"></div>
       <span class="logo-section-label">Blog</span>
     </div>
-    <div style="display:flex;align-items:center;gap:32px">
+    <div class="nav-menu" style="display:flex;align-items:center;gap:32px">
       <a href="blog.html" style="font-size:14px;font-weight:700;color:var(--navy);text-decoration:none">Blog</a>
       <a href="proveedores.html" style="font-size:14px;font-weight:500;color:var(--navy);text-decoration:none;opacity:0.75;transition:opacity 0.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">Portal Proveedores</a>
       <div style="width:1px;height:20px;background:var(--border)"></div>
@@ -252,6 +293,7 @@
         </svg>
       </a>
     </div>
+    <button class="nav-burger" aria-label="Abrir menú" onclick="this.closest('nav').classList.toggle('open')">☰</button>
   </nav>
 
   <!-- MAIN -->
