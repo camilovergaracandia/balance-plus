@@ -331,6 +331,8 @@ select,input{font-family:inherit}
 .tb-logo-m img{height:36px;display:block;background:#fff;border-radius:6px;padding:3px 8px}
 .tb-title-m{font-size:16px;font-weight:700;color:#fff;flex:1;text-align:center}
 .tb-av-m{width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--primary);cursor:pointer;flex-shrink:0}
+.tb-logout-m{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;color:#fff;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.tb-logout-m:active{background:rgba(255,255,255,0.14)}
 
 /* Screens */
 .screen{display:none}
@@ -347,14 +349,27 @@ select,input{font-family:inherit}
 .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:5px 0;color:var(--muted);transition:color 0.15s;-webkit-tap-highlight-color:transparent}
 .bn-item.active{color:var(--primary)}
 .bn-lbl{font-size:9px;font-weight:700}
+.bn-brand{cursor:default}
 
 /* ── RESPONSIVE ──────────────────────────────── */
 @media(max-width:1024px){
   #sidebar{display:none}
   #main-wrap{margin-left:0}
   #topbar-m{display:flex}
-  #bottom-nav{display:flex}
-  .page-wrap{padding:14px 14px 90px}
+  #bottom-nav{display:flex;flex-wrap:wrap;height:auto;padding:4px 2px 6px}
+  .bn-item{flex:0 0 20%}
+  .bn-lbl{font-size:9px}
+  .page-wrap{padding:14px 14px 132px}
+  /* Ocultar el anillo "logrado", su separador vertical y las métricas de peso en móvil */
+  .ring-wrap{display:none !important}
+  .hero-div-v{display:none !important}
+  .pf-metrics{display:none !important}
+  /* Badge Requerido/Opcional siempre en segunda línea (en su ancho natural) */
+  .cons-title{align-items:flex-start !important}
+  .cons-title .cons-name{flex-basis:100%}
+  /* Correo y celular juntos en una misma línea */
+  .pf-contact-row{display:flex !important;flex-basis:100%;gap:6px;min-width:0}
+  .pf-contact-row>.pf-q-contact:first-child{flex:1;min-width:0}
 }
 
 /* ════════════════════════════════════════════
@@ -522,6 +537,7 @@ select,input{font-family:inherit}
 .pf-q-contact:hover{background:var(--accent)}
 .pf-q-contact svg{flex-shrink:0;color:var(--primary);width:15px;height:15px}
 .pf-qc-v{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pf-contact-row{display:contents}
 
 /* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.48);display:none;align-items:flex-end;z-index:200;backdrop-filter:blur(3px)}
@@ -787,7 +803,7 @@ select,input{font-family:inherit}
   <!-- ── SIDEBAR ─────────────────────────────── -->
   <aside id="sidebar">
     <!-- Logo -->
-    <div class="sb-logo" style="display:flex;align-items:center;gap:8px"><img src="Logo Simple.png" alt="Balance+"><span style="background:#fde68a;color:#92400e;font-size:9px;font-weight:800;letter-spacing:.4px;padding:2px 6px;border-radius:5px;text-transform:uppercase;white-space:nowrap">En construcción</span></div>
+    <div class="sb-logo" style="display:flex;flex-direction:column;align-items:center;gap:7px"><img src="Logo Simple.png" alt="Balance+"><span style="background:#fde68a;color:#92400e;font-size:9px;font-weight:800;letter-spacing:.4px;padding:2px 6px;border-radius:5px;text-transform:uppercase;white-space:nowrap">En construcción</span></div>
 
     <!-- User card — click avatar area to change photo -->
     <div class="sb-user-card">
@@ -864,6 +880,7 @@ select,input{font-family:inherit}
 
     <div id="topbar-m">
       <span id="tb-content-m" class="tb-logo-m" style="display:inline-flex;align-items:center;gap:8px"><img src="Logo Simple.png" alt="Balance+"><span style="background:#fde68a;color:#92400e;font-size:9px;font-weight:800;letter-spacing:.4px;padding:2px 6px;border-radius:5px;text-transform:uppercase;white-space:nowrap">En construcción</span></span>
+      <div class="tb-logout-m" onclick="doLogout()" title="Cerrar sesión"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
       <div class="tb-av-m" onclick="navTo('perfil')">VM</div>
     </div>
 
@@ -1166,8 +1183,7 @@ select,input{font-family:inherit}
               </div>
               <div class="pf-quick">
                 <span id="pf-sexo">—</span><span id="pf-edad">—</span><span id="pf-estatura">—</span>
-                <span class="pf-q-contact" onclick="openProfileModal('principal')" title="Editar datos de contacto"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg><span class="pf-qc-v" id="pf-email">—</span></span>
-                <span class="pf-q-contact" onclick="openProfileModal('principal')" title="Editar datos de contacto"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="pf-qc-v" id="pf-celular">—</span></span>
+                <span class="pf-contact-row"><span class="pf-q-contact" onclick="openProfileModal('principal')" title="Editar datos de contacto"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg><span class="pf-qc-v" id="pf-email">—</span></span><span class="pf-q-contact" onclick="openProfileModal('principal')" title="Editar datos de contacto"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="pf-qc-v" id="pf-celular">—</span></span></span>
               </div>
             </div>
             <div class="pf-ficha-photo">
@@ -1288,6 +1304,18 @@ select,input{font-family:inherit}
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span class="bn-lbl">Citas</span>
     </div>
+    <div class="bn-item" id="bn-despachos" onclick="navTo('despachos')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 6v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      <span class="bn-lbl">Despachos</span>
+    </div>
+    <div class="bn-item" id="bn-pagos" onclick="navTo('pagos')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <span class="bn-lbl">Pagos</span>
+    </div>
+    <div class="bn-item" id="bn-recetas" onclick="navTo('recetas')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span class="bn-lbl">Recetas</span>
+    </div>
     <div class="bn-item" id="bn-med" onclick="navTo('med')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
       <span class="bn-lbl">Medicación</span>
@@ -1299,6 +1327,14 @@ select,input{font-family:inherit}
     <div class="bn-item" id="bn-perfil" onclick="navTo('perfil')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       <span class="bn-lbl">Perfil</span>
+    </div>
+    <div class="bn-item" onclick="doLogout()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span class="bn-lbl">Salir</span>
+    </div>
+    <div class="bn-item bn-brand">
+      <img src="Isotipo 2 transparente.png" alt="Balance+" style="height:24px;width:auto;display:block">
+      <span class="bn-lbl">&nbsp;</span>
     </div>
   </nav>
 
@@ -2981,7 +3017,7 @@ function renderConsents(){
       ? '<span class="addr-tag" style="color:#b91c1c;border-color:#fecaca;background:#fef2f2">Requerido</span>'
       : '<span class="addr-tag" style="color:var(--muted);border-color:var(--border);background:var(--surface2)">Opcional</span>';
     const link = c.pdf ? `<a href="${c.pdf}" target="_blank" rel="noopener" style="font-size:11px;color:var(--primary);font-weight:700">${c.linkText || 'Ver documento'}</a>` : '';
-    return `<div class="field-row" style="align-items:flex-start;gap:10px"><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px;flex-wrap:wrap">${c.nombre} ${tag}</div>${link?'<div style="margin-top:3px">'+link+'</div>':''}</div><button class="consent-toggle ${on?'on':''}" onclick="toggleConsent('${c.key}')">${on?'Autorizado':'Revocado'}</button></div>`;
+    return `<div class="field-row" style="align-items:flex-start;gap:10px"><div style="flex:1;min-width:0"><div class="cons-title" style="font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px;flex-wrap:wrap"><span class="cons-name">${c.nombre}</span> ${tag}</div>${link?'<div style="margin-top:3px">'+link+'</div>':''}</div><button class="consent-toggle ${on?'on':''}" onclick="toggleConsent('${c.key}')">${on?'Autorizado':'Revocado'}</button></div>`;
   }).join('');
   const warn=document.getElementById('consentWarn');
   if(warn){
@@ -3006,12 +3042,16 @@ function navTo(id){
   if(document.getElementById('sb-'+id))document.getElementById('sb-'+id).classList.add('active');
   if(document.getElementById('bn-'+id))document.getElementById('bn-'+id).classList.add('active');
 
-  const titles={inicio:null,citas:'Mis Citas',med:'Medicación',evolucion:'Mi Evolución',perfil:'Mi Perfil Médico'};
+  const titles={inicio:'Inicio',citas:'Mis Citas',despachos:'Mis Despachos',pagos:'Mis Pagos',recetas:'Mis Recetas',med:'Medicación',evolucion:'Mi Evolución',perfil:'Mi Perfil Médico'};
   const tm=document.getElementById('tb-content-m');
   if(tm){
-    if(titles[id]) tm.innerHTML=`<span class="tb-title-m">${titles[id]}</span>`;
-    else tm.innerHTML='<span style="display:inline-flex;align-items:center;gap:8px"><img src="Logo Simple.png" alt="Balance+" style="height:36px;display:block;background:#fff;border-radius:6px;padding:3px 8px"><span style="background:#fde68a;color:#92400e;font-size:9px;font-weight:800;letter-spacing:.4px;padding:2px 6px;border-radius:5px;text-transform:uppercase;white-space:nowrap">En construcción</span></span>';
-    tm.className=titles[id]?'tb-title-m':'tb-logo-m';
+    const logo='<img src="Logo Simple.png" alt="Balance+" style="height:32px;display:block;background:#fff;border-radius:6px;padding:3px 8px">';
+    if(id==='inicio'){
+      tm.innerHTML=`<span style="display:inline-flex;align-items:center;gap:8px">${logo}<span style="background:#fde68a;color:#92400e;font-size:9px;font-weight:800;letter-spacing:.4px;padding:2px 6px;border-radius:5px;text-transform:uppercase;white-space:nowrap">En construcción</span></span>`;
+    } else {
+      tm.innerHTML=`<span style="display:inline-flex;align-items:center;gap:10px">${logo}<span style="width:1px;height:22px;background:rgba(255,255,255,.45);flex-shrink:0"></span><span style="font-size:16px;font-weight:700;color:#fff;white-space:nowrap">${titles[id]||''}</span></span>`;
+    }
+    tm.className='tb-logo-m';
   }
 
   cur=id;
@@ -3574,7 +3614,7 @@ function renderProfile(){
       sumRow(op,    op    ? 'Uso de opioides' : 'Sin uso de opioides') +
       sumRow(sx,    sx    ? 'Cirugía bariátrica previa' : 'Sin cirugía bariátrica') +
       sumRow(rx,    rx    ? 'Medicación activa' : 'Sin medicación activa') +
-      sumRow(gWarn, gWarn ? 'Uso previo de GLP-1' : 'Sin uso previo de GLP-1') +
+      sumRow(gWarn, gWarn ? 'Uso previo de GLP-1' : 'Sin uso previo GLP-1') +
       sumRow(otrm,  otrm  ? 'Otros medicamentos de peso' : 'Sin otros medicamentos') +
       sumRow(prog,  prog  ? 'Programas anteriores' : 'Sin programas anteriores');
 
