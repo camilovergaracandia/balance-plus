@@ -18,8 +18,8 @@
   // La URL es pública. La anon/publishable key es pública POR DISEÑO (va en el
   // navegador a propósito): lo que protege los datos es la RLS, no esta llave.
   // NUNCA pongas aquí la service_role / secret key.
-  const SUPABASE_URL  = 'https://dnxvftsoyoomiwfwxqmu.supabase.co';
-  const SUPABASE_ANON = 'sb_publishable_PJCm0UrxkHUIyTHRKy_FDw_6F-LDE3V';
+  const SUPABASE_URL  = 'https://xfkndjydnohxggpfcxxf.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhma25kanlkbm9oeGdncGZjeHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMDMxNDgsImV4cCI6MjEwMjY3OTE0OH0.mn5-sysewCVLsLNVODELKlK-fbgyJ7EJz9ZlEDJgDY4';
 
   if (!window.supabase || !window.supabase.createClient) {
     console.error('[BP] Falta cargar supabase-js antes de bp-supabase.js');

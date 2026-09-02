@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(mkdir -p web-alt)",
+      "Bash(cp web/*.png web/*.jpg web/*.jpeg web/*.webp web-alt/)",
+      "Bash(cp web/bp-cookies.js web/bp-supabase.js web/blog-data.js web-alt/)",
+      "Skill(design-consultation)",
+      "Bash(~/.claude/skills/gstack/bin/gstack-config set *)",
+      "Bash(mkdir -p /tmp/design-research)",
+      "Bash(/Users/gabrielmaiza/.claude/skills/gstack/browse/dist/browse goto *)"
+    ]
+  }
+}

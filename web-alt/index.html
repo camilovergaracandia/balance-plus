@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balance+ | Programa Médico</title>
+  <link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:          #1a1f2e;
+      --ink-soft:     #3a4256;
+      --forest:       #2f4a3d;
+      --forest-dark:  #213629;
+      --forest-tint:  #e4ebe5;
+      --terracotta:   #b5603f;
+      --terracotta-tint: #f3e3da;
+      --paper:        #f7f4ef;
+      --paper-raised: #fffdf9;
+      --border:       #e2ddd0;
+      --muted:        #6b6459;
+      --white:        #ffffff;
+    }
+
+    html, body {
+      font-family: 'Instrument Sans', sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 { font-family: 'Fraunces', serif; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 48px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-burger {
+      display: none;
+      background: none;
+      border: none;
+      padding: 4px 6px;
+      font-size: 26px;
+      line-height: 1;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+
+    .construction-badge {
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+
+    .nav-link {
+      font-size: 14px; font-weight: 500; color: var(--ink-soft); text-decoration: none;
+      opacity: 0.8; transition: opacity 0.15s;
+    }
+    .nav-link:hover { opacity: 1; }
+
+    .nav-divider { width: 1px; height: 20px; background: var(--border); }
+
+    .nav-login {
+      font-size: 14px; font-weight: 600; color: var(--ink); text-decoration: none;
+      padding: 9px 16px; border-radius: var(--radius-sm, 4px); border: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .nav-login:hover { background: var(--paper-raised); }
+
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--forest); color: var(--white);
+      font-size: 14px; font-weight: 600; padding: 10px 20px; border-radius: 4px;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--forest-dark); }
+
+    /* ─── HERO ───────────────────────────────────────────── */
+    .hero-section {
+      max-width: 1240px; margin: 0 auto; padding: 56px 48px 40px;
+    }
+
+    .hero-flex { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; }
+
+    .eyebrow-tag {
+      display: inline-block; background: var(--paper); border: 1px solid var(--border);
+      color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+      padding: 6px 14px; border-radius: 999px; margin-bottom: 20px; text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(30px, 3.4vw, 48px);
+      line-height: 1.12;
+      margin-bottom: 20px;
+    }
+    h1 em { font-style: italic; color: var(--forest); }
+
+    .lead {
+      font-size: 16px; line-height: 1.6; color: var(--ink-soft);
+      max-width: 460px; margin-bottom: 24px;
+    }
+
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--ink); }
+    .check-icon { flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px; }
+
+    .hero-cta {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      background: var(--forest); color: var(--white);
+      font-size: 15px; font-weight: 600; padding: 14px 28px; border-radius: 4px;
+      text-decoration: none; width: fit-content;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .hero-cta:hover { background: var(--forest-dark); transform: translateY(-1px); }
+    .cta-arrow { transition: transform 0.2s; }
+    .hero-cta:hover .cta-arrow { transform: translateX(4px); }
+
+    .hero-image-col {
+      border-radius: 14px; padding: 8px; background: var(--terracotta-tint);
+    }
+    .hero-image-col img { width: 100%; height: auto; display: block; border-radius: 10px; }
+
+    /* ─── STATS ──────────────────────────────────────────── */
+    .stats-section { max-width: 1240px; margin: 0 auto; padding: 0 48px 56px; }
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--border); padding-top: 32px;
+    }
+    .stat { padding-right: 24px; }
+    .stat + .stat { padding-left: 24px; border-left: 1px solid var(--border); }
+    .stat-value {
+      font-family: 'Geist', sans-serif; font-variant-numeric: tabular-nums;
+      font-size: clamp(30px, 3.4vw, 42px); font-weight: 600; color: var(--ink); letter-spacing: -0.02em; line-height: 1;
+    }
+    .stat-value span { color: var(--forest); }
+    .stat-label { font-size: 13px; color: var(--muted); line-height: 1.4; margin-top: 8px; }
+
+    /* ─── TRUST + CALCULATOR ─────────────────────────────── */
+    .trust-section {
+      background: var(--paper-raised); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .trust-inner { max-width: 1240px; margin: 0 auto; padding: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+
+    .section-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--forest); margin-bottom: 18px;
+    }
+
+    .trust-row { display: flex; flex-direction: column; gap: 20px; }
+    .trust-item { display: flex; align-items: center; gap: 12px; }
+    .trust-item img { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
+    .trust-item span { font-size: 15px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+
+    .press-row { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .press-card {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--paper); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; text-decoration: none; min-width: 0; position: relative;
+      transition: border-color 0.15s;
+    }
+    .press-card:hover { border-color: var(--forest); }
+    .press-logo { height: 22px; width: 44px; object-fit: contain; object-position: left center; flex-shrink: 0; }
+    .press-title { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+    .press-soon {
+      position: absolute; top: 0; right: 10px; transform: translateY(-50%);
+      background: var(--ink); color: var(--white); font-size: 9px; font-weight: 700;
+      padding: 4px 9px; border-radius: 999px; letter-spacing: 0.5px;
+    }
+
+    /* ─── CALCULATOR ─────────────────────────────────────── */
+    .calc-card {
+      background: var(--paper); border: 1px solid var(--border); border-radius: 8px; padding: 24px;
+    }
+    .calc-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+    .calc-title img { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
+    .calc-title span { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 500; color: var(--ink); }
+    .calc-title .nav-cta { margin-left: auto; font-size: 13px; padding: 8px 16px; }
+
+    .input-group { display: flex; gap: 12px; margin-bottom: 18px; }
+    .stepper-box {
+      flex: 1; background: var(--paper-raised); border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 14px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .stepper-box > label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted);
+    }
+    .stepper { display: flex; align-items: center; gap: 0; width: 100%; }
+    .stepper-btn {
+      width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--paper); color: var(--ink); font-size: 18px; line-height: 1;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background 0.12s; user-select: none;
+    }
+    .stepper-btn:hover { background: var(--forest-tint); }
+    .stepper-val, .stepper-input {
+      flex: 1; text-align: center; font-family: 'Geist', sans-serif; font-variant-numeric: tabular-nums;
+      font-size: 21px; font-weight: 600; color: var(--ink);
+      border: none; background: transparent; outline: none; width: 0; min-width: 0;
+    }
+    .stepper-input::-webkit-inner-spin-button, .stepper-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .stepper-input:focus { color: var(--forest); }
+    .stepper-unit { font-size: 12px; font-weight: 500; color: var(--muted); }
+
+    .result-trio {
+      display: flex; background: var(--forest-tint); border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    }
+    .result-cell { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; }
+    .result-cell + .result-cell { border-left: 1px solid var(--border); }
+    .cell-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); }
+    .cell-label.accent { color: var(--forest-dark); }
+    .cell-value { font-family: 'Geist', sans-serif; font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 600; line-height: 1.2; }
+
+    .result-note { font-size: 11px; color: var(--muted); margin-top: 14px; line-height: 1.5; }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      max-width: 1240px; margin: 0 auto; padding: 28px 48px;
+      font-size: 11px; color: var(--muted);
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-social {
+      width: 25px; height: 25px; border-radius: 50%; background: var(--ink);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .footer-social:hover { background: var(--forest); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      nav { padding: 12px 20px; }
+      .hero-section, .stats-section, .trust-inner, footer { padding-left: 20px; padding-right: 20px; }
+      .hero-flex { grid-template-columns: 1fr; }
+      .hero-image-col { display: none; }
+      h1 { font-size: 32px; }
+      .stats-row { grid-template-columns: 1fr 1fr 1fr; }
+      .stat { padding-right: 8px; }
+      .stat + .stat { padding-left: 8px; }
+      .stat-value { font-size: 26px; }
+      .trust-inner { grid-template-columns: 1fr; gap: 32px; }
+
+      nav { position: relative; }
+      .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: var(--paper); border-bottom: 1px solid var(--border); padding: 6px 20px 12px; box-shadow: 0 12px 24px rgba(26,31,46,0.10); z-index: 200; }
+      nav.open .nav-links { display: flex; }
+      .nav-links .nav-link { width: 100%; padding: 14px 4px; border-bottom: 1px solid var(--border); }
+      .nav-links .nav-divider, .nav-links .nav-cta { display: none; }
+      .nav-burger { display: block; }
+
+      footer { grid-template-columns: 1fr; gap: 14px; row-gap: 14px; justify-items: center; text-align: center; }
+      footer > div { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+<script src="bp-cookies.js"></script>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="logo-wrap" href="/" style="display:flex;align-items:center;gap:10px">
+      <img src="Logo Simple.png" alt="Balance+" style="height:48px;display:block">
+      <span class="construction-badge">En construcción</span>
+    </a>
+    <div class="nav-links">
+      <a href="blog.html" class="nav-link">Blog</a>
+      <a href="proveedores.html" class="nav-link">Portal Proveedores</a>
+      <div class="nav-divider"></div>
+      <a href="portal.html" class="nav-login">Iniciar sesión</a>
+      <a class="nav-cta" href="intake.html">
+        Comenzar evaluación
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+    <button class="nav-burger" aria-label="Abrir menú" onclick="this.closest('nav').classList.toggle('open')">☰</button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero-section">
+    <div class="hero-flex">
+      <div class="hero-text">
+        <div class="eyebrow-tag">Respaldo médico y ciencia GLP-1</div>
+        <h1>
+          Comienza tu tratamiento<br>
+          <em>médico</em> para bajar de peso<br>
+          en forma <em>segura</em>
+        </h1>
+
+        <p class="lead">
+          Balance+ combina medicamentos de última generación con seguimiento médico personalizado para que pierdas peso de forma segura y con resultados sostenibles.
+        </p>
+
+        <ul class="checklist">
+          <li>
+            <svg class="check-icon" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="10" fill="var(--forest-tint)"/>
+              <path d="M6 10.5l2.5 2.5L14 7.5" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <strong>Atención médica con diagnóstico, tratamiento y receta.</strong>
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="10" fill="var(--forest-tint)"/>
+              <path d="M6 10.5l2.5 2.5L14 7.5" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Recibe el medicamento en tu hogar
+          </li>
+          <li>
+            <svg class="check-icon" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="10" fill="var(--forest-tint)"/>
+              <path d="M6 10.5l2.5 2.5L14 7.5" stroke="var(--forest)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Haz tus reembolsos en Isapre, FONASA y seguros
+          </li>
+        </ul>
+
+        <a class="hero-cta" href="intake.html">
+          Ver si soy candidato
+          <svg class="cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="hero-image-col">
+        <img src="hero_collage.png" alt="Pacientes Balance+ en su rutina diaria con tratamiento GLP-1">
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-section">
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-value">-<span>18</span>%</div>
+        <div class="stat-label">reducción promedio del peso corporal</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>6</span>x</div>
+        <div class="stat-label">más efectivo que sólo dieta y ejercicio</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>93</span>%</div>
+        <div class="stat-label">de pacientes satisfechos con sus resultados</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST + CALCULATOR -->
+  <section class="trust-section">
+    <div class="trust-inner">
+
+      <div>
+        <div class="section-label">Confianza y respaldo</div>
+        <div class="trust-row">
+          <div class="trust-item">
+            <img src="icono-identidad.png" alt="">
+            <span>Verificación de Identidad</span>
+          </div>
+          <div class="trust-item">
+            <img src="icono-medicos.png" alt="">
+            <span>Médicos Verificados</span>
+          </div>
+          <div class="trust-item">
+            <img src="icono-farmacias.png" alt="">
+            <span>Farmacias Establecidas</span>
+          </div>
+        </div>
+
+        <div class="section-label" style="margin-top:36px">GLP-1 en Prensa</div>
+        <div class="press-row">
+          <a href="https://www.latercera.com/pulso/noticia/laboratorio-que-creo-el-ozempic-lanza-en-chile-nuevo-medicamento-para-la-obesidad-y-apunta-a-seguir-duplicando-sus-ventas/" target="_blank" rel="noopener noreferrer" class="press-card">
+            <img src="latercera-square.png" alt="La Tercera" class="press-logo">
+            <span class="press-title">Laboratorio que creó Ozempic lanza Wegovy</span>
+          </a>
+          <a href="https://www.t13.cl/noticia/nacional/nuevo-ozempic-chileno-avanza-espera-luz-verde-del-isp-para-salir-venta-4-4-2026" target="_blank" rel="noopener noreferrer" class="press-card">
+            <span class="press-soon">PRONTO</span>
+            <img src="t13-square.png" alt="T13" class="press-logo">
+            <span class="press-title">Selfix, el nuevo "Ozempic chileno"</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="calc-card">
+          <div class="calc-title">
+            <img src="icono-balanza-peso.png" alt="">
+            <span>¡Súbete a nuestra balanza!</span>
+            <a href="intake.html" class="nav-cta">
+              Comenzar Ahora
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+
+          <div class="input-group">
+            <div class="stepper-box">
+              <label>Peso actual</label>
+              <div class="stepper">
+                <button class="stepper-btn" onclick="adjust('w',-1)">−</button>
+                <input class="stepper-input" id="weight-input" type="number" value="100"
+                       min="40" max="200"
+                       oninput="syncFromInput('w')" onblur="clampInput('w')">
+                <span class="stepper-unit" style="margin-right:4px">kg</span>
+                <button class="stepper-btn" onclick="adjust('w',1)">+</button>
+              </div>
+            </div>
+            <div class="stepper-box">
+              <label>Estatura</label>
+              <div class="stepper">
+                <button class="stepper-btn" onclick="adjust('h',-5)">−</button>
+                <input class="stepper-input" id="height-input" type="number" value="170"
+                       min="80" max="230"
+                       oninput="syncFromInput('h')" onblur="clampInput('h')">
+                <span class="stepper-unit" style="margin-right:4px">cm</span>
+                <button class="stepper-btn" onclick="adjust('h',5)">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-trio">
+            <div class="result-cell">
+              <div class="cell-label">Hoy</div>
+              <div class="cell-value" id="bmi-before" style="color:#9a3412">Obesidad Grado II</div>
+            </div>
+            <div class="result-cell">
+              <div class="cell-label accent">Con Balance+</div>
+              <div class="cell-value" id="bmi-after" style="color:#854d0e">Sobrepeso</div>
+            </div>
+            <div class="result-cell">
+              <div class="cell-label">Podrías perder</div>
+              <div class="cell-value" id="result-range" style="color:var(--forest-dark);font-size:19px">11 – 16 kg</div>
+            </div>
+          </div>
+
+          <p class="result-note">
+            Estimación basada en los resultados promedio del tratamiento con semaglutida en 12 meses. Los resultados individuales pueden variar según cada paciente.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div style="display:flex;align-items:center;gap:8px">
+      <a class="footer-social" href="#">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+          <path fill="white" d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+        </svg>
+      </a>
+      <a class="footer-social" href="#">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <rect x="2" y="2" width="20" height="20" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/>
+        </svg>
+      </a>
+      <a class="footer-social" href="#">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="white">
+          <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/>
+          <rect x="2" y="9" width="4" height="12"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+      </a>
+      <a class="footer-social" href="#">
+        <svg width="13" height="10" viewBox="0 0 24 17" fill="none">
+          <path fill="white" d="M23.5 2.6A3 3 0 0021.4.5C19.5 0 12 0 12 0S4.5 0 2.6.5A3 3 0 00.5 2.6C0 4.5 0 8.5 0 8.5s0 4 .5 5.9a3 3 0 002.1 2.1C4.5 17 12 17 12 17s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 12.5 24 8.5 24 8.5s0-4-.5-5.9z"/>
+          <polygon points="9.6,12.1 15.8,8.5 9.6,4.9" fill="var(--ink)"/>
+        </svg>
+      </a>
+      <span style="width:1px;height:18px;background:var(--border);margin:0 4px;opacity:0.7"></span>
+      <a href="#" title="Próximamente en App Store" style="display:block;line-height:0;opacity:0.5;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.5'">
+        <img src="App_Store.png" alt="App Store" style="height:25px;width:auto;display:block">
+      </a>
+      <a href="#" title="Próximamente en Google Play" style="display:block;line-height:0;opacity:0.5;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.5'">
+        <img src="Logo Google Play.png" alt="Google Play" style="height:25px;width:auto;display:block">
+      </a>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:0">
+      <a href="02_Politica_de_Privacidad_BalancePlus.pdf" target="_blank" rel="noopener">Política de Privacidad</a>
+      <span style="margin:0 10px;opacity:0.5">&middot;</span>
+      <a href="01_Terminos_y_Condiciones_BalancePlus.pdf" target="_blank" rel="noopener">Términos y Condiciones</a>
+      <span style="margin:0 10px;opacity:0.5">&middot;</span>
+      <a href="legal.html" style="font-weight:600;color:var(--ink)">Información Legal</a>
+    </div>
+
+    <a href="contacto.html" style="font-weight:600;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:5px;justify-self:end">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+      Contacto y Ayuda
+    </a>
+  </footer>
+
+<script>
+  let wVal = 100, hVal = 170;
+
+  function classify(bmi) {
+    if (bmi < 18.5) return { label: 'Bajo peso',          color: '#1d4ed8' };
+    if (bmi < 25)   return { label: 'Peso normal',        color: '#166534' };
+    if (bmi < 30)   return { label: 'Sobrepeso',           color: '#854d0e' };
+    if (bmi < 35)   return { label: 'Obesidad Grado I',   color: '#c2410c' };
+    if (bmi < 40)   return { label: 'Obesidad Grado II',  color: '#9a3412' };
+    return           { label: 'Obesidad Grado III',       color: '#991b1b' };
+  }
+
+  function syncFromInput(field) {
+    if (field === 'w') {
+      const raw = parseInt(document.getElementById('weight-input').value);
+      if (!isNaN(raw)) { wVal = Math.max(40,  Math.min(200, raw)); }
+    } else {
+      const raw = parseInt(document.getElementById('height-input').value);
+      if (!isNaN(raw)) { hVal = Math.max(80, Math.min(230, raw)); }
+    }
+    calcUpdate();
+  }
+
+  function clampInput(field) {
+    if (field === 'w') document.getElementById('weight-input').value = wVal;
+    else               document.getElementById('height-input').value = hVal;
+  }
+
+  function adjust(field, delta) {
+    if (field === 'w') {
+      wVal = Math.max(40,  Math.min(200, wVal + delta));
+      document.getElementById('weight-input').value = wVal;
+    } else {
+      hVal = Math.max(80, Math.min(230, hVal + delta));
+      document.getElementById('height-input').value = hVal;
+    }
+    calcUpdate();
+  }
+
+  function saveCalcState(maxLoss) {
+    /* Persistimos peso/estatura/peso objetivo de la calculadora para que
+       intake.html parta siempre con los mismos valores (editados o por
+       defecto). Como la calculadora no pide peso objetivo, se asume el
+       peso actual menos el máximo que podría perder (extremo alto del
+       rango "Podrías perder"). */
+    const targetWeight = wVal - maxLoss;
+    localStorage.setItem('bp_calc', JSON.stringify({ weight: wVal, height: hVal, targetWeight }));
+  }
+
+  function calcUpdate() {
+    const hm   = hVal / 100;
+    const low  = Math.round(wVal * 0.12);
+    const high = Math.round(wVal * 0.18);
+    document.getElementById('result-range').textContent = low + ' – ' + high + ' kg';
+
+    const before = classify(wVal / (hm * hm));
+    const after  = classify((wVal * 0.85) / (hm * hm));
+
+    const elB = document.getElementById('bmi-before');
+    const elA = document.getElementById('bmi-after');
+    elB.textContent = before.label; elB.style.color = before.color;
+    elA.textContent = after.label;  elA.style.color = after.color;
+
+    saveCalcState(high);
+  }
+
+  calcUpdate();
+</script>
+
+</body>
+</html>

@@ -10,3 +10,4 @@ dist/
 
 # Nota: los .sql, .docx y .md SÍ se versionan (respaldo en repo privado),
 # pero NO se publican: Cloudflare despliega únicamente la carpeta web/.
+.gstack/
