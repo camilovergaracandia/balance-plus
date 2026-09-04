@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance+ | Mi atención</title>
+<link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1B2D5E; --primary-dark:#142248;
+  --accent:#8AB090; --accent-dark:#6A9070; --accent-faint:#f0f6f1;
+  --green:#27AE60; --green-light:#e8f8ef;
+  --blue:#2F80ED; --blue-light:#e8f1fd;
+  --red:#EB5757; --red-light:#fef2f2;
+  --amber:#F59E0B; --amber-light:#fffbeb;
+  --text:#1a1f2e; --text-mid:#2d3748; --muted:#5a6475;
+  --border:#dde3e8; --surface:#ffffff; --surface2:#f0f3f7;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--surface2);color:var(--text);font-size:14px;line-height:1.5}
+.topbar{background:var(--primary);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-size:18px;font-weight:800;letter-spacing:-.5px;cursor:pointer}
+.brand span{color:var(--accent)}
+.linkout{color:#fff;opacity:.78;text-decoration:none;cursor:pointer;font-size:12.5px}
+.linkout:hover{opacity:1}
+.wrap{max-width:800px;margin:0 auto;padding:24px 20px 60px}
+.h1{font-size:23px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:22px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px}
+.card-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:14px}
+.cita{background:linear-gradient(135deg,#1B2D5E,#2a4080);color:#fff;border-radius:14px;padding:22px;margin-bottom:18px}
+.cita-fecha{font-size:21px;font-weight:800;letter-spacing:-.4px;text-transform:capitalize}
+.cita-hora{font-size:15px;opacity:.9;margin-top:2px}
+.cita-meta{font-size:12.5px;opacity:.78;margin-top:12px;line-height:1.6}
+.cita-acc{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+.btn{padding:10px 17px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:inherit;transition:.15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:var(--accent-dark)}
+.btn-ghost{background:transparent;color:var(--primary);border-color:var(--border)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-light{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)}
+.btn-light:hover{background:rgba(255,255,255,.28)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.dias{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px}
+.dia{flex-shrink:0;min-width:66px;padding:10px 6px;border:1px solid var(--border);border-radius:11px;text-align:center;cursor:pointer;background:#fff;transition:.15s}
+.dia:hover{border-color:var(--accent)}
+.dia.sel{background:var(--primary);color:#fff;border-color:var(--primary)}
+.dia-dow{font-size:10px;text-transform:uppercase;letter-spacing:.5px;opacity:.7;font-weight:600}
+.dia-num{font-size:18px;font-weight:700;margin-top:2px}
+.dia-mes{font-size:10px;opacity:.7}
+.horas{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.hora{padding:11px 6px;border:1px solid var(--border);border-radius:9px;text-align:center;font-size:13.5px;font-weight:600;cursor:pointer;background:#fff;font-family:inherit;color:var(--text);transition:.15s}
+.hora:hover{border-color:var(--accent);background:var(--accent-faint)}
+.hora.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+.precio{display:flex;justify-content:space-between;align-items:center;padding:14px 0 0;margin-top:16px;border-top:1px solid var(--border);font-size:13px}
+.precio b{font-size:18px;letter-spacing:-.3px}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.pill.ok{background:var(--green-light);color:var(--green)}
+.pill.esp{background:var(--amber-light);color:#b45309}
+.pill.na{background:var(--surface2);color:var(--muted)}
+.rx{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--border)}
+.rx:last-child{border-bottom:0}
+.rx-med{font-weight:600;font-size:14px}
+.rx-meta{color:var(--muted);font-size:11.5px;margin-top:2px}
+.rx-ind{color:var(--text-mid);font-size:12px;margin-top:6px;background:var(--surface2);padding:9px 11px;border-radius:8px;line-height:1.5}
+.hist{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:12.5px}
+.hist:last-child{border-bottom:0}
+.empty{text-align:center;padding:34px 16px;color:var(--muted);font-size:13px}
+.empty b{display:block;color:var(--text);font-size:15px;margin-bottom:6px;font-weight:600}
+.spin{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:12px 22px;border-radius:9px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.toast.err{background:var(--red)}
+.aviso{background:var(--amber-light);border:1px solid #fde68a;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#92400e;line-height:1.55;margin-top:14px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand" onclick="location.href='portal.html'">BALANCE<span>+</span></div>
+  <a class="linkout" onclick="location.href='portal.html'">← Volver al portal</a>
+</div>
+
+<div class="wrap">
+  <div id="contenido"><div class="spin">Cargando…</div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="bp-supabase.js?v=11"></script>
+<script>
+'use strict';
+
+const sb = window.BP.sb;
+let CFG = null, CITAS = [], RECETAS = [], SLOTS = [];
+let diaSel = null, horaSel = null;
+
+function toast(m, err){
+  const t = document.getElementById('toast');
+  t.textContent = m;
+  t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.className = 'toast', 3800);
+}
+
+const CLP = n => '$' + (n || 0).toLocaleString('es-CL');
+
+function fFecha(iso){
+  return new Date(iso).toLocaleDateString('es-CL',
+    { weekday:'long', day:'numeric', month:'long' });
+}
+function fHora(iso){
+  return new Date(iso).toLocaleTimeString('es-CL',
+    { hour:'2-digit', minute:'2-digit', hour12:false });
+}
+
+/* ── Arranque ──────────────────────────────────────────────── */
+async function iniciar(){
+  const { data:{ user } } = await sb.auth.getUser();
+  if(!user){ location.href = 'intake.html'; return; }
+  await recargar();
+}
+
+async function recargar(){
+  const [cfg, citas, rx] = await Promise.all([
+    sb.from('consult_settings').select('*').eq('id',1).single(),
+    sb.rpc('mis_citas'),
+    sb.from('prescriptions').select('*').order('created_at',{ascending:false})
+  ]);
+  CFG     = cfg.data;
+  CITAS   = citas.data || [];
+  RECETAS = rx.data || [];
+  pintar();
+}
+
+function citaActiva(){
+  return CITAS.find(c =>
+    ['reservada','confirmada','en_curso'].includes(c.status) &&
+    new Date(c.inicio) > new Date(Date.now() - 60*60*1000));
+}
+
+/* ── Render principal ──────────────────────────────────────── */
+function pintar(){
+  const activa = citaActiva();
+  let h = '<div class="h1">Mi atención</div>' +
+          '<p class="sub">Agenda tu consulta médica y revisa tus recetas.</p>';
+
+  h += activa ? bloqueCita(activa) : '<div id="reserva"></div>';
+  h += bloqueRecetas();
+  h += bloqueHistorial();
+
+  document.getElementById('contenido').innerHTML = h;
+  if(!activa) cargarSlots();
+}
+
+function bloqueCita(c){
+  const conMedico = c.status === 'confirmada' || c.status === 'en_curso';
+  const motivo = c.motivo === 'control' ? 'Control' : 'Primera consulta';
+
+  let acc = '';
+  if(conMedico && c.sala){
+    acc += '<button class="btn btn-light" onclick="entrarSala()">Entrar a la videollamada</button>';
+  }
+  acc += '<button class="btn btn-light" onclick="cancelar(\'' + c.cita_id + '\')">Cancelar hora</button>';
+
+  return '<div class="cita">' +
+    '<div style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;opacity:.75;font-weight:700;margin-bottom:8px">Tu próxima cita</div>' +
+    '<div class="cita-fecha">' + fFecha(c.inicio) + '</div>' +
+    '<div class="cita-hora">' + fHora(c.inicio) + ' hrs · ' + c.duracion_min + ' minutos</div>' +
+    '<div class="cita-meta">' + motivo +
+      (c.medico ? '<br>Te atiende Dr(a). ' + c.medico : '<br>Estamos asignando a tu médico') +
+      (c.precio ? '<br>Valor: ' + CLP(c.precio) : '') +
+    '</div>' +
+    '<div class="cita-acc">' + acc + '</div>' +
+    '</div>' +
+    (conMedico ? '' :
+      '<div class="aviso">Tu hora está reservada. Cuando un médico la tome, aquí aparecerá su nombre y el acceso a la videollamada.</div>');
+}
+
+function bloqueRecetas(){
+  let h = '<div class="card"><div class="card-t">Mis recetas</div>';
+  if(!RECETAS.length){
+    h += '<div class="empty"><b>Todavía no tienes recetas</b>Tu médico las emitirá después de tu consulta.</div>';
+    return h + '</div>';
+  }
+
+  const grupos = {};
+  RECETAS.forEach(r => {
+    const k = r.archivo_path || ('sin-archivo-' + r.id);
+    (grupos[k] = grupos[k] || []).push(r);
+  });
+
+  h += Object.keys(grupos).map(k => {
+    const g = grupos[k];
+    const f = new Date(g[0].created_at).toLocaleDateString('es-CL');
+    const pdf = g[0].archivo_path
+      ? '<button class="btn btn-ghost" onclick="verPdf(\'' + g[0].archivo_path + '\')">Descargar PDF</button>'
+      : '<span class="pill na">sin archivo</span>';
+    const lista = g.map(r =>
+      '<div class="rx-med">' + r.medicamento + '</div>' +
+      (r.dosis ? '<div class="rx-meta">' + r.dosis + '</div>' : '')
+    ).join('<div style="height:8px"></div>');
+    const ind = g[0].indicaciones ? '<div class="rx-ind">' + g[0].indicaciones + '</div>' : '';
+    return '<div><div class="rx"><div>' + lista +
+      '<div class="rx-meta" style="margin-top:6px">Emitida el ' + f + '</div>' +
+      '</div>' + pdf + '</div>' + ind + '</div>';
+  }).join('');
+
+  return h + '</div>';
+}
+
+function bloqueHistorial(){
+  const pasadas = CITAS.filter(c => ['atendida','cancelada','no_asistio'].includes(c.status));
+  if(!pasadas.length) return '';
+  const et = { atendida:['ok','Atendida'], cancelada:['na','Cancelada'], no_asistio:['na','No asististe'] };
+  return '<div class="card"><div class="card-t">Historial de citas</div>' +
+    pasadas.map(c => {
+      const e = et[c.status] || ['na', c.status];
+      return '<div class="hist"><div>' + fFecha(c.inicio) + ' · ' + fHora(c.inicio) + ' hrs' +
+        (c.medico ? '<br><span style="color:var(--muted);font-size:11.5px">Dr(a). ' + c.medico + '</span>' : '') +
+        '</div><span class="pill ' + e[0] + '">' + e[1] + '</span></div>';
+    }).join('') + '</div>';
+}
+
+/* ── Reserva de hora ───────────────────────────────────────── */
+async function cargarSlots(){
+  const cont = document.getElementById('reserva');
+  if(!cont) return;
+  cont.innerHTML = '<div class="card"><div class="spin">Buscando horas disponibles…</div></div>';
+
+  const hoy = new Date();
+  const hasta = new Date(); hasta.setDate(hasta.getDate() + (CFG ? CFG.dias_max_futuro : 30));
+  const iso = d => new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+
+  const { data, error } = await sb.rpc('horarios_disponibles', { p_desde: iso(hoy), p_hasta: iso(hasta) });
+  if(error){
+    cont.innerHTML = '<div class="card"><div class="empty"><b>No pudimos cargar las horas</b>' + error.message + '</div></div>';
+    return;
+  }
+  SLOTS = data || [];
+  pintarReserva();
+}
+
+function pintarReserva(){
+  const cont = document.getElementById('reserva');
+  if(!cont) return;
+
+  if(!SLOTS.length){
+    cont.innerHTML = '<div class="card"><div class="empty"><b>No hay horas disponibles</b>Vuelve a intentarlo más tarde.</div></div>';
+    return;
+  }
+
+  const porDia = {};
+  SLOTS.forEach(s => {
+    const k = new Date(s.inicio).toLocaleDateString('en-CA');
+    (porDia[k] = porDia[k] || []).push(s);
+  });
+  const dias = Object.keys(porDia).sort();
+  if(!diaSel || !porDia[diaSel]) diaSel = dias[0];
+
+  const DOW = ['dom','lun','mar','mié','jue','vie','sáb'];
+  const MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+  let h = '<div class="card"><div class="card-t">Agendar mi consulta</div><div class="dias">';
+  dias.forEach(d => {
+    const dt = new Date(d + 'T12:00:00');
+    h += '<div class="dia' + (d === diaSel ? ' sel' : '') + '" onclick="elegirDia(\'' + d + '\')">' +
+      '<div class="dia-dow">' + DOW[dt.getDay()] + '</div>' +
+      '<div class="dia-num">' + dt.getDate() + '</div>' +
+      '<div class="dia-mes">' + MES[dt.getMonth()] + '</div></div>';
+  });
+  h += '</div><div class="horas">';
+  porDia[diaSel].forEach(s => {
+    h += '<button class="hora' + (s.inicio === horaSel ? ' sel' : '') +
+         '" onclick="elegirHora(\'' + s.inicio + '\')">' + fHora(s.inicio) + '</button>';
+  });
+  h += '</div>';
+
+  h += '<div class="precio"><span>Valor de la consulta' +
+       (CFG ? ' · ' + CFG.duracion_min + ' minutos' : '') + '</span>' +
+       '<b>' + CLP(CFG ? CFG.precio_consulta : 0) + '</b></div>';
+
+  h += '<button class="btn btn-accent" style="width:100%;margin-top:16px" ' +
+       (horaSel ? '' : 'disabled ') + 'id="btnReservar" onclick="reservar()">' +
+       (horaSel ? 'Reservar ' + fHora(horaSel) + ' hrs' : 'Elige un horario') + '</button>';
+
+  h += '<div class="aviso">La consulta se realiza por videollamada dentro de Balance+. ' +
+       'No se graba: queda solo el registro clínico que tu médico escriba.</div></div>';
+
+  cont.innerHTML = h;
+}
+
+function elegirDia(d){ diaSel = d; horaSel = null; pintarReserva(); }
+function elegirHora(h){ horaSel = h; pintarReserva(); }
+
+async function reservar(){
+  if(!horaSel) return;
+  const btn = document.getElementById('btnReservar');
+  btn.disabled = true; btn.textContent = 'Reservando…';
+
+  const { error } = await sb.rpc('reservar_cita', { p_inicio: horaSel, p_motivo: 'primera_consulta' });
+  if(error){
+    toast(error.message, true);
+    btn.disabled = false; btn.textContent = 'Reservar';
+    return;
+  }
+  toast('Hora reservada');
+  horaSel = null;
+  await recargar();
+}
+
+async function cancelar(id){
+  if(!confirm('¿Seguro que quieres cancelar tu hora?')) return;
+  const { error } = await sb.rpc('cancelar_cita', { p_cita: id });
+  if(error) return toast(error.message, true);
+  toast('Hora cancelada');
+  await recargar();
+}
+
+function entrarSala(){
+  toast('La videollamada se activa en los próximos días.');
+}
+
+async function verPdf(path){
+  const { data, error } = await sb.storage.from('recetas').createSignedUrl(path, 300);
+  if(error) return toast('No se pudo abrir el archivo', true);
+  window.open(data.signedUrl, '_blank');
+}
+
+iniciar();
+</script>
+</body>
+</html>

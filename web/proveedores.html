@@ -198,6 +198,8 @@ select,input{font-family:inherit}
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="bp-supabase.js?v=11"></script>
 <script>
 const PROVIDER_TABS = ['medicos','farmacias','staff'];
 const PROVIDER_LABELS = {medicos:'Médicos', farmacias:'Farmacias', staff:'Staff'};
@@ -219,17 +221,49 @@ function showToast(msg){
   window._toastTimer = setTimeout(()=> el.classList.remove('show'), 3200);
 }
 
-function doProviderLogin(role){
-  if(role === 'staff'){
-    showToast('Bienvenido al Panel de Administración');
-    setTimeout(()=>{ window.location.href = 'admin.html'; }, 700);
-    return;
+const DESTINO = { medicos:'portal-medico.html', farmacias:'portal-farmacia.html', staff:'admin.html' };
+const ROL_ESPERADO = { medicos:'medico', farmacias:'farmacia', staff:'staff' };
+
+async function doProviderLogin(role){
+  const email = (document.getElementById(role+'-email').value || '').trim();
+  const pass  = document.getElementById(role+'-pass').value || '';
+  if(!email || !pass){ return showToast('Ingresa tu correo y contraseña.'); }
+
+  const btns = document.querySelectorAll('#form-'+role+' .btn');
+  btns.forEach(b => { b.disabled = true; b.textContent = 'Verificando…'; });
+
+  try{
+    const sb = window.BP.sb;
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if(error){ throw new Error('Correo o contraseña incorrectos.'); }
+
+    const { data: perfil } = await sb.from('profiles').select('role').eq('id', data.user.id).single();
+    const rol = perfil && perfil.role;
+
+    if(rol === 'paciente'){
+      await sb.auth.signOut();
+      throw new Error('Esta cuenta es de paciente. Ingresa desde el portal del paciente.');
+    }
+    if(rol !== ROL_ESPERADO[role] && rol !== 'staff'){
+      await sb.auth.signOut();
+      throw new Error('Tu cuenta no tiene permisos de ' + PROVIDER_LABELS[role].toLowerCase() + '.');
+    }
+
+    showToast('Bienvenido. Abriendo tu portal…');
+    setTimeout(()=>{ window.location.href = DESTINO[role]; }, 600);
+
+  }catch(e){
+    showToast(e.message || 'No pudimos iniciar sesión.');
+    btns.forEach(b => { b.disabled = false; b.textContent = 'Iniciar sesión'; });
   }
-  showToast('Portal de ' + PROVIDER_LABELS[role] + ': próximamente disponible.');
 }
 
-function forgotPassword(){
-  showToast('Te enviaremos instrucciones de recuperación próximamente.');
+async function forgotPassword(){
+  const activo = PROVIDER_TABS.find(t => !document.getElementById('form-'+t).classList.contains('hidden')) || 'medicos';
+  const email = (document.getElementById(activo+'-email').value || '').trim();
+  if(!email){ return showToast('Escribe tu correo y vuelve a tocar el enlace.'); }
+  const { error } = await window.BP.sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/proveedores.html' });
+  showToast(error ? 'No pudimos enviar el correo.' : 'Te enviamos un correo para restablecer tu contraseña.');
 }
 </script>
 

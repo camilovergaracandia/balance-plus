@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance+ | Portal Médico</title>
+<link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1B2D5E; --primary-dark:#142248;
+  --accent:#8AB090; --accent-dark:#6A9070; --accent-faint:#f0f6f1;
+  --green:#27AE60; --green-light:#e8f8ef;
+  --blue:#2F80ED; --blue-light:#e8f1fd;
+  --red:#EB5757; --red-light:#fef2f2;
+  --amber:#F59E0B; --amber-light:#fffbeb;
+  --text:#1a1f2e; --text-mid:#2d3748; --muted:#5a6475;
+  --border:#dde3e8; --surface:#ffffff; --surface2:#f0f3f7;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--surface2);color:var(--text);font-size:14px;line-height:1.5}
+.topbar{background:var(--primary);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.brand span{color:var(--accent)}
+.brand small{display:block;font-size:9px;font-weight:500;letter-spacing:2px;opacity:.7;margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:16px;font-size:13px}
+.linkout{color:#fff;opacity:.75;text-decoration:none;cursor:pointer;font-size:12px}
+.linkout:hover{opacity:1}
+.wrap{max-width:1100px;margin:0 auto;padding:24px}
+.h1{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:16px}
+.daybar{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.daybar input[type=date]{padding:8px 11px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;background:#fff}
+.chip{padding:7px 13px;border-radius:20px;font-size:12px;font-weight:600;background:#fff;border:1px solid var(--border);cursor:pointer;font-family:inherit;color:var(--text-mid)}
+.chip:hover{border-color:var(--accent)}
+.slot{display:flex;align-items:center;gap:16px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.slot:last-child{border-bottom:0}
+.hora{font-size:17px;font-weight:700;color:var(--primary);min-width:62px;letter-spacing:-.3px}
+.slot-info{flex:1;min-width:0}
+.slot-nombre{font-weight:600;font-size:14px}
+.slot-meta{color:var(--muted);font-size:11.5px;margin-top:2px}
+.slot-acc{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.pill.ok{background:var(--green-light);color:var(--green)}
+.pill.no{background:var(--red-light);color:var(--red)}
+.pill.rev{background:var(--amber-light);color:#b45309}
+.pill.na{background:var(--surface2);color:var(--muted)}
+.pill.mine{background:var(--blue-light);color:var(--blue)}
+.btn{padding:8px 15px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:inherit;transition:.15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:var(--accent-dark)}
+.btn-ghost{background:transparent;color:var(--primary);border-color:var(--border)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.empty{text-align:center;padding:44px 20px;color:var(--muted);font-size:13px}
+.empty b{display:block;color:var(--text);font-size:15px;margin-bottom:6px;font-weight:600}
+.modal-bg{position:fixed;inset:0;background:rgba(16,22,40,.55);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:28px 16px;overflow-y:auto}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:640px;padding:24px}
+.modal h2{font-size:17px;font-weight:700;margin-bottom:2px}
+.modal .who{color:var(--muted);font-size:12.5px;margin-bottom:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{margin-bottom:13px}
+label{display:block;font-size:11px;font-weight:600;color:var(--text-mid);margin-bottom:5px}
+input[type=text],input[type=url],textarea{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;color:var(--text)}
+textarea{resize:vertical;min-height:64px}
+input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+input[type=file]{width:100%;padding:9px;border:1px dashed var(--border);border-radius:8px;font-size:12px;background:var(--surface2);font-family:inherit}
+.datos{background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:16px}
+.datos-row{display:flex;justify-content:space-between;gap:14px;padding:5px 0;font-size:12.5px;border-bottom:1px solid var(--border)}
+.datos-row:last-child{border-bottom:0}
+.datos-row span:first-child{color:var(--muted);flex-shrink:0}
+.datos-row span:last-child{font-weight:600;text-align:right}
+.seccion{font-size:12px;font-weight:700;color:var(--primary);margin:18px 0 10px;padding-top:14px;border-top:1px solid var(--border)}
+.modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.rx-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12.5px}
+.rx-item:last-child{border-bottom:0}
+.linea{display:grid;grid-template-columns:1fr 1fr 34px;gap:8px;margin-bottom:8px;align-items:start}
+.linea button{border:1px solid var(--border);background:#fff;border-radius:8px;height:36px;cursor:pointer;color:var(--red);font-size:17px;font-family:inherit;line-height:1}
+.linea button:hover{background:var(--red-light)}
+@media(max-width:640px){.linea{grid-template-columns:1fr 1fr 34px}}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:11px 22px;border-radius:9px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.toast.err{background:var(--red)}
+.gate{max-width:400px;margin:70px auto;background:#fff;border:1px solid var(--border);border-radius:14px;padding:30px}
+.spin{text-align:center;padding:46px;color:var(--muted);font-size:13px}
+@media(max-width:640px){
+  .grid2{grid-template-columns:1fr}
+  .wrap{padding:16px}
+  .slot{flex-wrap:wrap;gap:10px}
+  .slot-acc{width:100%;justify-content:flex-end}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">BALANCE<span>+</span><small>PORTAL MÉDICO</small></div>
+  <div class="topbar-right">
+    <span id="whoami"></span>
+    <a class="linkout" onclick="salir()">Cerrar sesión</a>
+  </div>
+</div>
+
+<div class="wrap" id="gate" style="display:none">
+  <div class="gate">
+    <div class="h1">Acceso restringido</div>
+    <p class="sub" id="gateMsg">Necesitas una cuenta de médico para entrar aquí.</p>
+    <button class="btn btn-primary" onclick="location.href='proveedores.html'">Ir al inicio de sesión</button>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+  <div class="h1">Mi agenda</div>
+  <p class="sub">Horas reservadas por pacientes. Toma una para quedar como médico tratante.</p>
+
+  <div class="daybar">
+    <input type="date" id="fecha" onchange="cargarAgenda()">
+    <button class="chip" onclick="irA(0)">Hoy</button>
+    <button class="chip" onclick="irA(1)">Mañana</button>
+    <button class="chip" onclick="mover(-1)">‹ Día anterior</button>
+    <button class="chip" onclick="mover(1)">Día siguiente ›</button>
+  </div>
+
+  <div class="card">
+    <div id="agenda"><div class="spin">Cargando agenda…</div></div>
+  </div>
+</div>
+
+<!-- Ficha del paciente -->
+<div class="modal-bg" id="ficha" onclick="if(event.target===this)cerrarFicha()">
+  <div class="modal">
+    <h2 id="fNombre">—</h2>
+    <div class="who" id="fEmail">—</div>
+
+    <div class="datos" id="fDatos"></div>
+
+    <div class="seccion" style="border-top:0;padding-top:0;margin-top:0">Atención</div>
+    <div id="cEstado" style="font-size:12.5px;color:var(--muted);margin-bottom:10px"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn btn-primary" onclick="iniciarLlamada()">Iniciar videollamada</button>
+      <button class="btn btn-ghost" onclick="cerrarAtencion()">Cerrar atención</button>
+      <button class="btn btn-ghost" onclick="marcarNoAsistio()">No asistió</button>
+    </div>
+    <div class="field">
+      <label>Nota clínica <span style="color:var(--muted);font-weight:400">— queda en la ficha del paciente</span></label>
+      <textarea id="cNota" placeholder="Motivo de consulta, hallazgos, plan…"></textarea>
+      <button class="btn btn-ghost" style="margin-top:8px" onclick="guardarNota()">Guardar nota</button>
+    </div>
+
+    <div class="seccion">Recetas emitidas</div>
+    <div id="fRecetas"></div>
+
+    <div class="seccion">Emitir nueva receta</div>
+    <div style="font-size:12px;color:var(--muted);margin:-4px 0 12px;line-height:1.5">
+      El PDF firmado es el documento válido. Los medicamentos que anotes aquí son
+      los que verá la farmacia para despachar y el paciente en su portal.
+    </div>
+    <div class="field">
+      <label>Receta en PDF <span style="color:var(--muted);font-weight:400">— la que emitiste en tu plataforma</span></label>
+      <input type="file" id="rxFile" accept="application/pdf">
+    </div>
+    <label style="margin-bottom:8px">Medicamentos incluidos en esa receta</label>
+    <div id="rxLineas"></div>
+    <button class="btn btn-ghost" style="margin-bottom:14px" onclick="agregarLinea()">+ Agregar otro medicamento</button>
+    <div class="field">
+      <label>Indicaciones para el paciente <span style="color:var(--muted);font-weight:400">— opcional</span></label>
+      <textarea id="rxInd" placeholder="Instrucciones de uso, cuidados, señales de alerta…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="cerrarFicha()">Cerrar</button>
+      <button class="btn btn-accent" id="btnEmitir" onclick="emitirReceta()">Emitir receta</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="bp-supabase.js?v=11"></script>
+<script>
+'use strict';
+
+const sb = window.BP.sb;
+let AGENDA = [];
+let ACTUAL = null;
+
+function toast(msg, err){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.className = 'toast', 3600);
+}
+
+async function salir(){
+  await sb.auth.signOut();
+  location.href = 'proveedores.html';
+}
+
+function hoyISO(){
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+}
+function irA(dias){
+  const d = new Date();
+  d.setDate(d.getDate() + dias);
+  document.getElementById('fecha').value =
+    new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+  cargarAgenda();
+}
+function mover(dias){
+  const f = document.getElementById('fecha').value || hoyISO();
+  const d = new Date(f + 'T12:00:00');
+  d.setDate(d.getDate() + dias);
+  document.getElementById('fecha').value =
+    new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+  cargarAgenda();
+}
+
+/* ── Arranque ──────────────────────────────────────────────── */
+async function iniciar(){
+  const { data:{ user } } = await sb.auth.getUser();
+  if(!user) return bloquear('Debes iniciar sesión para acceder al portal médico.');
+
+  const { data: perfil, error } = await sb
+    .from('profiles').select('nombre, apellido, email, role').eq('id', user.id).single();
+
+  if(error || !perfil) return bloquear('No pudimos cargar tu perfil.');
+  if(perfil.role !== 'medico' && perfil.role !== 'staff')
+    return bloquear('Tu cuenta no tiene permisos de médico.');
+
+  const nom = [perfil.nombre, perfil.apellido].filter(Boolean).join(' ') || perfil.email;
+  document.getElementById('whoami').textContent = 'Dr(a). ' + nom;
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('fecha').value = hoyISO();
+  cargarAgenda();
+}
+
+function bloquear(msg){
+  document.getElementById('gateMsg').textContent = msg;
+  document.getElementById('gate').style.display = 'block';
+}
+
+/* ── Agenda ────────────────────────────────────────────────── */
+async function cargarAgenda(){
+  const fecha = document.getElementById('fecha').value || hoyISO();
+  document.getElementById('agenda').innerHTML = '<div class="spin">Cargando agenda…</div>';
+
+  const { data, error } = await sb.rpc('agenda_medico', { p_fecha: fecha });
+  if(error){
+    document.getElementById('agenda').innerHTML =
+      '<div class="empty"><b>No pudimos cargar la agenda</b>' + error.message + '</div>';
+    return;
+  }
+  AGENDA = data || [];
+  pintarAgenda();
+}
+
+function etiqueta(e){
+  const m = { candidato:['ok','Candidato'], no_candidato:['no','No candidato'],
+              requiere_revision:['rev','Requiere revisión'] };
+  const x = m[e] || ['na','Sin evaluar'];
+  return '<span class="pill ' + x[0] + '">' + x[1] + '</span>';
+}
+
+function hora(iso){
+  return new Date(iso).toLocaleTimeString('es-CL', { hour:'2-digit', minute:'2-digit', hour12:false });
+}
+
+function pintarAgenda(){
+  const cont = document.getElementById('agenda');
+  if(!AGENDA.length){
+    cont.innerHTML = '<div class="empty"><b>No hay horas para este día</b>Prueba con otra fecha, o espera a que un paciente reserve.</div>';
+    return;
+  }
+
+  cont.innerHTML = AGENDA.map(c => {
+    const demo = [c.edad ? c.edad + ' años' : null, c.sexo,
+                  c.imc != null ? 'IMC ' + c.imc : null].filter(Boolean).join(' · ');
+    const motivo = c.motivo === 'control' ? 'Control' : 'Primera consulta';
+
+    let estado = '';
+    if(c.status === 'en_curso')   estado = '<span class="pill rev">En curso</span>';
+    if(c.status === 'atendida')   estado = '<span class="pill ok">Atendida</span>';
+    if(c.status === 'no_asistio') estado = '<span class="pill no">No asistió</span>';
+    if(c.mia && c.status === 'confirmada') estado = '<span class="pill mine">Tuya</span>';
+
+    const acc = c.mia
+      ? '<button class="btn btn-primary" onclick="abrirFicha(\'' + c.cita_id + '\')">Abrir ficha</button>'
+      : '<button class="btn btn-accent" onclick="tomar(\'' + c.cita_id + '\')">Tomar hora</button>';
+
+    return '<div class="slot">' +
+      '<div class="hora">' + hora(c.inicio) + '</div>' +
+      '<div class="slot-info">' +
+        '<div class="slot-nombre">' + (c.nombre || '(sin nombre)') + '</div>' +
+        '<div class="slot-meta">' + motivo + (demo ? ' · ' + demo : '') + '</div>' +
+      '</div>' +
+      '<div class="slot-acc">' + etiqueta(c.elegibilidad) + estado +
+        (c.recetas > 0 ? '<span class="pill mine">' + c.recetas + ' rx</span>' : '') +
+        acc +
+      '</div></div>';
+  }).join('');
+}
+
+async function tomar(id){
+  const { error } = await sb.rpc('tomar_cita', { p_cita: id });
+  if(error) return toast(error.message, true);
+  toast('Hora tomada. Ya eres el médico tratante.');
+  await cargarAgenda();
+  abrirFicha(id);
+}
+
+/* ── Ficha ─────────────────────────────────────────────────── */
+async function abrirFicha(citaId){
+  ACTUAL = AGENDA.find(c => c.cita_id === citaId);
+  if(!ACTUAL) return;
+
+  document.getElementById('fNombre').textContent = ACTUAL.nombre || '(sin nombre)';
+  document.getElementById('fEmail').textContent =
+    (ACTUAL.email || '') + ' · ' + hora(ACTUAL.inicio) + ' hrs';
+  document.getElementById('cNota').value = ACTUAL.nota_clinica || '';
+  pintarEstado();
+  document.getElementById('rxInd').value = '';
+  document.getElementById('rxFile').value = '';
+  reiniciarLineas();
+  document.getElementById('fDatos').innerHTML = '<div class="spin" style="padding:14px">Cargando ficha…</div>';
+  document.getElementById('fRecetas').innerHTML = '';
+  document.getElementById('ficha').classList.add('open');
+
+  const [{ data: intake }, { data: recetas }] = await Promise.all([
+    sb.rpc('intake_de_paciente', { p_patient: ACTUAL.patient_id }),
+    sb.from('prescriptions').select('*').eq('patient_id', ACTUAL.patient_id)
+      .order('created_at', { ascending:false })
+  ]);
+
+  pintarDatos(intake);
+  pintarRecetas(recetas || []);
+}
+
+function fila(k, v){
+  if(v == null || v === '' || (Array.isArray(v) && !v.length)) return '';
+  const txt = Array.isArray(v) ? v.join(', ') : (v === true ? 'Sí' : v === false ? 'No' : v);
+  return '<div class="datos-row"><span>' + k + '</span><span>' + txt + '</span></div>';
+}
+
+function pintarDatos(intake){
+  const d = (intake && intake.intake_data) ? intake.intake_data : {};
+  let h = '';
+  h += fila('Edad', ACTUAL.edad);
+  h += fila('Sexo', ACTUAL.sexo);
+  h += fila('Peso actual', ACTUAL.peso_actual ? ACTUAL.peso_actual + ' kg' : null);
+  h += fila('Peso objetivo', ACTUAL.peso_objetivo ? ACTUAL.peso_objetivo + ' kg' : null);
+  h += fila('IMC', ACTUAL.imc);
+  h += fila('Presión arterial', d.pa);
+  h += fila('Frecuencia cardíaca', d.fc);
+  h += fila('Condiciones', d.condiciones);
+  h += fila('Exclusiones marcadas', d.exclusiones);
+  h += fila('Uso previo de GLP-1', d.glp1 && d.glp1 !== 'none' ? d.glp1 : null);
+  h += fila('Opioides', d.opioides);
+  h += fila('Cirugía bariátrica', d.cirugia);
+  h += '<div class="datos-row"><span>Evaluación</span><span>' + etiqueta(ACTUAL.elegibilidad) + '</span></div>';
+  document.getElementById('fDatos').innerHTML =
+    h || '<div style="color:var(--muted);font-size:12.5px">Sin datos de evaluación registrados.</div>';
+}
+
+function pintarRecetas(rx){
+  const cont = document.getElementById('fRecetas');
+  if(!rx.length){
+    cont.innerHTML = '<div style="color:var(--muted);font-size:12.5px">Todavía no hay recetas para este paciente.</div>';
+    return;
+  }
+  const grupos = {};
+  rx.forEach(r => {
+    const k = r.archivo_path || ('sin-archivo-' + r.id);
+    (grupos[k] = grupos[k] || []).push(r);
+  });
+
+  cont.innerHTML = Object.keys(grupos).map(k => {
+    const g = grupos[k];
+    const f = new Date(g[0].created_at).toLocaleDateString('es-CL');
+    const pdf = g[0].archivo_path
+      ? '<button class="btn btn-ghost" onclick="verPdf(\'' + g[0].archivo_path + '\')">Ver PDF</button>'
+      : '<span style="color:var(--muted);font-size:11px">sin archivo</span>';
+    const lista = g.map(r => '<b>' + r.medicamento + '</b>' +
+      (r.dosis ? ' <span style="color:var(--muted)">· ' + r.dosis + '</span>' : '')).join('<br>');
+    return '<div class="rx-item"><div>' + lista +
+      '<br><span style="color:var(--muted);font-size:11px">' + f + '</span></div>' + pdf + '</div>';
+  }).join('');
+}
+
+async function verPdf(path){
+  const { data, error } = await sb.storage.from('recetas').createSignedUrl(path, 300);
+  if(error) return toast('No se pudo abrir el archivo', true);
+  window.open(data.signedUrl, '_blank');
+}
+
+function cerrarFicha(){
+  document.getElementById('ficha').classList.remove('open');
+  ACTUAL = null;
+}
+
+/* ── Atención ──────────────────────────────────────────────── */
+async function iniciarLlamada(){
+  if(!ACTUAL) return;
+  const { error } = await sb.rpc('iniciar_atencion', { p_cita: ACTUAL.cita_id });
+  if(error) return toast(error.message, true);
+  toast('Atención iniciada. La videollamada se activa en los próximos días.');
+  ACTUAL.status = 'en_curso';
+  ACTUAL.inicio_real = new Date().toISOString();
+  pintarEstado();
+  cargarAgenda();
+}
+
+async function guardarNota(){
+  if(!ACTUAL) return;
+  const nota = document.getElementById('cNota').value.trim();
+  const { error } = await sb.rpc('guardar_nota', { p_cita: ACTUAL.cita_id, p_nota: nota });
+  if(error) return toast(error.message, true);
+  ACTUAL.nota_clinica = nota;
+  toast('Nota guardada en la ficha');
+}
+
+async function cerrarAtencion(){
+  if(!ACTUAL) return;
+  const nota = document.getElementById('cNota').value.trim();
+  if(!nota) return toast('Escribe la nota clínica antes de cerrar', true);
+  const { error } = await sb.rpc('cerrar_atencion',
+    { p_cita: ACTUAL.cita_id, p_nota: nota, p_asistio: true });
+  if(error) return toast(error.message, true);
+  toast('Atención cerrada y registrada');
+  cerrarFicha();
+  cargarAgenda();
+}
+
+async function marcarNoAsistio(){
+  if(!ACTUAL) return;
+  const { error } = await sb.rpc('cerrar_atencion',
+    { p_cita: ACTUAL.cita_id, p_asistio: false });
+  if(error) return toast(error.message, true);
+  toast('Registrado como no asistida');
+  cerrarFicha();
+  cargarAgenda();
+}
+
+function pintarEstado(){
+  const e = document.getElementById('cEstado');
+  if(!ACTUAL){ e.textContent = ''; return; }
+  const partes = [];
+  if(ACTUAL.inicio_real) partes.push('Iniciada ' + hora(ACTUAL.inicio_real));
+  if(ACTUAL.fin_real){
+    partes.push('terminada ' + hora(ACTUAL.fin_real));
+    const min = Math.round((new Date(ACTUAL.fin_real) - new Date(ACTUAL.inicio_real)) / 60000);
+    if(min >= 0) partes.push(min + ' min');
+  }
+  e.textContent = partes.length ? partes.join(' · ') : 'La atención aún no comienza.';
+}
+
+/* ── Líneas de medicamento ─────────────────────────────────── */
+let nLinea = 0;
+
+function agregarLinea(med, dosis){
+  nLinea++;
+  const d = document.createElement('div');
+  d.className = 'linea';
+  d.innerHTML =
+    '<input type="text" class="rx-med" placeholder="Medicamento (ej: Semaglutida 0,25 mg)" value="' + (med||'') + '">' +
+    '<input type="text" class="rx-dosis" placeholder="Dosis y frecuencia" value="' + (dosis||'') + '">' +
+    '<button title="Quitar" onclick="this.parentNode.remove()">&times;</button>';
+  document.getElementById('rxLineas').appendChild(d);
+}
+
+function reiniciarLineas(){
+  document.getElementById('rxLineas').innerHTML = '';
+  agregarLinea();
+}
+
+/* ── Emitir receta ─────────────────────────────────────────── */
+async function emitirReceta(){
+  if(!ACTUAL) return;
+
+  const meds = [...document.querySelectorAll('#rxLineas .linea')].map(l => ({
+    medicamento: l.querySelector('.rx-med').value.trim(),
+    dosis:       l.querySelector('.rx-dosis').value.trim()
+  })).filter(m => m.medicamento);
+
+  const ind  = document.getElementById('rxInd').value.trim();
+  const file = document.getElementById('rxFile').files[0];
+
+  if(!meds.length) return toast('Anota al menos un medicamento', true);
+  if(!file)        return toast('Adjunta la receta en PDF', true);
+  if(file.type !== 'application/pdf') return toast('El archivo debe ser un PDF', true);
+  if(file.size > 10 * 1024 * 1024)    return toast('El PDF supera los 10 MB', true);
+
+  const btn = document.getElementById('btnEmitir');
+  btn.disabled = true; btn.textContent = 'Subiendo…';
+
+  try{
+    const limpio = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path   = ACTUAL.patient_id + '/' + Date.now() + '_' + limpio;
+
+    const { error: eUp } = await sb.storage.from('recetas')
+      .upload(path, file, { contentType:'application/pdf', upsert:false });
+    if(eUp) throw eUp;
+
+    const { data:{ user } } = await sb.auth.getUser();
+    const ahora = new Date().toISOString();
+    const filas = meds.map(m => ({
+      patient_id:     ACTUAL.patient_id,
+      medico_id:      user.id,
+      appointment_id: ACTUAL.cita_id,
+      medicamento:    m.medicamento,
+      dosis:          m.dosis || null,
+      indicaciones:   ind || null,
+      archivo_path:   path,
+      archivo_nombre: file.name,
+      status:         'emitida',
+      issued_at:      ahora
+    }));
+
+    const { error: eIns } = await sb.from('prescriptions').insert(filas);
+    if(eIns){ await sb.storage.from('recetas').remove([path]); throw eIns; }
+
+    toast(meds.length === 1
+      ? 'Receta emitida y disponible para el paciente'
+      : 'Receta con ' + meds.length + ' medicamentos emitida');
+
+    const id = ACTUAL.cita_id;
+    cerrarFicha();
+    await cargarAgenda();
+    abrirFicha(id);
+
+  }catch(e){
+    toast(e.message || 'No se pudo emitir la receta', true);
+  }finally{
+    btn.disabled = false; btn.textContent = 'Emitir receta';
+  }
+}
+
+iniciar();
+</script>
+</body>
+</html>
