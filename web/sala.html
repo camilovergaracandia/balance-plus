@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance+ | Consulta</title>
+<link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1B2D5E; --primary-dark:#142248;
+  --accent:#8AB090; --accent-dark:#6A9070;
+  --red:#EB5757; --muted:#8b95a8; --border:#2a3550;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Inter',-apple-system,sans-serif;background:#0f1626;color:#fff;display:flex;flex-direction:column;overflow:hidden}
+.barra{background:var(--primary);padding:11px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.brand{font-size:16px;font-weight:800;letter-spacing:-.4px}
+.brand span{color:var(--accent)}
+.barra-info{font-size:12px;color:#c7d0e0;display:flex;align-items:center;gap:14px}
+.reloj{font-variant-numeric:tabular-nums;font-weight:600}
+.reloj.alerta{color:#ffbe5c}
+.salir{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);color:#fff;padding:6px 13px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.salir:hover{background:rgba(255,255,255,.24)}
+#marco{flex:1;position:relative;background:#0f1626}
+#marco iframe{width:100%;height:100%;border:0;display:block}
+.centro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
+.centro h2{font-size:19px;font-weight:700;margin-bottom:8px}
+.centro p{color:var(--muted);font-size:14px;max-width:420px;line-height:1.6}
+.centro .btn{margin-top:20px;background:var(--accent);color:#fff;border:0;padding:11px 22px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.centro .btn:hover{background:var(--accent-dark)}
+.centro .btn.sec{background:transparent;border:1px solid var(--border);color:#c7d0e0;margin-left:8px}
+.punto{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:g .8s linear infinite;margin-bottom:18px}
+@keyframes g{to{transform:rotate(360deg)}}
+.aviso{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:12px;color:#c7d0e0;max-width:430px;margin-top:18px;line-height:1.55}
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <div class="brand">BALANCE<span>+</span></div>
+  <div class="barra-info">
+    <span class="reloj" id="reloj"></span>
+    <button class="salir" onclick="salir()">Salir de la consulta</button>
+  </div>
+</div>
+
+<div id="marco">
+  <div class="centro" id="estado">
+    <div class="punto"></div>
+    <h2>Preparando tu consulta…</h2>
+    <p>Un momento mientras conectamos la sala.</p>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@daily-co/daily-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="bp-supabase.js?v=11"></script>
+<script>
+'use strict';
+
+const sb   = window.BP.sb;
+const cita = new URLSearchParams(location.search).get('cita');
+let frame = null, esMedico = false, finMs = null, volverA = 'portal.html';
+
+function pantalla(titulo, texto, botones){
+  document.getElementById('marco').innerHTML =
+    '<div class="centro"><h2>' + titulo + '</h2><p>' + texto + '</p>' +
+    (botones || '') + '</div>';
+}
+
+function salir(){
+  if(frame){ try{ frame.leave(); frame.destroy(); }catch(e){} }
+  location.href = volverA;
+}
+
+/* ── Cuenta regresiva ──────────────────────────────────────── */
+function reloj(){
+  if(!finMs) return;
+  const resta = finMs - Date.now();
+  const el = document.getElementById('reloj');
+  if(resta <= 0){ el.textContent = 'Tiempo cumplido'; el.className = 'reloj alerta'; return; }
+  const m = Math.floor(resta / 60000), s = Math.floor((resta % 60000) / 1000);
+  el.textContent = m + ':' + String(s).padStart(2,'0') + ' restantes';
+  el.className = 'reloj' + (m < 3 ? ' alerta' : '');
+}
+
+/* ── Entrar a la sala ──────────────────────────────────────── */
+async function entrar(){
+  if(!cita){
+    return pantalla('Falta la consulta',
+      'No sabemos a qué cita corresponde esta sala.',
+      '<button class="btn" onclick="location.href=\'portal.html\'">Volver al portal</button>');
+  }
+
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session){
+    return pantalla('Necesitas iniciar sesión',
+      'Entra a tu cuenta y vuelve a abrir la consulta desde tu portal.',
+      '<button class="btn" onclick="location.href=\'portal.html\'">Iniciar sesión</button>');
+  }
+
+  let res;
+  try{
+    res = await sb.functions.invoke('sala-video', { body: { cita } });
+  }catch(e){
+    return pantalla('No pudimos conectar',
+      'Revisa tu conexión e inténtalo de nuevo.',
+      '<button class="btn" onclick="location.reload()">Reintentar</button>');
+  }
+
+  const datos = res.data || {};
+  const err   = datos.error || (res.error && res.error.message);
+
+  if(err || !datos.token){
+    volverA = 'portal.html';
+    return pantalla('No puedes entrar todavía', err || 'No pudimos darte acceso a la sala.',
+      '<div><button class="btn" onclick="location.reload()">Reintentar</button>' +
+      '<button class="btn sec" onclick="location.href=\'' + volverA + '\'">Volver</button></div>');
+  }
+
+  esMedico = !!datos.esMedico;
+  volverA  = esMedico ? 'portal-medico.html' : 'agendar.html';
+  finMs    = new Date(datos.inicio).getTime() + datos.duracion_min * 60000;
+  reloj();
+  setInterval(reloj, 1000);
+
+  document.getElementById('marco').innerHTML = '';
+  frame = window.DailyIframe.createFrame(document.getElementById('marco'), {
+    showLeaveButton: true,
+    iframeStyle: { width:'100%', height:'100%', border:'0' },
+  });
+
+  frame.on('left-meeting', salir);
+  frame.on('error', (e) => {
+    pantalla('Se cortó la conexión',
+      (e && e.errorMsg) || 'Vuelve a entrar para retomar la consulta.',
+      '<button class="btn" onclick="location.reload()">Volver a entrar</button>');
+  });
+
+  try{
+    await frame.join({ url: datos.url, token: datos.token });
+  }catch(e){
+    pantalla('No pudimos abrir la sala',
+      'Revisa que el navegador tenga permiso para usar cámara y micrófono.',
+      '<button class="btn" onclick="location.reload()">Reintentar</button>');
+  }
+}
+
+entrar();
+</script>
+</body>
+</html>

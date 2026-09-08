@@ -323,7 +323,9 @@ async function cancelar(id){
 }
 
 function entrarSala(){
-  toast('La videollamada se activa en los próximos días.');
+  const c = citaActiva();
+  if(!c) return;
+  location.href = 'sala.html?cita=' + c.cita_id;
 }
 
 async function verPdf(path){

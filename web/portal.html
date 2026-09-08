@@ -827,7 +827,7 @@ select,input{font-family:inherit}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         Inicio
       </div>
-      <div class="sb-item" id="sb-citas" onclick="location.href='agendar.html'">
+      <div class="sb-item" id="sb-citas" onclick="irAgendar()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Mis Citas
       </div>
@@ -839,7 +839,7 @@ select,input{font-family:inherit}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         Mis Pagos
       </div>
-      <div class="sb-item" id="sb-recetas" onclick="location.href='agendar.html'">
+      <div class="sb-item" id="sb-recetas" onclick="irAgendar()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         Mis Recetas
       </div>
@@ -952,7 +952,7 @@ select,input{font-family:inherit}
         <div class="dash-grid">
 
           <!-- ── PRÓXIMA CITA ── -->
-          <div class="card span2" onclick="location.href='agendar.html'" style="cursor:pointer">
+          <div class="card span2" onclick="irAgendar()" style="cursor:pointer">
             <div class="card-hdr">
               <div class="card-title">Próxima cita</div>
               <div class="card-action">Ir a Citas</div>
@@ -1300,7 +1300,7 @@ select,input{font-family:inherit}
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span class="bn-lbl">Inicio</span>
     </div>
-    <div class="bn-item" id="bn-citas" onclick="location.href='agendar.html'">
+    <div class="bn-item" id="bn-citas" onclick="irAgendar()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span class="bn-lbl">Citas</span>
     </div>
@@ -1312,7 +1312,7 @@ select,input{font-family:inherit}
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
       <span class="bn-lbl">Pagos</span>
     </div>
-    <div class="bn-item" id="bn-recetas" onclick="location.href='agendar.html'">
+    <div class="bn-item" id="bn-recetas" onclick="irAgendar()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       <span class="bn-lbl">Recetas</span>
     </div>
@@ -2388,7 +2388,7 @@ function confirmCita(){
 }
 
 /* ── Reagendar · Cancelar · Devolución ── */
-function reagendarCita(id){ openCitaModal(id); }
+function reagendarCita(id){ irAgendar(); }
 let reembolsoSel={};
 function cancelCita(id){
   const a=PORTAL.appointments.find(x=>x.id===id); if(!a) return;
@@ -2459,7 +2459,7 @@ function renderCitasResumen(){
     inner=`<div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px">🗓️</span><div style="flex:1"><div style="font-size:16px;font-weight:800">No tienes citas próximas</div><div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px">Agenda tu próxima consulta médica por videollamada.</div></div></div>`;
   }
   const credits = PORTAL.credits>0 ? `<div style="margin-top:12px;background:rgba(168,213,130,0.16);border-radius:10px;padding:9px 12px;font-size:12px;font-weight:800;color:#A8D582;display:flex;align-items:center;gap:6px">💚 $${PORTAL.credits.toLocaleString('es-CL')} en créditos Balance+</div>` : '';
-  el.innerHTML=`<div class="cita-hero">${inner}${credits}<button class="btn" style="margin-top:12px;background:#A8D582;color:#163D2B;font-weight:800" onclick="openCitaModal()">Agendar nueva cita</button></div>`;
+  el.innerHTML=`<div class="cita-hero">${inner}${credits}<button class="btn" style="margin-top:12px;background:#A8D582;color:#163D2B;font-weight:800" onclick="irAgendar()">Agendar nueva cita</button></div>`;
 }
 function renderCitas(){
   autoCompletePastCitas();
@@ -2474,7 +2474,7 @@ function renderProximaCita(){
   const el=document.getElementById('inicioProxCita'); if(!el) return;
   const up=upcomingAppts();
   if(!up.length){
-    el.innerHTML='<div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px;flex-shrink:0">🗓️</span><span style="font-size:13px;font-weight:700;color:var(--muted);flex:1;min-width:0">No tienes citas agendadas</span><button class="btn btn-accent" style="width:auto;padding:8px 14px;font-size:12px;flex-shrink:0" onclick="event.stopPropagation();location.href='agendar.html'">Agendar</button></div>';
+    el.innerHTML='<div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px;flex-shrink:0">🗓️</span><span style="font-size:13px;font-weight:700;color:var(--muted);flex:1;min-width:0">No tienes citas agendadas</span><button class="btn btn-accent" style="width:auto;padding:8px 14px;font-size:12px;flex-shrink:0" onclick="event.stopPropagation();irAgendar()">Agendar</button></div>';
     return;
   }
   const a=up[0], p=a.fecha.split('-'), d=diasHasta(a.fecha);
@@ -2622,7 +2622,7 @@ function shipIdx(s){ return s.estado==='entregado'?3:(s.estado==='en_ruta'?2:1);
 function estadoLbl(e){ return e==='preparacion'?'En preparación':(e==='en_ruta'?'En ruta':'Entregado'); }
 function openDespachoModal(){
   if(typeof consentsBloqueado==='function' && consentsBloqueado()){ showToast('No podemos operar: reautoriza tus consentimientos requeridos'); navTo('perfil'); return; }
-  if(!PORTAL.appointments.length){ showToast('Primero agenda y realiza tu cita médica'); location.href='agendar.html'; return; }
+  if(!PORTAL.appointments.length){ showToast('Primero agenda y realiza tu cita médica'); irAgendar(); return; }
   if(!PORTAL.addresses.length){ showToast('Agrega una dirección de despacho primero'); navTo('despachos'); openDireccionModal(); return; }
   document.getElementById('despMed').innerHTML=DESPACHO_MEDS.map(m=>`<option>${m}</option>`).join('');
   document.getElementById('despAddr').innerHTML=PORTAL.addresses.map(a=>`<option value="${a.id}">${a.label} — ${addrFull(a)}</option>`).join('');
@@ -3965,7 +3965,8 @@ function saveVitales(){
 
 <script>
 /* Balance+ — las citas y recetas viven en agendar.html (datos reales) */
-window.openCitaModal = function(){ window.location.href = 'agendar.html'; };
+function irAgendar(){ window.location.href = 'agendar.html'; }
+window.irAgendar = irAgendar;
 </script>
 </body>
 </html>

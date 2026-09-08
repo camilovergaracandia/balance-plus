@@ -409,7 +409,7 @@ async function iniciarLlamada(){
   if(!ACTUAL) return;
   const { error } = await sb.rpc('iniciar_atencion', { p_cita: ACTUAL.cita_id });
   if(error) return toast(error.message, true);
-  toast('Atención iniciada. La videollamada se activa en los próximos días.');
+  window.open('sala.html?cita=' + ACTUAL.cita_id, '_blank');
   ACTUAL.status = 'en_curso';
   ACTUAL.inicio_real = new Date().toISOString();
   pintarEstado();
