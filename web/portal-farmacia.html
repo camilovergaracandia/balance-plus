@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance+ | Portal Farmacia</title>
+<link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1B2D5E; --primary-dark:#142248;
+  --accent:#8AB090; --accent-dark:#6A9070; --accent-faint:#f0f6f1;
+  --green:#27AE60; --green-light:#e8f8ef;
+  --blue:#2F80ED; --blue-light:#e8f1fd;
+  --red:#EB5757; --red-light:#fef2f2;
+  --amber:#F59E0B; --amber-light:#fffbeb;
+  --purple:#7C5CBF; --purple-light:#f1ecfb;
+  --text:#1a1f2e; --text-mid:#2d3748; --muted:#5a6475;
+  --border:#dde3e8; --surface:#fff; --surface2:#f0f3f7;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--surface2);color:var(--text);font-size:14px;line-height:1.5}
+.topbar{background:var(--primary);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.brand span{color:var(--accent)}
+.brand small{display:block;font-size:9px;font-weight:500;letter-spacing:2px;opacity:.7;margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:16px;font-size:13px}
+.linkout{color:#fff;opacity:.75;cursor:pointer;font-size:12px}
+.linkout:hover{opacity:1}
+.wrap{max-width:1080px;margin:0 auto;padding:24px}
+.h1{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+.tabs{display:flex;gap:5px;margin-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tab{padding:9px 15px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border:0;border-bottom:2px solid transparent;background:none;font-family:inherit}
+.tab.active{color:var(--primary);border-bottom-color:var(--accent)}
+.tab .n{display:inline-block;min-width:19px;padding:1px 6px;border-radius:20px;background:var(--surface2);font-size:11px;margin-left:5px}
+.tab.active .n{background:var(--accent);color:#fff}
+.pedido{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:17px;margin-bottom:13px}
+.pedido-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:12px}
+.pedido-quien{font-size:15px;font-weight:700}
+.pedido-meta{color:var(--muted);font-size:11.5px;margin-top:2px}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.pill.nuevo{background:var(--blue-light);color:var(--blue)}
+.pill.prep{background:var(--amber-light);color:#b45309}
+.pill.listo{background:var(--purple-light);color:var(--purple)}
+.pill.camino{background:var(--purple-light);color:var(--purple)}
+.pill.ok{background:var(--green-light);color:var(--green)}
+.pill.no{background:var(--red-light);color:var(--red)}
+.pill.retiro{background:var(--surface2);color:var(--text-mid)}
+.entrega{background:var(--surface2);border-radius:9px;padding:11px 13px;font-size:12.5px;margin-bottom:12px;line-height:1.55}
+.entrega b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:3px}
+.items{border-top:1px solid var(--border);padding-top:11px;margin-bottom:12px}
+.item{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:13px}
+.item-dosis{color:var(--muted);font-size:11.5px}
+.totales{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);padding-top:9px;border-top:1px solid var(--border)}
+.totales b{color:var(--text);font-size:15px}
+.acciones{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px;padding-top:13px;border-top:1px solid var(--border)}
+.btn{padding:8px 15px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:inherit;transition:.15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:var(--accent-dark)}
+.btn-ghost{background:transparent;color:var(--primary);border-color:var(--border)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-danger{background:transparent;color:var(--red);border-color:var(--border)}
+.btn-danger:hover{background:var(--red-light)}
+.empty{text-align:center;padding:46px 20px;color:var(--muted);font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:12px}
+.empty b{display:block;color:var(--text);font-size:15px;margin-bottom:6px;font-weight:600}
+.spin{text-align:center;padding:46px;color:var(--muted);font-size:13px}
+.gate{max-width:400px;margin:70px auto;background:#fff;border:1px solid var(--border);border-radius:14px;padding:30px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:11px 22px;border-radius:9px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.toast.err{background:var(--red)}
+@media(max-width:600px){.wrap{padding:16px}.pedido-top{flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">BALANCE<span>+</span><small>PORTAL FARMACIA</small></div>
+  <div class="topbar-right">
+    <span id="whoami"></span>
+    <a class="linkout" onclick="salir()">Cerrar sesión</a>
+  </div>
+</div>
+
+<div class="wrap" id="gate" style="display:none">
+  <div class="gate">
+    <div class="h1">Acceso restringido</div>
+    <p class="sub" id="gateMsg">Necesitas una cuenta de farmacia para entrar aquí.</p>
+    <button class="btn btn-primary" onclick="location.href='proveedores.html'">Ir al inicio de sesión</button>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+  <div class="h1">Pedidos</div>
+  <p class="sub">Pedidos ya pagados por el paciente. La receta va adjunta en cada uno.</p>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="lista"><div class="spin">Cargando pedidos…</div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="bp-supabase.js?v=11"></script>
+<script>
+'use strict';
+
+const sb = window.BP.sb;
+let PEDIDOS = [], TAB = 'pagado';
+
+const GRUPOS = [
+  { id:'pagado',       label:'Nuevos'        , estados:['pagado'] },
+  { id:'preparando',   label:'En preparación', estados:['preparando'] },
+  { id:'salida',       label:'Listos y en camino', estados:['listo_retiro','en_despacho'] },
+  { id:'entregado',    label:'Entregados'    , estados:['entregado'], archivo:true },
+  { id:'cancelado',    label:'Cancelados'    , estados:['cancelado'], archivo:true },
+];
+
+const ETIQ = {
+  pagado:       ['nuevo','Nuevo'],
+  preparando:   ['prep','En preparación'],
+  listo_retiro: ['listo','Listo para retiro'],
+  en_despacho:  ['camino','En camino'],
+  entregado:    ['ok','Entregado'],
+  cancelado:    ['no','Cancelado'],
+};
+
+const CLP = n => '$' + (n || 0).toLocaleString('es-CL');
+
+function toast(m, err){
+  const t = document.getElementById('toast');
+  t.textContent = m;
+  t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.className = 'toast', 3600);
+}
+
+async function salir(){
+  await sb.auth.signOut();
+  location.href = 'proveedores.html';
+}
+
+function fecha(iso){
+  if(!iso) return '';
+  return new Date(iso).toLocaleString('es-CL',
+    { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false });
+}
+
+/* ── Arranque ──────────────────────────────────────────────── */
+async function iniciar(){
+  const { data:{ user } } = await sb.auth.getUser();
+  if(!user) return bloquear('Debes iniciar sesión para ver los pedidos.');
+
+  const { data: perfil } = await sb
+    .from('profiles').select('nombre, apellido, email, role').eq('id', user.id).maybeSingle();
+
+  if(!perfil) return bloquear('No pudimos cargar tu perfil.');
+  if(perfil.role !== 'farmacia' && perfil.role !== 'staff')
+    return bloquear('Tu cuenta no tiene permisos de farmacia.');
+
+  const { data: farmId } = await sb.rpc('mi_farmacia');
+  if(!farmId && perfil.role !== 'staff')
+    return bloquear('Tu cuenta no está asociada a ninguna farmacia. Contacta a Balance+.');
+
+  let nombreFarm = '';
+  if(farmId){
+    const { data: f } = await sb.from('pharmacies').select('nombre').eq('id', farmId).maybeSingle();
+    nombreFarm = f ? f.nombre : '';
+  }
+  document.getElementById('whoami').textContent = nombreFarm || perfil.email;
+  document.getElementById('app').style.display = 'block';
+  cargar();
+  setInterval(cargar, 60000);   // refresca solo, sin recargar la página
+}
+
+function bloquear(msg){
+  document.getElementById('gateMsg').textContent = msg;
+  document.getElementById('gate').style.display = 'block';
+}
+
+/* ── Datos ─────────────────────────────────────────────────── */
+async function cargar(){
+  const { data, error } = await sb.rpc('pedidos_farmacia');
+  if(error){
+    document.getElementById('lista').innerHTML =
+      '<div class="empty"><b>No pudimos cargar los pedidos</b>' + error.message + '</div>';
+    return;
+  }
+  PEDIDOS = data || [];
+  pintarTabs();
+  pintar();
+}
+
+function delGrupo(g){
+  return PEDIDOS.filter(p => g.estados.includes(p.status));
+}
+
+function pintarTabs(){
+  document.getElementById('tabs').innerHTML = GRUPOS.map(g => {
+    const n = delGrupo(g).length;
+    const badge = (n && !g.archivo) ? '<span class="n">' + n + '</span>' : '';
+    return '<button class="tab' + (TAB === g.id ? ' active' : '') +
+      '" onclick="verTab(\'' + g.id + '\')">' + g.label + badge + '</button>';
+  }).join('');
+}
+
+function verTab(id){ TAB = id; pintarTabs(); pintar(); }
+
+function pintar(){
+  const g = GRUPOS.find(x => x.id === TAB);
+  const filas = delGrupo(g);
+  const cont = document.getElementById('lista');
+
+  if(!filas.length){
+    cont.innerHTML = '<div class="empty"><b>Nada por aquí</b>No hay pedidos en ' +
+      g.label.toLowerCase() + '.</div>';
+    return;
+  }
+  cont.innerHTML = filas.map(tarjeta).join('');
+}
+
+function tarjeta(p){
+  const et = ETIQ[p.status] || ['retiro', p.status];
+  const items = (p.items || []).map(i =>
+    '<div class="item"><div>' + i.cantidad + ' × <b>' + i.nombre + '</b>' +
+    (i.dosis ? '<div class="item-dosis">' + i.dosis + '</div>' : '') +
+    '</div><div>' + CLP(i.precio * i.cantidad) + '</div></div>').join('');
+
+  const entrega = p.modalidad === 'despacho'
+    ? '<div class="entrega"><b>Despacho a domicilio</b>' +
+      (p.direccion || '') + (p.comuna ? ', ' + p.comuna : '') +
+      (p.referencia ? '<br>Referencia: ' + p.referencia : '') +
+      (p.telefono ? '<br>Teléfono: ' + p.telefono : '') + '</div>'
+    : '<div class="entrega"><b>Retiro en sucursal</b>' +
+      (p.sucursal || 'Sucursal no indicada') +
+      (p.telefono ? '<br>Teléfono del paciente: ' + p.telefono : '') + '</div>';
+
+  const pdf = p.archivo_path
+    ? '<button class="btn btn-ghost" onclick="verPdf(\'' + p.archivo_path + '\')">Ver receta</button>'
+    : '';
+
+  let acciones = '';
+  if(p.status === 'pagado'){
+    acciones = '<button class="btn btn-accent" onclick="avanzar(\'' + p.order_id + '\',\'preparando\')">Comenzar a preparar</button>';
+  }else if(p.status === 'preparando'){
+    acciones = p.modalidad === 'despacho'
+      ? '<button class="btn btn-accent" onclick="avanzar(\'' + p.order_id + '\',\'en_despacho\')">Marcar en camino</button>'
+      : '<button class="btn btn-accent" onclick="avanzar(\'' + p.order_id + '\',\'listo_retiro\')">Listo para retiro</button>';
+  }else if(p.status === 'listo_retiro' || p.status === 'en_despacho'){
+    acciones = '<button class="btn btn-accent" onclick="avanzar(\'' + p.order_id + '\',\'entregado\')">Marcar entregado</button>';
+  }
+  if(['pagado','preparando'].includes(p.status)){
+    acciones += '<button class="btn btn-danger" onclick="cancelar(\'' + p.order_id + '\')">Cancelar</button>';
+  }
+
+  return '<div class="pedido">' +
+    '<div class="pedido-top"><div>' +
+      '<div class="pedido-quien">' + (p.paciente || 'Paciente') + '</div>' +
+      '<div class="pedido-meta">Pagado ' + fecha(p.pagado) + '</div>' +
+    '</div><div style="display:flex;gap:6px;flex-wrap:wrap">' +
+      '<span class="pill ' + et[0] + '">' + et[1] + '</span>' +
+      '<span class="pill retiro">' + (p.modalidad === 'despacho' ? 'Despacho' : 'Retiro') + '</span>' +
+    '</div></div>' +
+    entrega +
+    '<div class="items">' + items + '</div>' +
+    '<div class="totales"><span>' +
+      (p.costo_despacho ? 'Productos ' + CLP(p.subtotal) + ' + despacho ' + CLP(p.costo_despacho) + ' · ' : '') +
+      'Recibes <b>' + CLP(p.neto_farmacia) + '</b></span>' +
+      '<span>Pagó el paciente <b>' + CLP(p.total) + '</b></span></div>' +
+    '<div class="acciones">' + pdf + acciones + '</div>' +
+    '</div>';
+}
+
+/* ── Acciones ──────────────────────────────────────────────── */
+async function avanzar(id, estado){
+  const { error } = await sb.rpc('avanzar_pedido', { p_order: id, p_status: estado });
+  if(error) return toast(error.message, true);
+  toast('Pedido actualizado');
+  cargar();
+}
+
+async function cancelar(id){
+  const nota = prompt('¿Por qué se cancela el pedido? El paciente verá este motivo.');
+  if(nota === null) return;
+  const { error } = await sb.rpc('avanzar_pedido',
+    { p_order: id, p_status: 'cancelado', p_nota: nota || 'Cancelado por la farmacia' });
+  if(error) return toast(error.message, true);
+  toast('Pedido cancelado');
+  cargar();
+}
+
+async function verPdf(path){
+  const { data, error } = await sb.storage.from('recetas').createSignedUrl(path, 300);
+  if(error) return toast('No se pudo abrir la receta', true);
+  window.open(data.signedUrl, '_blank');
+}
+
+iniciar();
+</script>
+</body>
+</html>

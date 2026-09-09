@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance+ | Mi farmacia</title>
+<link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1B2D5E; --primary-dark:#142248;
+  --accent:#8AB090; --accent-dark:#6A9070; --accent-faint:#f0f6f1;
+  --green:#27AE60; --green-light:#e8f8ef;
+  --blue:#2F80ED; --blue-light:#e8f1fd;
+  --red:#EB5757; --red-light:#fef2f2;
+  --amber:#F59E0B; --amber-light:#fffbeb;
+  --purple:#7C5CBF; --purple-light:#f1ecfb;
+  --text:#1a1f2e; --text-mid:#2d3748; --muted:#5a6475;
+  --border:#dde3e8; --surface:#fff; --surface2:#f0f3f7;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--surface2);color:var(--text);font-size:14px;line-height:1.5}
+.topbar{background:var(--primary);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-size:18px;font-weight:800;letter-spacing:-.5px;cursor:pointer}
+.brand span{color:var(--accent)}
+.linkout{color:#fff;opacity:.78;cursor:pointer;font-size:12.5px}
+.linkout:hover{opacity:1}
+.wrap{max-width:820px;margin:0 auto;padding:24px 20px 70px}
+.h1{font-size:23px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:22px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px}
+.card-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:14px}
+.btn{padding:10px 17px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:inherit;transition:.15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:var(--accent-dark)}
+.btn-ghost{background:transparent;color:var(--primary);border-color:var(--border)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-danger{background:transparent;color:var(--red);border-color:var(--border)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.full{width:100%}
+/* Seguimiento */
+.track{background:linear-gradient(135deg,#1B2D5E,#2a4080);color:#fff;border-radius:14px;padding:22px;margin-bottom:18px}
+.track-t{font-size:11px;text-transform:uppercase;letter-spacing:.8px;opacity:.75;font-weight:700;margin-bottom:8px}
+.track-est{font-size:20px;font-weight:800;letter-spacing:-.4px}
+.track-sub{font-size:13px;opacity:.88;margin-top:4px;line-height:1.6}
+.pasos{display:flex;margin:20px 0 4px;gap:4px}
+.paso{flex:1;text-align:center}
+.paso-bola{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.28);margin:0 auto 7px}
+.paso.on .paso-bola{background:var(--accent)}
+.paso-l{font-size:9.5px;text-transform:uppercase;letter-spacing:.4px;opacity:.6;font-weight:600}
+.paso.on .paso-l{opacity:1}
+.paso-linea{height:2px;background:rgba(255,255,255,.2);margin:-24px 0 0;position:relative;top:5px}
+.track-box{background:rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;margin-top:16px;font-size:12.5px;line-height:1.6}
+.track-box b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.6px;opacity:.7;margin-bottom:3px}
+/* Catálogo */
+.prod{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--border)}
+.prod:last-child{border-bottom:0}
+.prod-n{font-weight:600;font-size:14px}
+.prod-m{color:var(--muted);font-size:11.5px;margin-top:2px}
+.prod-nr{display:inline-block;background:var(--surface2);color:var(--muted);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:5px;text-transform:uppercase;letter-spacing:.3px}
+.prod.bloq{opacity:.55}
+.prod-rx{display:inline-block;background:var(--accent-faint);color:var(--accent-dark);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:5px;text-transform:uppercase;letter-spacing:.3px}
+.prod-p{font-weight:700;font-size:15px;white-space:nowrap}
+.cant{display:flex;align-items:center;gap:9px}
+.cant button{width:30px;height:30px;border:1px solid var(--border);background:#fff;border-radius:8px;font-size:16px;cursor:pointer;font-family:inherit;color:var(--text);line-height:1}
+.cant button:hover{border-color:var(--accent)}
+.cant span{min-width:18px;text-align:center;font-weight:700}
+/* Opciones */
+.ops{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.op{border:1px solid var(--border);border-radius:11px;padding:14px;cursor:pointer;background:#fff;text-align:left;font-family:inherit}
+.op:hover{border-color:var(--accent)}
+.op.sel{border-color:var(--accent);background:var(--accent-faint)}
+.op-t{font-weight:700;font-size:13.5px}
+.op-m{color:var(--muted);font-size:11.5px;margin-top:3px}
+.suc{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;background:#fff}
+.suc:hover{border-color:var(--accent)}
+.suc.sel{border-color:var(--accent);background:var(--accent-faint)}
+.suc-n{font-weight:600;font-size:13.5px}
+.suc-m{color:var(--muted);font-size:11.5px;margin-top:2px;line-height:1.5}
+.suc-d{float:right;font-size:11.5px;font-weight:700;color:var(--accent-dark)}
+.field{margin-bottom:12px}
+label{display:block;font-size:11px;font-weight:600;color:var(--text-mid);margin-bottom:5px}
+input[type=text],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;background:#fff;color:var(--text)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+.resumen{display:flex;justify-content:space-between;padding:6px 0;font-size:13px}
+.resumen.tot{border-top:1px solid var(--border);margin-top:8px;padding-top:12px;font-size:15px;font-weight:700}
+/* Historial */
+.hist{border-bottom:1px solid var(--border);padding:13px 0}
+.hist:last-child{border-bottom:0}
+.hist-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.hist-med{font-size:13px;margin-top:6px}
+.hist-med .d{color:var(--muted);font-size:11.5px}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.pill.ok{background:var(--green-light);color:var(--green)}
+.pill.no{background:var(--red-light);color:var(--red)}
+.pill.na{background:var(--surface2);color:var(--muted)}
+.empty{text-align:center;padding:34px 16px;color:var(--muted);font-size:13px}
+.empty b{display:block;color:var(--text);font-size:15px;margin-bottom:6px;font-weight:600}
+.spin{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+.aviso{background:var(--amber-light);border:1px solid #fde68a;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#92400e;line-height:1.55}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:12px 22px;border-radius:9px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.toast.err{background:var(--red)}
+@media(max-width:560px){.ops{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand" onclick="location.href='portal.html'">BALANCE<span>+</span></div>
+  <a class="linkout" onclick="location.href='portal.html'">← Volver al portal</a>
+</div>
+
+<div class="wrap">
+  <div id="contenido"><div class="spin">Cargando…</div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="bp-supabase.js?v=11"></script>
+<script>
+'use strict';
+
+const sb = window.BP.sb;
+let RECETAS = [], FARMACIAS = [], PRODUCTOS = [], SUCURSALES = [], PEDIDOS = [];
+let farmSel = null, modalidad = null, sucSel = null;
+let carro = {};      // product_id -> cantidad
+let comprando = false;
+
+const CLP = n => '$' + (n || 0).toLocaleString('es-CL');
+
+function toast(m, err){
+  const t = document.getElementById('toast');
+  t.textContent = m;
+  t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.className = 'toast', 4000);
+}
+
+function fechaHora(iso){
+  if(!iso) return '';
+  return new Date(iso).toLocaleString('es-CL',
+    { day:'numeric', month:'long', hour:'2-digit', minute:'2-digit', hour12:false });
+}
+
+/* ── Arranque ──────────────────────────────────────────────── */
+async function iniciar(){
+  const { data:{ user } } = await sb.auth.getUser();
+  if(!user){ location.href = 'intake.html'; return; }
+  await recargar();
+}
+
+async function recargar(){
+  const [rx, farm, ped] = await Promise.all([
+    sb.rpc('mis_medicamentos_recetados'),
+    sb.rpc('farmacias_disponibles'),
+    sb.rpc('mis_pedidos'),
+  ]);
+  RECETAS   = rx.data || [];
+  FARMACIAS = farm.data || [];
+  PEDIDOS   = ped.data || [];
+  pintar();
+}
+
+function pedidoActivo(){
+  return PEDIDOS.find(p =>
+    ['pendiente_pago','pagado','preparando','listo_retiro','en_despacho'].includes(p.status));
+}
+
+/* ── Render principal ──────────────────────────────────────── */
+function pintar(){
+  let h = '<div class="h1">Mi farmacia</div>' +
+          '<p class="sub">Compra los medicamentos que te recetó tu médico y sigue tu pedido.</p>';
+
+  const activo = pedidoActivo();
+  if(activo) h += bloqueSeguimiento(activo);
+
+  if(!RECETAS.length){
+    h += '<div class="card"><div class="empty"><b>Todavía no tienes recetas</b>' +
+         'Después de tu consulta médica podrás comprar aquí.</div></div>';
+  }else if(!activo && !comprando){
+    h += '<div class="card"><div class="card-t">Comprar mis medicamentos</div>' +
+         '<p style="font-size:13px;color:var(--muted);margin-bottom:14px">' +
+         'Tu receta queda adjunta al pedido, así la farmacia puede despacharla.</p>' +
+         '<button class="btn btn-accent full" onclick="comenzar()">Comenzar mi pedido</button></div>';
+  }
+
+  if(comprando) h += '<div id="compra"></div>';
+  h += bloqueHistorial();
+
+  document.getElementById('contenido').innerHTML = h;
+  if(comprando) pintarCompra();
+}
+
+/* ── Seguimiento ───────────────────────────────────────────── */
+function bloqueSeguimiento(p){
+  const despacho = p.modalidad === 'despacho';
+  const pasos = despacho
+    ? [['pagado','Pagado'],['preparando','Preparando'],['en_despacho','En camino'],['entregado','Entregado']]
+    : [['pagado','Pagado'],['preparando','Preparando'],['listo_retiro','Listo'],['entregado','Retirado']];
+
+  const orden = pasos.map(x => x[0]);
+  const idx = orden.indexOf(p.status);
+
+  const titulos = {
+    pendiente_pago:'Esperando el pago',
+    pagado:'Recibimos tu pedido',
+    preparando:'La farmacia lo está preparando',
+    listo_retiro:'Listo para retirar',
+    en_despacho:'Va en camino',
+    entregado: despacho ? 'Entregado' : 'Retirado',
+    cancelado:'Pedido cancelado',
+  };
+
+  const subt = {
+    pendiente_pago:'Completa el pago para que la farmacia lo prepare.',
+    pagado:'La farmacia ya lo tiene y comenzará a prepararlo.',
+    preparando:'Te avisamos apenas esté listo.',
+    listo_retiro:'Puedes pasar a buscarlo cuando quieras.',
+    en_despacho:'Llegará a la dirección que indicaste.',
+    entregado:'Gracias por tu compra.',
+    cancelado: p.nota_farmacia || 'La farmacia canceló este pedido.',
+  };
+
+  let h = '<div class="track">' +
+    '<div class="track-t">Tu pedido</div>' +
+    '<div class="track-est">' + (titulos[p.status] || p.status) + '</div>' +
+    '<div class="track-sub">' + (subt[p.status] || '') + '</div>';
+
+  if(p.status !== 'pendiente_pago' && p.status !== 'cancelado'){
+    h += '<div class="paso-linea"></div><div class="pasos">' +
+      pasos.map((s,i) =>
+        '<div class="paso' + (i <= idx ? ' on' : '') + '">' +
+        '<div class="paso-bola"></div><div class="paso-l">' + s[1] + '</div></div>'
+      ).join('') + '</div>';
+  }
+
+  h += '<div class="track-box"><b>' + (despacho ? 'Despacho a' : 'Retiro en') + '</b>' +
+    (despacho
+      ? (p.direccion || '')
+      : (p.sucursal || p.farmacia) + '<br>' + (p.sucursal_dir || '') +
+        (p.sucursal_hor ? '<br>' + p.sucursal_hor : '') +
+        (p.sucursal_tel ? '<br>' + p.sucursal_tel : '')) +
+    '</div>';
+
+  h += '<div class="track-box"><b>Contenido</b>' +
+    (p.items || []).map(i => i.cantidad + ' × ' + i.nombre +
+      (i.dosis ? ' <span style="opacity:.75">— ' + i.dosis + '</span>' : '')).join('<br>') +
+    '<br><br>Total pagado ' + CLP(p.total) + '</div>';
+
+  if(p.status === 'pendiente_pago'){
+    h += '<button class="btn btn-accent full" style="margin-top:16px" onclick="pagar(\'' +
+         p.order_id + '\')">Pagar ' + CLP(p.total) + '</button>';
+  }
+
+  return h + '</div>';
+}
+
+/* ── Flujo de compra ───────────────────────────────────────── */
+function comenzar(){
+  comprando = true;
+  farmSel = FARMACIAS.length === 1 ? FARMACIAS[0].pharmacy_id : null;
+  modalidad = null; sucSel = null; carro = {};
+  pintar();
+  if(farmSel) cargarProductos();
+}
+
+function cancelarCompra(){
+  comprando = false; carro = {}; modalidad = null; sucSel = null;
+  pintar();
+}
+
+async function cargarProductos(){
+  const { data, error } = await sb.rpc('catalogo_farmacia', { p_pharmacy: farmSel });
+  if(error){ toast('No pudimos cargar el catálogo', true); PRODUCTOS = []; }
+  else { PRODUCTOS = (data || []).map(p => Object.assign({}, p, { id: p.product_id })); }
+  pintarCompra();
+}
+
+async function elegirFarmacia(id){
+  farmSel = id; carro = {}; sucSel = null;
+  await cargarProductos();
+}
+
+async function elegirModalidad(m){
+  modalidad = m; sucSel = null;
+  pintarCompra();
+  if(m === 'retiro') cargarSucursales();
+}
+
+async function cargarSucursales(){
+  let lat = null, lng = null;
+  try{
+    const pos = await new Promise((ok, no) =>
+      navigator.geolocation.getCurrentPosition(ok, no, { timeout: 6000 }));
+    lat = pos.coords.latitude; lng = pos.coords.longitude;
+  }catch(e){ /* sin ubicación: se muestran todas sin distancia */ }
+
+  const { data } = await sb.rpc('sucursales_cercanas', { p_lat: lat, p_lng: lng });
+  SUCURSALES = (data || []).filter(s => s.pharmacy_id === farmSel);
+  pintarCompra();
+}
+
+function sumar(id, d){
+  const p = PRODUCTOS.find(x => x.id === id);
+  if(d > 0 && p && !p.puede_comprar){
+    return toast('Necesitas una receta médica para ' + p.nombre, true);
+  }
+  const n = (carro[id] || 0) + d;
+  if(n <= 0) delete carro[id]; else carro[id] = n;
+  pintarCompra();
+}
+
+function subtotal(){
+  return Object.keys(carro).reduce((s, id) => {
+    const p = PRODUCTOS.find(x => x.id === id);
+    return s + (p ? p.precio * carro[id] : 0);
+  }, 0);
+}
+
+function pintarCompra(){
+  const cont = document.getElementById('compra');
+  if(!cont) return;
+
+  let h = '<div class="card"><div class="card-t">Tu pedido</div>';
+
+  // Farmacia
+  if(FARMACIAS.length > 1){
+    h += '<div class="field"><label>Farmacia</label><select onchange="elegirFarmacia(this.value)">' +
+      '<option value="">Elige una farmacia</option>' +
+      FARMACIAS.map(f => '<option value="' + f.pharmacy_id + '"' +
+        (f.pharmacy_id === farmSel ? ' selected' : '') + '>' + f.nombre + '</option>').join('') +
+      '</select></div>';
+  }
+
+  if(!farmSel){
+    return cont.innerHTML = h + '<div class="empty">Elige una farmacia para ver sus productos.</div></div>';
+  }
+  if(!PRODUCTOS.length){
+    return cont.innerHTML = h + '<div class="empty"><b>Sin productos disponibles</b>' +
+      'Esta farmacia todavía no cargó su catálogo.</div>' +
+      '<button class="btn btn-ghost full" onclick="cancelarCompra()">Cancelar</button></div>';
+  }
+
+  // Catálogo
+  h += PRODUCTOS.map(p => {
+    const n = carro[p.id] || 0;
+    const bloqueado = !p.puede_comprar;
+
+    let etiqueta = '';
+    if(p.prescription_id){
+      etiqueta = '<div class="prod-rx">Recetado' + (p.dosis ? ' · ' + p.dosis : '') + '</div>';
+    }else if(p.requiere_receta){
+      etiqueta = '<div class="prod-nr">Requiere receta médica</div>';
+    }
+
+    const control = bloqueado
+      ? '<div style="font-size:11px;color:var(--muted);margin-top:7px;max-width:170px">' +
+        'Tu médico no te lo ha recetado</div>'
+      : '<div class="cant" style="margin-top:7px;justify-content:flex-end">' +
+          (n ? '<button onclick="sumar(\'' + p.id + '\',-1)">−</button><span>' + n + '</span>' : '') +
+          '<button onclick="sumar(\'' + p.id + '\',1)">+</button></div>';
+
+    return '<div class="prod' + (bloqueado ? ' bloq' : '') + '"><div>' +
+      '<div class="prod-n">' + p.nombre + '</div>' +
+      '<div class="prod-m">' + [p.presentacion, p.laboratorio].filter(Boolean).join(' · ') + '</div>' +
+      etiqueta +
+      '</div><div style="text-align:right">' +
+      '<div class="prod-p">' + CLP(p.precio) + '</div>' + control +
+      '</div></div>';
+  }).join('');
+
+  if(!Object.keys(carro).length){
+    return cont.innerHTML = h +
+      '<button class="btn btn-ghost full" style="margin-top:16px" onclick="cancelarCompra()">Cancelar</button></div>';
+  }
+
+  const farm = FARMACIAS.find(f => f.pharmacy_id === farmSel);
+
+  // Modalidad
+  h += '<div style="height:18px"></div><div class="card-t">¿Cómo lo quieres recibir?</div><div class="ops">' +
+    '<button class="op' + (modalidad === 'retiro' ? ' sel' : '') + '" onclick="elegirModalidad(\'retiro\')">' +
+      '<div class="op-t">Retiro en sucursal</div>' +
+      '<div class="op-m">Sin costo · ' + (farm.sucursales || 0) + ' sucursales</div></button>' +
+    (farm.hace_despacho
+      ? '<button class="op' + (modalidad === 'despacho' ? ' sel' : '') + '" onclick="elegirModalidad(\'despacho\')">' +
+        '<div class="op-t">Despacho a domicilio</div>' +
+        '<div class="op-m">' + CLP(farm.costo_despacho) + '</div></button>'
+      : '') +
+    '</div>';
+
+  // Sucursal o dirección
+  if(modalidad === 'retiro'){
+    h += SUCURSALES.length
+      ? SUCURSALES.map(s =>
+          '<div class="suc' + (sucSel === s.branch_id ? ' sel' : '') +
+          '" onclick="sucSel=\'' + s.branch_id + '\';pintarCompra()">' +
+          (s.distancia_km != null ? '<span class="suc-d">a ' + s.distancia_km + ' km</span>' : '') +
+          '<div class="suc-n">' + s.nombre + '</div>' +
+          '<div class="suc-m">' + s.direccion + (s.comuna ? ', ' + s.comuna : '') +
+          (s.horario ? '<br>' + s.horario : '') + '</div></div>').join('')
+      : '<div class="spin" style="padding:20px">Buscando sucursales cercanas…</div>';
+  }
+
+  if(modalidad === 'despacho'){
+    h += '<div class="field"><label>Dirección</label>' +
+      '<input type="text" id="dir" placeholder="Calle y número, depto" value="' + (window._dir||'') + '"></div>' +
+      '<div class="field"><label>Comuna</label><select id="com">' +
+        '<option value="">Elige tu comuna</option>' +
+        (farm.comunas_despacho || []).map(c => '<option>' + c + '</option>').join('') +
+      '</select></div>' +
+      '<div class="field"><label>Referencia <span style="color:var(--muted);font-weight:400">— opcional</span></label>' +
+      '<input type="text" id="ref" placeholder="Entre calles, conserjería, portón verde…"></div>' +
+      '<div class="field"><label>Teléfono de contacto</label>' +
+      '<input type="text" id="tel" placeholder="+56 9 …"></div>';
+  }
+
+  // Resumen
+  const sub = subtotal();
+  const envio = modalidad === 'despacho' ? (farm.costo_despacho || 0) : 0;
+  h += '<div style="height:8px"></div>' +
+    '<div class="resumen"><span>Productos</span><span>' + CLP(sub) + '</span></div>' +
+    (modalidad === 'despacho'
+      ? '<div class="resumen"><span>Despacho</span><span>' + CLP(envio) + '</span></div>' : '') +
+    '<div class="resumen tot"><span>Total</span><span>' + CLP(sub + envio) + '</span></div>';
+
+  const listo = modalidad && (modalidad === 'despacho' || sucSel);
+  h += '<button class="btn btn-accent full" style="margin-top:14px" id="btnPedir"' +
+       (listo ? '' : ' disabled') + ' onclick="confirmarPedido()">' +
+       (listo ? 'Confirmar pedido' : 'Elige cómo recibirlo') + '</button>' +
+       '<button class="btn btn-ghost full" style="margin-top:8px" onclick="cancelarCompra()">Cancelar</button>' +
+       '<div class="aviso" style="margin-top:14px">Tu receta médica queda adjunta al pedido. ' +
+       'La farmacia la revisa antes de despachar.</div></div>';
+
+  cont.innerHTML = h;
+}
+
+async function confirmarPedido(){
+  const items = Object.keys(carro).map(id => ({
+    product_id: id, cantidad: carro[id]
+  }));
+
+  const args = {
+    p_pharmacy: farmSel,
+    p_items: items,
+    p_modalidad: modalidad,
+    p_branch: modalidad === 'retiro' ? sucSel : null,
+    p_direccion: null, p_comuna: null, p_referencia: null, p_telefono: null,
+  };
+
+  if(modalidad === 'despacho'){
+    args.p_direccion  = (document.getElementById('dir').value || '').trim();
+    args.p_comuna     = document.getElementById('com').value || '';
+    args.p_referencia = (document.getElementById('ref').value || '').trim();
+    args.p_telefono   = (document.getElementById('tel').value || '').trim();
+    if(!args.p_direccion) return toast('Escribe tu dirección', true);
+    if(!args.p_comuna)    return toast('Elige tu comuna', true);
+  }
+
+  const btn = document.getElementById('btnPedir');
+  btn.disabled = true; btn.textContent = 'Creando pedido…';
+
+  const { data, error } = await sb.rpc('crear_pedido', args);
+  if(error){
+    btn.disabled = false; btn.textContent = 'Confirmar pedido';
+    return toast(error.message, true);
+  }
+
+  comprando = false;
+  await recargar();
+  toast('Pedido creado. Ahora completa el pago.');
+}
+
+async function pagar(id){
+  const { error } = await sb.rpc('marcar_pagado', { p_order: id });
+  if(error) return toast(error.message, true);
+  toast('Pago registrado. La farmacia ya lo está viendo.');
+  await recargar();
+}
+
+/* ── Historial ─────────────────────────────────────────────── */
+function bloqueHistorial(){
+  const pasados = PEDIDOS.filter(p => ['entregado','cancelado'].includes(p.status));
+  if(!pasados.length) return '';
+
+  return '<div class="card"><div class="card-t">Historial de compras</div>' +
+    pasados.map(p => {
+      const f = new Date(p.created_at || p.creado).toLocaleDateString('es-CL');
+      const et = p.status === 'entregado' ? ['ok','Entregado'] : ['no','Cancelado'];
+      return '<div class="hist"><div class="hist-top"><div>' +
+        '<b>' + p.farmacia + '</b>' +
+        '<div style="color:var(--muted);font-size:11.5px">' + f + ' · ' +
+        (p.modalidad === 'despacho' ? 'Despacho' : 'Retiro') + ' · ' + CLP(p.total) + '</div>' +
+        '</div><span class="pill ' + et[0] + '">' + et[1] + '</span></div>' +
+        (p.items || []).map(i => '<div class="hist-med">' + i.cantidad + ' × ' + i.nombre +
+          (i.dosis ? '<div class="d">' + i.dosis + '</div>' : '') + '</div>').join('') +
+        '</div>';
+    }).join('') + '</div>';
+}
+
+iniciar();
+</script>
+</body>
+</html>

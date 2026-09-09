@@ -831,11 +831,11 @@ select,input{font-family:inherit}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Mis Citas
       </div>
-      <div class="sb-item" id="sb-despachos" onclick="navTo('despachos')">
+      <div class="sb-item" id="sb-despachos" onclick="irComprar()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 6v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
         Mis Despachos
       </div>
-      <div class="sb-item" id="sb-pagos" onclick="navTo('pagos')">
+      <div class="sb-item" id="sb-pagos" onclick="irComprar()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         Mis Pagos
       </div>
@@ -961,7 +961,7 @@ select,input{font-family:inherit}
           </div>
 
           <!-- ── PRÓXIMO DESPACHO (compact summary) ── -->
-          <div class="card span2" id="despachoCard" onclick="navTo('despachos')" style="cursor:pointer">
+          <div class="card span2" id="despachoCard" onclick="irComprar()" style="cursor:pointer">
             <div class="card-hdr">
               <div class="card-title">Próximo despacho</div>
               <div class="card-action">Ir a Despachos</div>
@@ -1304,11 +1304,11 @@ select,input{font-family:inherit}
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span class="bn-lbl">Citas</span>
     </div>
-    <div class="bn-item" id="bn-despachos" onclick="navTo('despachos')">
+    <div class="bn-item" id="bn-despachos" onclick="irComprar()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 6v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
       <span class="bn-lbl">Despachos</span>
     </div>
-    <div class="bn-item" id="bn-pagos" onclick="navTo('pagos')">
+    <div class="bn-item" id="bn-pagos" onclick="irComprar()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
       <span class="bn-lbl">Pagos</span>
     </div>
@@ -2623,7 +2623,7 @@ function estadoLbl(e){ return e==='preparacion'?'En preparación':(e==='en_ruta'
 function openDespachoModal(){
   if(typeof consentsBloqueado==='function' && consentsBloqueado()){ showToast('No podemos operar: reautoriza tus consentimientos requeridos'); navTo('perfil'); return; }
   if(!PORTAL.appointments.length){ showToast('Primero agenda y realiza tu cita médica'); irAgendar(); return; }
-  if(!PORTAL.addresses.length){ showToast('Agrega una dirección de despacho primero'); navTo('despachos'); openDireccionModal(); return; }
+  if(!PORTAL.addresses.length){ showToast('Agrega una dirección de despacho primero'); irComprar(); openDireccionModal(); return; }
   document.getElementById('despMed').innerHTML=DESPACHO_MEDS.map(m=>`<option>${m}</option>`).join('');
   document.getElementById('despAddr').innerHTML=PORTAL.addresses.map(a=>`<option value="${a.id}">${a.label} — ${addrFull(a)}</option>`).join('');
   const def=defaultAddress(); if(def) document.getElementById('despAddr').value=def.id;
@@ -3964,9 +3964,11 @@ function saveVitales(){
 </script>
 
 <script>
-/* Balance+ — las citas y recetas viven en agendar.html (datos reales) */
+/* Balance+ — citas, recetas y pedidos viven en sus propias páginas (datos reales) */
 function irAgendar(){ window.location.href = 'agendar.html'; }
+function irComprar(){ window.location.href = 'comprar.html'; }
 window.irAgendar = irAgendar;
+window.irComprar = irComprar;
 </script>
 </body>
 </html>
