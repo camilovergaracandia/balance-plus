@@ -202,7 +202,8 @@ function bloqueRecetas(){
       ? '<button class="btn btn-ghost" onclick="verPdf(\'' + g[0].archivo_path + '\')">Descargar PDF</button>'
       : '<span class="pill na">sin archivo</span>';
     const lista = g.map(r =>
-      '<div class="rx-med">' + r.medicamento + '</div>' +
+      '<div class="rx-med">' + r.medicamento +
+        (r.es_texto_libre ? ' <span class="pill na">solo receta impresa</span>' : '') + '</div>' +
       (r.dosis ? '<div class="rx-meta">' + r.dosis + '</div>' : '')
     ).join('<div style="height:8px"></div>');
     const ind = g[0].indicaciones ? '<div class="rx-ind">' + g[0].indicaciones + '</div>' : '';

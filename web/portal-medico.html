@@ -79,7 +79,14 @@ input[type=file]{width:100%;padding:9px;border:1px dashed var(--border);border-r
 .modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
 .rx-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12.5px}
 .rx-item:last-child{border-bottom:0}
-.linea{display:grid;grid-template-columns:1fr 1fr 34px;gap:8px;margin-bottom:8px;align-items:start}
+.linea{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;background:var(--surface2)}
+.linea-top{display:grid;grid-template-columns:1.4fr 1fr 34px;gap:8px;align-items:start}
+.linea-dosis{margin-top:8px}
+.linea select,.linea input{width:100%}
+.linea-sust{display:flex;align-items:center;gap:7px;margin-top:9px;font-size:12px;color:var(--text-mid)}
+.linea-sust input{width:auto;margin:0}
+.linea-marca{margin-top:8px;display:none}
+.linea-marca.on{display:block}
 .linea button{border:1px solid var(--border);background:#fff;border-radius:8px;height:36px;cursor:pointer;color:var(--red);font-size:17px;font-family:inherit;line-height:1}
 .linea button:hover{background:var(--red-light)}
 @media(max-width:640px){.linea{grid-template-columns:1fr 1fr 34px}}
@@ -157,14 +164,14 @@ input[type=file]{width:100%;padding:9px;border:1px dashed var(--border);border-r
 
     <div class="seccion">Emitir nueva receta</div>
     <div style="font-size:12px;color:var(--muted);margin:-4px 0 12px;line-height:1.5">
-      El PDF firmado es el documento válido. Los medicamentos que anotes aquí son
-      los que verá la farmacia para despachar y el paciente en su portal.
+      Se receta por principio activo, como corresponde. El paciente elegirá entre
+      los productos disponibles según precio, salvo que marques lo contrario.
     </div>
     <div class="field">
       <label>Receta en PDF <span style="color:var(--muted);font-weight:400">— la que emitiste en tu plataforma</span></label>
       <input type="file" id="rxFile" accept="application/pdf">
     </div>
-    <label style="margin-bottom:8px">Medicamentos incluidos en esa receta</label>
+    <label style="margin-bottom:8px">Medicamentos indicados</label>
     <div id="rxLineas"></div>
     <button class="btn btn-ghost" style="margin-bottom:14px" onclick="agregarLinea()">+ Agregar otro medicamento</button>
     <div class="field">
@@ -327,6 +334,7 @@ async function abrirFicha(citaId){
   pintarEstado();
   document.getElementById('rxInd').value = '';
   document.getElementById('rxFile').value = '';
+  await cargarVademecum();
   reiniciarLineas();
   document.getElementById('fDatos').innerHTML = '<div class="spin" style="padding:14px">Cargando ficha…</div>';
   document.getElementById('fRecetas').innerHTML = '';
@@ -387,7 +395,9 @@ function pintarRecetas(rx){
       ? '<button class="btn btn-ghost" onclick="verPdf(\'' + g[0].archivo_path + '\')">Ver PDF</button>'
       : '<span style="color:var(--muted);font-size:11px">sin archivo</span>';
     const lista = g.map(r => '<b>' + r.medicamento + '</b>' +
-      (r.dosis ? ' <span style="color:var(--muted)">· ' + r.dosis + '</span>' : '')).join('<br>');
+      (r.dosis ? ' <span style="color:var(--muted)">· ' + r.dosis + '</span>' : '') +
+      (r.sin_sustitucion ? ' <span class="pill no">sin sustitución</span>' : '') +
+      (r.es_texto_libre ? ' <span class="pill na">fuera de Balance+</span>' : '')).join('<br>');
     return '<div class="rx-item"><div>' + lista +
       '<br><span style="color:var(--muted);font-size:11px">' + f + '</span></div>' + pdf + '</div>';
   }).join('');
@@ -460,18 +470,90 @@ function pintarEstado(){
   e.textContent = partes.length ? partes.join(' · ') : 'La atención aún no comienza.';
 }
 
-/* ── Líneas de medicamento ─────────────────────────────────── */
-let nLinea = 0;
+/* ── Vademécum ─────────────────────────────────────────────── */
+let VADEMECUM = [];
 
-function agregarLinea(med, dosis){
-  nLinea++;
+async function cargarVademecum(){
+  if(VADEMECUM.length) return;
+  const { data, error } = await sb.rpc('vademecum');
+  if(error){ toast('No pudimos cargar la lista de medicamentos', true); return; }
+  VADEMECUM = data || [];
+}
+
+function claveVad(v){ return v.ingredient_id + '|' + v.concentracion + '|' + v.unidad; }
+
+function textoVad(v){
+  const c = parseFloat(v.concentracion);
+  const conc = Number.isInteger(c) ? c : String(c).replace('.', ',');
+  return v.principio + ' ' + conc + ' ' + v.unidad;
+}
+
+/* ── Líneas de medicamento ─────────────────────────────────── */
+function agregarLinea(){
   const d = document.createElement('div');
   d.className = 'linea';
+
+  const porClase = {};
+  VADEMECUM.forEach(v => { (porClase[v.clase || 'Otros'] = porClase[v.clase || 'Otros'] || []).push(v); });
+  const opciones = Object.keys(porClase).sort().map(c =>
+    '<optgroup label="' + c + '">' +
+    porClase[c].map(v => '<option value="' + claveVad(v) + '">' + textoVad(v) + '</option>').join('') +
+    '</optgroup>').join('') +
+    '<option value="__libre__">Otro medicamento (escribirlo a mano)</option>';
+
   d.innerHTML =
-    '<input type="text" class="rx-med" placeholder="Medicamento (ej: Semaglutida 0,25 mg)" value="' + (med||'') + '">' +
-    '<input type="text" class="rx-dosis" placeholder="Dosis y frecuencia" value="' + (dosis||'') + '">' +
-    '<button title="Quitar" onclick="this.parentNode.remove()">&times;</button>';
+    '<div class="linea-top">' +
+      '<select class="rx-vad" onchange="cambioPrincipio(this)">' +
+        '<option value="">Elige el principio activo…</option>' + opciones +
+      '</select>' +
+      '<input type="text" class="rx-dosis" placeholder="Dosis y frecuencia">' +
+      '<button title="Quitar" onclick="this.closest(\'.linea\').remove()">&times;</button>' +
+    '</div>' +
+    '<label class="linea-sust">' +
+      '<input type="checkbox" class="rx-sust" onchange="cambioSustitucion(this)">' +
+      'No aceptar sustitución: el paciente solo puede comprar la marca que yo indique' +
+    '</label>' +
+    '<div class="linea-marca"><select class="rx-marca"></select></div>' +
+    '<div class="linea-libre" style="display:none;margin-top:8px">' +
+      '<input type="text" class="rx-libre" placeholder="Medicamento, concentración y forma">' +
+      '<div style="font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.5">' +
+        'Quedará en la receta impresa y el paciente podrá comprarlo en cualquier ' +
+        'farmacia, pero no a través de Balance+.</div>' +
+    '</div>';
+
   document.getElementById('rxLineas').appendChild(d);
+}
+
+function cambioPrincipio(sel){
+  const linea = sel.closest('.linea');
+  const libre = sel.value === '__libre__';
+
+  linea.querySelector('.linea-libre').style.display = libre ? 'block' : 'none';
+  linea.querySelector('.linea-sust').style.display  = libre ? 'none' : 'flex';
+  if(libre){
+    linea.querySelector('.rx-sust').checked = false;
+    linea.querySelector('.linea-marca').classList.remove('on');
+    return;
+  }
+  const chk = linea.querySelector('.rx-sust');
+  if(chk.checked) llenarMarcas(linea);
+}
+
+function cambioSustitucion(chk){
+  const linea = chk.closest('.linea');
+  const caja  = linea.querySelector('.linea-marca');
+  caja.classList.toggle('on', chk.checked);
+  if(chk.checked) llenarMarcas(linea);
+}
+
+function llenarMarcas(linea){
+  const clave = linea.querySelector('.rx-vad').value;
+  const sel   = linea.querySelector('.rx-marca');
+  const v     = VADEMECUM.find(x => claveVad(x) === clave);
+  if(!v){ sel.innerHTML = '<option value="">Elige primero el principio activo</option>'; return; }
+  sel.innerHTML = (v.productos || []).map(pr =>
+    '<option value="' + pr.drug_product_id + '">' + pr.nombre +
+    (pr.laboratorio ? ' · ' + pr.laboratorio : '') + '</option>').join('');
 }
 
 function reiniciarLineas(){
@@ -483,15 +565,49 @@ function reiniciarLineas(){
 async function emitirReceta(){
   if(!ACTUAL) return;
 
-  const meds = [...document.querySelectorAll('#rxLineas .linea')].map(l => ({
-    medicamento: l.querySelector('.rx-med').value.trim(),
-    dosis:       l.querySelector('.rx-dosis').value.trim()
-  })).filter(m => m.medicamento);
+  const meds = [];
+  let incompleta = false;
+
+  document.querySelectorAll('#rxLineas .linea').forEach(l => {
+    const clave = l.querySelector('.rx-vad').value;
+    if(!clave) return;
+
+    if(clave === '__libre__'){
+      const txt = l.querySelector('.rx-libre').value.trim();
+      if(!txt){ incompleta = true; return; }
+      meds.push({
+        ingredient_id: null, concentracion: null, unidad: null,
+        medicamento: txt,
+        dosis: l.querySelector('.rx-dosis').value.trim(),
+        sin_sustitucion: false, drug_product_id: null, es_texto_libre: true,
+      });
+      return;
+    }
+
+    const v = VADEMECUM.find(x => claveVad(x) === clave);
+    if(!v){ incompleta = true; return; }
+
+    const sust = l.querySelector('.rx-sust').checked;
+    const marca = sust ? l.querySelector('.rx-marca').value : null;
+    if(sust && !marca){ incompleta = true; return; }
+
+    meds.push({
+      ingredient_id: v.ingredient_id,
+      concentracion: v.concentracion,
+      unidad: v.unidad,
+      medicamento: textoVad(v),
+      dosis: l.querySelector('.rx-dosis').value.trim(),
+      sin_sustitucion: sust,
+      drug_product_id: marca || null,
+      es_texto_libre: false,
+    });
+  });
 
   const ind  = document.getElementById('rxInd').value.trim();
   const file = document.getElementById('rxFile').files[0];
 
-  if(!meds.length) return toast('Anota al menos un medicamento', true);
+  if(incompleta)   return toast('Hay líneas incompletas: falta el medicamento o la marca', true);
+  if(!meds.length) return toast('Indica al menos un medicamento', true);
   if(!file)        return toast('Adjunta la receta en PDF', true);
   if(file.type !== 'application/pdf') return toast('El archivo debe ser un PDF', true);
   if(file.size > 10 * 1024 * 1024)    return toast('El PDF supera los 10 MB', true);
@@ -510,16 +626,22 @@ async function emitirReceta(){
     const { data:{ user } } = await sb.auth.getUser();
     const ahora = new Date().toISOString();
     const filas = meds.map(m => ({
-      patient_id:     ACTUAL.patient_id,
-      medico_id:      user.id,
-      appointment_id: ACTUAL.cita_id,
-      medicamento:    m.medicamento,
-      dosis:          m.dosis || null,
-      indicaciones:   ind || null,
-      archivo_path:   path,
-      archivo_nombre: file.name,
-      status:         'emitida',
-      issued_at:      ahora
+      patient_id:      ACTUAL.patient_id,
+      medico_id:       user.id,
+      appointment_id:  ACTUAL.cita_id,
+      ingredient_id:   m.ingredient_id,
+      concentracion:   m.concentracion,
+      unidad:          m.unidad,
+      drug_product_id: m.drug_product_id,
+      sin_sustitucion: m.sin_sustitucion,
+      es_texto_libre:  m.es_texto_libre,
+      medicamento:     m.medicamento,
+      dosis:           m.dosis || null,
+      indicaciones:    ind || null,
+      archivo_path:    path,
+      archivo_nombre:  file.name,
+      status:          'emitida',
+      issued_at:       ahora
     }));
 
     const { error: eIns } = await sb.from('prescriptions').insert(filas);
