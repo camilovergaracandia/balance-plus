@@ -97,7 +97,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--surface2);col
 'use strict';
 
 const sb = window.BP.sb;
-let CFG = null, CITAS = [], RECETAS = [], SLOTS = [];
+let CFG = null, CITAS = [], RECETAS = [], SLOTS = [], CONTROL = null;
 let diaSel = null, horaSel = null;
 
 function toast(m, err){
@@ -127,14 +127,16 @@ async function iniciar(){
 }
 
 async function recargar(){
-  const [cfg, citas, rx] = await Promise.all([
+  const [cfg, citas, rx, ctrl] = await Promise.all([
     sb.from('consult_settings').select('*').eq('id',1).single(),
     sb.rpc('mis_citas'),
-    sb.from('prescriptions').select('*').order('created_at',{ascending:false})
+    sb.from('prescriptions').select('*').order('created_at',{ascending:false}),
+    sb.rpc('mi_proximo_control')
   ]);
   CFG     = cfg.data;
   CITAS   = citas.data || [];
   RECETAS = rx.data || [];
+  CONTROL = (ctrl.data && ctrl.data[0]) || null;
   pintar();
 }
 
@@ -150,12 +152,44 @@ function pintar(){
   let h = '<div class="h1">Mi atención</div>' +
           '<p class="sub">Agenda tu consulta médica y revisa tus recetas.</p>';
 
+  if(!activa) h += bloqueControl();
   h += activa ? bloqueCita(activa) : '<div id="reserva"></div>';
   h += bloqueRecetas();
   h += bloqueHistorial();
 
   document.getElementById('contenido').innerHTML = h;
   if(!activa) cargarSlots();
+}
+
+function bloqueControl(){
+  if(!CONTROL) return '';
+  const d = CONTROL.dias_restantes;
+  if(d > 10) return '';   // todavía es pronto para molestarlo
+
+  const fecha = new Date(CONTROL.fecha_control + 'T12:00:00')
+    .toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'long' });
+
+  const titulo = d < 0
+    ? 'Tu control médico está pendiente'
+    : (d === 0 ? 'Hoy corresponde tu control médico'
+               : 'Se acerca tu control médico');
+
+  const texto = d < 0
+    ? 'Tu médico indicó controlarte el ' + fecha + '. Agenda tu hora para revisar cómo vas y ajustar tu tratamiento si corresponde.'
+    : 'Tu médico indicó controlarte el ' + fecha + '. En el control se revisa tu evolución, cómo has tolerado el tratamiento y si corresponde ajustar la indicación.';
+
+  return '<div class="cita" style="background:linear-gradient(135deg,#6A9070,#8AB090)">' +
+    '<div style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;opacity:.85;font-weight:700;margin-bottom:8px">Seguimiento de tu tratamiento</div>' +
+    '<div class="cita-fecha" style="font-size:19px;text-transform:none">' + titulo + '</div>' +
+    '<div class="cita-meta" style="opacity:.92">' + texto +
+      (CONTROL.medico ? '<br><br>Indicado por Dr(a). ' + CONTROL.medico : '') + '</div>' +
+    '<div class="cita-acc"><button class="btn btn-light" onclick="agendarControl()">Agendar mi control</button></div>' +
+    '</div>';
+}
+
+function agendarControl(){
+  const r = document.getElementById('reserva');
+  if(r) r.scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 function bloqueCita(c){

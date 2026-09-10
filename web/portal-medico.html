@@ -154,6 +154,18 @@ input[type=file]{width:100%;padding:9px;border:1px dashed var(--border);border-r
       <button class="btn btn-ghost" onclick="marcarNoAsistio()">No asistió</button>
     </div>
     <div class="field">
+      <label>Próximo control <span style="color:var(--muted);font-weight:400">— se le recordará al paciente</span></label>
+      <select id="cControl">
+        <option value="">Sin control programado</option>
+        <option value="2">En 2 semanas</option>
+        <option value="4" selected>En 4 semanas</option>
+        <option value="6">En 6 semanas</option>
+        <option value="8">En 8 semanas</option>
+        <option value="12">En 12 semanas</option>
+        <option value="24">En 6 meses</option>
+      </select>
+    </div>
+    <div class="field">
       <label>Nota clínica <span style="color:var(--muted);font-weight:400">— queda en la ficha del paciente</span></label>
       <textarea id="cNota" placeholder="Motivo de consulta, hallazgos, plan…"></textarea>
       <button class="btn btn-ghost" style="margin-top:8px" onclick="guardarNota()">Guardar nota</button>
@@ -331,6 +343,7 @@ async function abrirFicha(citaId){
   document.getElementById('fEmail').textContent =
     (ACTUAL.email || '') + ' · ' + hora(ACTUAL.inicio) + ' hrs';
   document.getElementById('cNota').value = ACTUAL.nota_clinica || '';
+  document.getElementById('cControl').value = ACTUAL.control_semanas || '4';
   pintarEstado();
   document.getElementById('rxInd').value = '';
   document.getElementById('rxFile').value = '';
@@ -439,10 +452,13 @@ async function cerrarAtencion(){
   if(!ACTUAL) return;
   const nota = document.getElementById('cNota').value.trim();
   if(!nota) return toast('Escribe la nota clínica antes de cerrar', true);
-  const { error } = await sb.rpc('cerrar_atencion',
-    { p_cita: ACTUAL.cita_id, p_nota: nota, p_asistio: true });
+  const ctrl = document.getElementById('cControl').value;
+  const { error } = await sb.rpc('cerrar_atencion', {
+    p_cita: ACTUAL.cita_id, p_nota: nota, p_asistio: true,
+    p_control: ctrl ? parseInt(ctrl, 10) : null });
   if(error) return toast(error.message, true);
-  toast('Atención cerrada y registrada');
+  toast(ctrl ? 'Atención cerrada · control en ' + ctrl + ' semanas'
+             : 'Atención cerrada y registrada');
   cerrarFicha();
   cargarAgenda();
 }
@@ -450,7 +466,7 @@ async function cerrarAtencion(){
 async function marcarNoAsistio(){
   if(!ACTUAL) return;
   const { error } = await sb.rpc('cerrar_atencion',
-    { p_cita: ACTUAL.cita_id, p_asistio: false });
+    { p_cita: ACTUAL.cita_id, p_asistio: false, p_control: null });
   if(error) return toast(error.message, true);
   toast('Registrado como no asistida');
   cerrarFicha();
