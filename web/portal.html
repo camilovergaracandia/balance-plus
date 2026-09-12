@@ -839,13 +839,13 @@ select,input{font-family:inherit}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         Mis Pagos
       </div>
-      <div class="sb-item" id="sb-recetas" onclick="irAgendar()">
+      <div class="sb-item" id="sb-recetas" onclick="irRecetas()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         Mis Recetas
       </div>
-      <div class="sb-item" id="sb-med" onclick="navTo('med')">
+      <div class="sb-item" id="sb-med" onclick="irSintomas()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-        Medicación
+        Mis síntomas
       </div>
       <div class="sb-item" id="sb-evolucion" onclick="navTo('evolucion')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -973,7 +973,7 @@ select,input{font-family:inherit}
           </div>
 
           <!-- ── MEDICACIÓN ACTIVA (múltiples medicamentos) ── -->
-          <div class="card" onclick="navTo('med')" style="cursor:pointer">
+          <div class="card" onclick="irSintomas()" style="cursor:pointer">
             <div class="card-hdr">
               <div class="card-title">Medicación activa</div>
               <div class="card-action">Detalles</div>
@@ -1315,13 +1315,13 @@ select,input{font-family:inherit}
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
       <span class="bn-lbl">Pagos</span>
     </div>
-    <div class="bn-item" id="bn-recetas" onclick="irAgendar()">
+    <div class="bn-item" id="bn-recetas" onclick="irRecetas()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       <span class="bn-lbl">Recetas</span>
     </div>
-    <div class="bn-item" id="bn-med" onclick="navTo('med')">
+    <div class="bn-item" id="bn-med" onclick="irSintomas()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-      <span class="bn-lbl">Medicación</span>
+      <span class="bn-lbl">Mis síntomas</span>
     </div>
     <div class="bn-item" id="bn-evolucion" onclick="navTo('evolucion')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -3976,11 +3976,15 @@ function saveVitales(){
 @media(max-width:600px){.ctrl-aviso{padding:17px 18px}.ctrl-aviso .t{font-size:17px}}
 </style>
 <script>
-/* Balance+ — citas, recetas y pedidos viven en sus propias páginas (datos reales) */
-function irAgendar(){ window.location.href = 'agendar.html'; }
-function irComprar(){ window.location.href = 'comprar.html'; }
+/* Balance+ — cada área vive en su propia página, con datos reales */
+function irAgendar(){  window.location.href = 'agendar.html'; }
+function irComprar(){  window.location.href = 'comprar.html'; }
+function irRecetas(){  window.location.href = 'comprar.html'; }
+function irSintomas(){ window.location.href = 'sintomas.html'; }
 window.irAgendar = irAgendar;
 window.irComprar = irComprar;
+window.irRecetas = irRecetas;
+window.irSintomas = irSintomas;
 
 /* Recordatorio de control médico en la portada */
 (async function(){

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance+ | Mis síntomas</title>
+<link rel="icon" type="image/png" href="Isotipo 2 transparente.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1B2D5E; --primary-dark:#142248;
+  --accent:#8AB090; --accent-dark:#6A9070; --accent-faint:#f0f6f1;
+  --green:#27AE60; --green-light:#e8f8ef;
+  --amber:#F59E0B; --amber-light:#fffbeb; --amber-border:#fde68a;
+  --red:#C0392B; --red-light:#fdecea; --red-border:#f5c6c0;
+  --text:#1a1f2e; --text-mid:#2d3748; --muted:#5a6475;
+  --border:#dde3e8; --surface:#fff; --surface2:#f0f3f7;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--surface2);color:var(--text);font-size:14px;line-height:1.5}
+.topbar{background:var(--primary);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-size:18px;font-weight:800;letter-spacing:-.5px;cursor:pointer}
+.brand span{color:var(--accent)}
+.linkout{color:#fff;opacity:.78;cursor:pointer;font-size:12.5px}
+.linkout:hover{opacity:1}
+.wrap{max-width:760px;margin:0 auto;padding:24px 20px 70px}
+.h1{font-size:23px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:20px;line-height:1.6}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px}
+.card-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:14px}
+.btn{padding:10px 17px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:inherit;transition:.15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:var(--accent-dark)}
+.btn-ghost{background:transparent;color:var(--primary);border-color:var(--border)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.full{width:100%}
+.sint{display:flex;align-items:flex-start;gap:12px;padding:13px;border:1px solid var(--border);border-radius:11px;margin-bottom:8px;cursor:pointer;background:#fff;transition:.15s}
+.sint:hover{border-color:var(--accent)}
+.sint.sel{border-color:var(--accent);background:var(--accent-faint)}
+.sint-n{font-weight:600;font-size:14px}
+.sint-d{color:var(--muted);font-size:12px;margin-top:2px;line-height:1.5}
+.field{margin-bottom:13px}
+label{display:block;font-size:11px;font-weight:600;color:var(--text-mid);margin-bottom:5px}
+input[type=date],input[type=text],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;background:#fff;color:var(--text)}
+textarea{resize:vertical;min-height:66px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.intens{display:flex;gap:8px}
+.intens button{flex:1;padding:10px;border:1px solid var(--border);border-radius:9px;background:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--text)}
+.intens button.sel{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* Registros */
+.reg{padding:13px 0;border-bottom:1px solid var(--border)}
+.reg:last-child{border-bottom:0}
+.reg-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.reg-n{font-weight:600;font-size:14px}
+.reg-m{color:var(--muted);font-size:11.5px;margin-top:2px}
+.reg-c{font-size:12.5px;color:var(--text-mid);margin-top:7px;background:var(--surface2);padding:9px 11px;border-radius:8px;line-height:1.5}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.pill.leve{background:var(--green-light);color:var(--green)}
+.pill.moderado{background:var(--amber-light);color:#b45309}
+.pill.alarma{background:var(--red-light);color:var(--red)}
+.pill.activo{background:var(--surface2);color:var(--muted)}
+.empty{text-align:center;padding:34px 16px;color:var(--muted);font-size:13px}
+.empty b{display:block;color:var(--text);font-size:15px;margin-bottom:6px;font-weight:600}
+.spin{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+/* Respuesta tras registrar */
+.modal-bg{position:fixed;inset:0;background:rgba(16,22,40,.6);display:none;align-items:center;justify-content:center;z-index:100;padding:22px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:480px;padding:26px}
+.modal .icono{font-size:30px;margin-bottom:10px}
+.modal h2{font-size:19px;font-weight:800;letter-spacing:-.3px;margin-bottom:10px;line-height:1.3}
+.modal p{font-size:14px;color:var(--text-mid);line-height:1.65}
+.modal .acc{display:flex;gap:9px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+.modal.alarma{border-top:5px solid var(--red)}
+.modal.alarma h2{color:var(--red)}
+.modal.moderado{border-top:5px solid var(--amber)}
+.urgencia{background:var(--red-light);border:1px solid var(--red-border);border-radius:10px;padding:13px 15px;margin-top:16px;font-size:13px;color:#7d2418;line-height:1.6}
+.urgencia b{display:block;margin-bottom:4px}
+.seguimiento{margin-top:16px;padding-top:14px;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);line-height:1.6}
+.seguimiento a{color:var(--primary);text-decoration:underline;cursor:pointer;font-weight:600}
+.aviso{background:var(--amber-light);border:1px solid var(--amber-border);border-radius:10px;padding:12px 14px;font-size:12.5px;color:#92400e;line-height:1.55;margin-top:16px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:12px 22px;border-radius:9px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:200;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.toast.err{background:var(--red)}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand" onclick="location.href='portal.html'">BALANCE<span>+</span></div>
+  <a class="linkout" onclick="location.href='portal.html'">← Volver al portal</a>
+</div>
+
+<div class="wrap">
+  <div id="contenido"><div class="spin">Cargando…</div></div>
+</div>
+
+<!-- Respuesta según la gravedad -->
+<div class="modal-bg" id="respuesta">
+  <div class="modal" id="respuestaCaja">
+    <div class="icono" id="rIcono"></div>
+    <h2 id="rTitulo"></h2>
+    <p id="rTexto"></p>
+    <div id="rUrgencia"></div>
+    <div class="acc" id="rAcciones"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="bp-supabase.js?v=11"></script>
+<script>
+'use strict';
+
+const sb = window.BP.sb;
+let SINTOMAS = [], REGISTROS = [];
+let sel = null, intensidad = null, registrando = false;
+
+function toast(m, err){
+  const t = document.getElementById('toast');
+  t.textContent = m;
+  t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.className = 'toast', 4000);
+}
+
+function hoyISO(){
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+}
+
+function fFecha(f){
+  return new Date(f + 'T12:00:00').toLocaleDateString('es-CL',
+    { day:'numeric', month:'long' });
+}
+
+/* ── Arranque ──────────────────────────────────────────────── */
+async function iniciar(){
+  const { data:{ user } } = await sb.auth.getUser();
+  if(!user){ location.href = 'intake.html'; return; }
+  await recargar();
+}
+
+async function recargar(){
+  const [cat, regs] = await Promise.all([
+    sb.from('symptoms').select('*').eq('activo', true).order('orden'),
+    sb.rpc('mis_sintomas')
+  ]);
+  SINTOMAS  = cat.data || [];
+  REGISTROS = regs.data || [];
+  pintar();
+}
+
+/* ── Render ────────────────────────────────────────────────── */
+function pintar(){
+  let h = '<div class="h1">Mis síntomas</div>' +
+    '<p class="sub">Registra los efectos que hayas notado con tu tratamiento. ' +
+    'Tu médico los revisará en tu próximo control, sin que tengas que acordarte de contarlos.</p>';
+
+  h += registrando ? bloqueRegistro() :
+    '<div class="card"><div class="card-t">Registrar un síntoma</div>' +
+    '<p style="font-size:13px;color:var(--muted);margin-bottom:14px">' +
+    'Anota qué sentiste, desde cuándo y por cuántos días.</p>' +
+    '<button class="btn btn-accent full" onclick="comenzar()">Anotar cómo me he sentido</button></div>';
+
+  h += bloqueRegistros();
+
+  h += '<div class="aviso">Este registro es para el seguimiento de tu tratamiento y ' +
+       'no reemplaza una consulta médica. Nadie lo revisa en tiempo real. ' +
+       'Si te sientes muy mal, acude a un servicio de urgencia o llama al 131.</div>';
+
+  document.getElementById('contenido').innerHTML = h;
+}
+
+function comenzar(){
+  registrando = true; sel = null; intensidad = null;
+  pintar();
+}
+
+function cancelar(){
+  registrando = false; sel = null; intensidad = null;
+  pintar();
+}
+
+function bloqueRegistro(){
+  let h = '<div class="card"><div class="card-t">¿Qué has sentido?</div>';
+
+  h += SINTOMAS.map(s =>
+    '<div class="sint' + (sel === s.id ? ' sel' : '') + '" onclick="elegir(\'' + s.id + '\')">' +
+      '<div><div class="sint-n">' + s.nombre + '</div>' +
+      (s.descripcion ? '<div class="sint-d">' + s.descripcion + '</div>' : '') + '</div>' +
+    '</div>').join('');
+
+  if(sel){
+    h += '<div style="height:16px"></div>' +
+      '<div class="grid2">' +
+        '<div class="field"><label>¿Desde cuándo?</label>' +
+        '<input type="date" id="fDesde" max="' + hoyISO() + '" value="' + hoyISO() + '"></div>' +
+        '<div class="field"><label>¿Hasta cuándo? <span style="color:var(--muted);font-weight:400">— déjalo vacío si sigue</span></label>' +
+        '<input type="date" id="fHasta" max="' + hoyISO() + '"></div>' +
+      '</div>' +
+      '<div class="field"><label>¿Qué tan fuerte?</label>' +
+        '<div class="intens">' +
+          '<button class="' + (intensidad===1?'sel':'') + '" onclick="setInt(1)">Leve</button>' +
+          '<button class="' + (intensidad===2?'sel':'') + '" onclick="setInt(2)">Moderado</button>' +
+          '<button class="' + (intensidad===3?'sel':'') + '" onclick="setInt(3)">Fuerte</button>' +
+        '</div></div>' +
+      '<div class="field"><label>¿Algo más que quieras contarle a tu médico? <span style="color:var(--muted);font-weight:400">— opcional</span></label>' +
+      '<textarea id="fCom" placeholder="Por ejemplo, si aparece a cierta hora o con algún alimento…"></textarea></div>' +
+      '<button class="btn btn-accent full" id="btnGuardar" onclick="guardar()">Registrar</button>';
+  }
+
+  h += '<button class="btn btn-ghost full" style="margin-top:9px" onclick="cancelar()">Cancelar</button></div>';
+  return h;
+}
+
+function elegir(id){ sel = id; pintar(); }
+function setInt(n){ intensidad = n; pintar(); }
+
+function bloqueRegistros(){
+  let h = '<div class="card"><div class="card-t">Lo que has registrado</div>';
+  if(!REGISTROS.length){
+    return h + '<div class="empty"><b>Todavía no has registrado nada</b>' +
+      'Cuando anotes algo, aparecerá aquí y tu médico lo verá en tu control.</div></div>';
+  }
+
+  h += REGISTROS.map(r => {
+    const activo = !r.hasta;
+    const rango = activo
+      ? 'Desde el ' + fFecha(r.desde) + ' · ' + r.dias + (r.dias === 1 ? ' día' : ' días')
+      : 'Del ' + fFecha(r.desde) + ' al ' + fFecha(r.hasta) + ' · ' + r.dias + (r.dias === 1 ? ' día' : ' días');
+    const fuerza = { 1:'Leve', 2:'Moderado', 3:'Fuerte' }[r.intensidad] || '';
+
+    return '<div class="reg"><div class="reg-top"><div>' +
+      '<div class="reg-n">' + r.nombre + '</div>' +
+      '<div class="reg-m">' + rango + (fuerza ? ' · ' + fuerza : '') + '</div>' +
+      '</div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
+        '<span class="pill ' + r.nivel + '">' + r.nivel + '</span>' +
+        (activo ? '<button class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px" onclick="cerrar(\'' + r.log_id + '\')">Ya pasó</button>' : '') +
+      '</div></div>' +
+      (r.comentario ? '<div class="reg-c">' + r.comentario + '</div>' : '') +
+      '</div>';
+  }).join('');
+
+  return h + '</div>';
+}
+
+/* ── Guardar ───────────────────────────────────────────────── */
+async function guardar(){
+  if(!sel) return;
+  const desde = document.getElementById('fDesde').value;
+  const hasta = document.getElementById('fHasta').value || null;
+  const com   = document.getElementById('fCom').value.trim();
+
+  if(!desde) return toast('Indica desde cuándo lo sientes', true);
+
+  const btn = document.getElementById('btnGuardar');
+  btn.disabled = true; btn.textContent = 'Registrando…';
+
+  const { data, error } = await sb.rpc('registrar_sintoma', {
+    p_symptom: sel, p_desde: desde, p_hasta: hasta,
+    p_intensidad: intensidad, p_comentario: com || null
+  });
+
+  if(error){
+    btn.disabled = false; btn.textContent = 'Registrar';
+    return toast(error.message, true);
+  }
+
+  registrando = false;
+  await recargar();
+  const r = (data && data[0]) || null;
+  if(r) mostrarRespuesta(r);
+}
+
+async function cerrar(id){
+  const { error } = await sb.rpc('cerrar_sintoma', { p_log: id });
+  if(error) return toast(error.message, true);
+  toast('Registrado como resuelto');
+  await recargar();
+}
+
+/* ── Respuesta según la gravedad ───────────────────────────── */
+function mostrarRespuesta(r){
+  const caja = document.getElementById('respuestaCaja');
+  caja.className = 'modal ' + r.nivel;
+
+  const icono = { leve:'📝', moderado:'⚠️', alarma:'🚨' }[r.nivel] || '';
+  const titulo = r.nivel === 'alarma'
+    ? 'Necesitas atención médica hoy'
+    : r.nivel === 'moderado'
+      ? 'Conviene que un médico te evalúe'
+      : 'Registrado';
+
+  document.getElementById('rIcono').textContent = icono;
+  document.getElementById('rTitulo').textContent = titulo;
+  document.getElementById('rTexto').textContent = r.consejo || '';
+
+  let extra = '';
+  if(r.nivel === 'alarma'){
+    extra = r.emergencia
+      ? '<div class="urgencia"><b>Esto no puede esperar</b>' +
+        'Llama ahora al 131 (SAMU) o pide que te lleven al servicio de urgencia ' +
+        'más cercano. No conduzcas tú mismo.</div>'
+      : '<div class="urgencia"><b>Qué hacer hoy</b>' +
+        'Suspende el medicamento y acude hoy a un servicio de urgencia. ' +
+        'No esperes a tu próximo control.</div>';
+
+    // El seguimiento se ofrece como enlace, no como botón: un botón al mismo
+    // nivel competiría con la indicación de ir a urgencias.
+    extra += '<div class="seguimiento">Si ya te atendiste en urgencias o quieres ' +
+             'coordinar un control después, <a onclick="location.href=\'agendar.html\'">' +
+             'agenda una consulta aquí</a>.</div>';
+  }
+  document.getElementById('rUrgencia').innerHTML = extra;
+
+  document.getElementById('rAcciones').innerHTML = r.nivel === 'alarma'
+    ? '<button class="btn btn-ghost" onclick="cerrarRespuesta()">Entendido</button>'
+    : r.nivel === 'moderado'
+      ? '<button class="btn btn-ghost" onclick="cerrarRespuesta()">Ahora no</button>' +
+        '<button class="btn btn-accent" onclick="location.href=\'agendar.html\'">Agendar consulta</button>'
+      : '<button class="btn btn-accent" onclick="cerrarRespuesta()">Listo</button>';
+
+  document.getElementById('respuesta').classList.add('open');
+}
+
+function cerrarRespuesta(){
+  document.getElementById('respuesta').classList.remove('open');
+}
+
+iniciar();
+</script>
+</body>
+</html>

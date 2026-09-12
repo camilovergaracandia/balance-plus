@@ -79,6 +79,19 @@ input[type=file]{width:100%;padding:9px;border:1px dashed var(--border);border-r
 .modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
 .rx-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12.5px}
 .rx-item:last-child{border-bottom:0}
+.sx{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12.5px}
+.sx:last-child{border-bottom:0}
+.sx-c{color:var(--muted);font-size:11.5px;margin-top:4px;line-height:1.5}
+.hx{padding:11px 0;border-bottom:1px solid var(--border)}
+.hx:last-child{border-bottom:0}
+.hx-f{font-weight:700;font-size:12.5px}
+.hx-m{color:var(--muted);font-size:11.5px;margin-top:1px}
+.hx-n{font-size:12.5px;margin-top:7px;background:var(--surface2);padding:9px 11px;border-radius:8px;line-height:1.55;white-space:pre-wrap}
+.hx-r{font-size:12px;margin-top:6px;color:var(--text-mid);line-height:1.6}
+.alerta{background:var(--red-light);border:1px solid #f5c6c0;border-radius:9px;padding:10px 12px;font-size:12.5px;color:#7d2418;margin-bottom:10px;line-height:1.55}
+.pill.leve{background:var(--green-light);color:var(--green)}
+.pill.moderado{background:var(--amber-light);color:#b45309}
+.pill.alarma{background:var(--red-light);color:#C0392B}
 .linea{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;background:var(--surface2)}
 .linea-top{display:grid;grid-template-columns:1.4fr 1fr 34px;gap:8px;align-items:start}
 .linea-dosis{margin-top:8px}
@@ -146,7 +159,13 @@ input[type=file]{width:100%;padding:9px;border:1px dashed var(--border);border-r
 
     <div class="datos" id="fDatos"></div>
 
-    <div class="seccion" style="border-top:0;padding-top:0;margin-top:0">Atención</div>
+    <div class="seccion" style="border-top:0;padding-top:0;margin-top:0">Cómo se ha sentido</div>
+    <div id="fSintomas"></div>
+
+    <div class="seccion">Consultas anteriores</div>
+    <div id="fHistorial"></div>
+
+    <div class="seccion">Atención</div>
     <div id="cEstado" style="font-size:12.5px;color:var(--muted);margin-bottom:10px"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
       <button class="btn btn-primary" onclick="iniciarLlamada()">Iniciar videollamada</button>
@@ -353,14 +372,19 @@ async function abrirFicha(citaId){
   document.getElementById('fRecetas').innerHTML = '';
   document.getElementById('ficha').classList.add('open');
 
-  const [{ data: intake }, { data: recetas }] = await Promise.all([
-    sb.rpc('intake_de_paciente', { p_patient: ACTUAL.patient_id }),
-    sb.from('prescriptions').select('*').eq('patient_id', ACTUAL.patient_id)
-      .order('created_at', { ascending:false })
-  ]);
+  const [{ data: intake }, { data: recetas }, { data: sintomas }, { data: historial }] =
+    await Promise.all([
+      sb.rpc('intake_de_paciente', { p_patient: ACTUAL.patient_id }),
+      sb.from('prescriptions').select('*').eq('patient_id', ACTUAL.patient_id)
+        .order('created_at', { ascending:false }),
+      sb.rpc('sintomas_de_paciente', { p_patient: ACTUAL.patient_id, p_dias: 120 }),
+      sb.rpc('historial_paciente',   { p_patient: ACTUAL.patient_id })
+    ]);
 
   pintarDatos(intake);
   pintarRecetas(recetas || []);
+  pintarSintomas(sintomas || []);
+  pintarHistorial(historial || []);
 }
 
 function fila(k, v){
@@ -413,6 +437,70 @@ function pintarRecetas(rx){
       (r.es_texto_libre ? ' <span class="pill na">fuera de Balance+</span>' : '')).join('<br>');
     return '<div class="rx-item"><div>' + lista +
       '<br><span style="color:var(--muted);font-size:11px">' + f + '</span></div>' + pdf + '</div>';
+  }).join('');
+}
+
+function fFechaCorta(f){
+  return new Date(f + 'T12:00:00').toLocaleDateString('es-CL', { day:'numeric', month:'short' });
+}
+
+function pintarSintomas(list){
+  const cont = document.getElementById('fSintomas');
+  if(!list.length){
+    cont.innerHTML = '<div style="color:var(--muted);font-size:12.5px">El paciente no ha registrado síntomas.</div>';
+    return;
+  }
+
+  const alarmas = list.filter(x => x.nivel === 'alarma');
+  let h = '';
+  if(alarmas.length){
+    h += '<div class="alerta"><b>Registró ' + alarmas.length +
+         (alarmas.length === 1 ? ' síntoma de alarma' : ' síntomas de alarma') +
+         '.</b> Revísalo con el paciente al inicio de la consulta.</div>';
+  }
+
+  h += list.map(x => {
+    const rango = x.activo
+      ? 'Desde el ' + fFechaCorta(x.desde) + ' · ' + x.dias + (x.dias === 1 ? ' día' : ' días') + ', sigue presente'
+      : 'Del ' + fFechaCorta(x.desde) + ' al ' + fFechaCorta(x.hasta) + ' · ' + x.dias + (x.dias === 1 ? ' día' : ' días');
+    const fuerza = { 1:'leve', 2:'moderado', 3:'fuerte' }[x.intensidad] || '';
+    return '<div class="sx"><div>' +
+      '<b>' + x.nombre + '</b>' + (fuerza ? ' <span style="color:var(--muted)">· ' + fuerza + '</span>' : '') +
+      '<div class="sx-c">' + rango + '</div>' +
+      (x.comentario ? '<div class="sx-c">"' + x.comentario + '"</div>' : '') +
+      '</div><span class="pill ' + x.nivel + '">' + x.nivel + '</span></div>';
+  }).join('');
+
+  cont.innerHTML = h;
+}
+
+function pintarHistorial(list){
+  const cont = document.getElementById('fHistorial');
+  if(!list.length){
+    cont.innerHTML = '<div style="color:var(--muted);font-size:12.5px">Es la primera consulta de este paciente.</div>';
+    return;
+  }
+
+  cont.innerHTML = list.map(c => {
+    const f = new Date(c.fecha).toLocaleDateString('es-CL',
+      { day:'numeric', month:'long', year:'numeric' });
+    const motivo = c.motivo === 'control' ? 'Control' : 'Primera consulta';
+    const quien = c.medico ? 'Dr(a). ' + c.medico : 'Médico no registrado';
+
+    const rx = (c.recetas || []).map(r =>
+      '· ' + r.medicamento + (r.dosis ? ' — ' + r.dosis : '') +
+      (r.sin_sustitucion ? ' (sin sustitución)' : '') +
+      (r.es_texto_libre ? ' (fuera de Balance+)' : '')).join('<br>');
+
+    return '<div class="hx">' +
+      '<div class="hx-f">' + f + '</div>' +
+      '<div class="hx-m">' + motivo + ' · ' + quien +
+        (c.status === 'no_asistio' ? ' · no asistió' : '') +
+        (c.control_semanas ? ' · control indicado a ' + c.control_semanas + ' semanas' : '') +
+      '</div>' +
+      (c.nota_clinica ? '<div class="hx-n">' + c.nota_clinica + '</div>' : '') +
+      (rx ? '<div class="hx-r"><b>Indicó:</b><br>' + rx + '</div>' : '') +
+      '</div>';
   }).join('');
 }
 
